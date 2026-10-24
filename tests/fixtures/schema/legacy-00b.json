@@ -1,0 +1,461 @@
+{
+    "example_kind":  "ltechdesign.documentation-members/1",
+    "members":  {
+                    "manifest.json":  {
+                                          "format_id":  "ltechdesign.project",
+                                          "format_version":  "1.0",
+                                          "document_schema_version":  "1.0",
+                                          "document_id":  "doc-example",
+                                          "saved_at":  "2026-10-21T10:00:00Z",
+                                          "saved_revision":  12,
+                                          "writer":  {
+                                                         "name":  "ltechDesign Studio contract example",
+                                                         "version":  "documentation-1"
+                                                     },
+                                          "required_capabilities":  [
+                                                                        "document.core/1",
+                                                                        "geometry.similarity/1",
+                                                                        "assets.embedded/1",
+                                                                        "tokens.core/1",
+                                                                        "fonts.metadata/1",
+                                                                        "render.isolated-opacity/1",
+                                                                        "render.clipping/1",
+                                                                        "tokens.bindings/1"
+                                                                    ],
+                                          "optional_capabilities":  [
+                                                                        "workspace.view/1"
+                                                                    ],
+                                          "files":  [
+                                                        {
+                                                            "path":  "assets/data/8b3634ccad5be602a2f51ab1a9b33b3e9826082d2ee187236f6b7916000ec93b",
+                                                            "media_type":  "image/png",
+                                                            "byte_length":  68,
+                                                            "sha256":  "8b3634ccad5be602a2f51ab1a9b33b3e9826082d2ee187236f6b7916000ec93b"
+                                                        },
+                                                        {
+                                                            "path":  "assets/index.json",
+                                                            "media_type":  "application/json",
+                                                            "byte_length":  260,
+                                                            "sha256":  "57626078ac8c53782aec26c9ef8f9ec2a40ba799e7fe7a862a066a2b2e0804d2"
+                                                        },
+                                                        {
+                                                            "path":  "document.json",
+                                                            "media_type":  "application/json",
+                                                            "byte_length":  3162,
+                                                            "sha256":  "221067ee4970b113975fd9833868434bf3faaa4e1299bea3f5575ea0bccb7065"
+                                                        },
+                                                        {
+                                                            "path":  "fonts.json",
+                                                            "media_type":  "application/json",
+                                                            "byte_length":  232,
+                                                            "sha256":  "f0b2331e1b3d6794c015edf0dd22e9ecb8ea0accc78a89fb211409eb546105d6"
+                                                        },
+                                                        {
+                                                            "path":  "tokens.json",
+                                                            "media_type":  "application/json",
+                                                            "byte_length":  344,
+                                                            "sha256":  "075f78f39fe212d183fa8751c6897063799d61d4e612172498da2b503a8fc2ff"
+                                                        },
+                                                        {
+                                                            "path":  "workspace.json",
+                                                            "media_type":  "application/json",
+                                                            "byte_length":  120,
+                                                            "sha256":  "2cce09cb740a2688d0d3711fdc4d8298b59d3dc8c9c2b0cae3549440a5b8fd47"
+                                                        }
+                                                    ],
+                                          "extensions":  [
+
+                                                         ]
+                                      },
+                    "document.json":  {
+                                          "schema_version":  "1.0",
+                                          "document_id":  "doc-example",
+                                          "name":  "Contoh kontrak dua page",
+                                          "pages":  [
+                                                        {
+                                                            "id":  "page-poster",
+                                                            "name":  "Poster",
+                                                            "root_ids":  [
+                                                                             "artboard-poster"
+                                                                         ]
+                                                        },
+                                                        {
+                                                            "id":  "page-web",
+                                                            "name":  "Web",
+                                                            "root_ids":  [
+                                                                             "artboard-web"
+                                                                         ]
+                                                        }
+                                                    ],
+                                          "nodes":  {
+                                                        "artboard-poster":  {
+                                                                                "id":  "artboard-poster",
+                                                                                "type":  "artboard",
+                                                                                "name":  "Poster",
+                                                                                "page_id":  "page-poster",
+                                                                                "parent_id":  null,
+                                                                                "children":  [
+                                                                                                 "group-content"
+                                                                                             ],
+                                                                                "x":  0,
+                                                                                "y":  0,
+                                                                                "width":  640,
+                                                                                "height":  480,
+                                                                                "rotation":  0,
+                                                                                "pivot":  {
+                                                                                              "x":  320,
+                                                                                              "y":  240
+                                                                                          },
+                                                                                "scale":  1,
+                                                                                "visible":  true,
+                                                                                "locked":  false,
+                                                                                "opacity":  1,
+                                                                                "clip_content":  true,
+                                                                                "style":  {
+                                                                                              "fill":  null,
+                                                                                              "stroke":  null,
+                                                                                              "radius":  [
+                                                                                                             0,
+                                                                                                             0,
+                                                                                                             0,
+                                                                                                             0
+                                                                                                         ],
+                                                                                              "shadows":  [
+
+                                                                                                          ]
+                                                                                          },
+                                                                                "layout":  null,
+                                                                                "constraints":  null,
+                                                                                "data":  {
+                                                                                             "unit":  "px",
+                                                                                             "dpi":  96,
+                                                                                             "background":  "#FFFFFFFF"
+                                                                                         }
+                                                                            },
+                                                        "group-content":  {
+                                                                              "id":  "group-content",
+                                                                              "type":  "group",
+                                                                              "name":  "Rotated isolated group",
+                                                                              "page_id":  "page-poster",
+                                                                              "parent_id":  "artboard-poster",
+                                                                              "children":  [
+                                                                                               "rectangle-card",
+                                                                                               "text-title",
+                                                                                               "image-pixel"
+                                                                                           ],
+                                                                              "x":  10,
+                                                                              "y":  10,
+                                                                              "width":  300,
+                                                                              "height":  120,
+                                                                              "rotation":  15,
+                                                                              "pivot":  {
+                                                                                            "x":  150,
+                                                                                            "y":  60
+                                                                                        },
+                                                                              "scale":  1.2,
+                                                                              "visible":  true,
+                                                                              "locked":  false,
+                                                                              "opacity":  0.5,
+                                                                              "clip_content":  false,
+                                                                              "style":  {
+                                                                                            "fill":  null,
+                                                                                            "stroke":  null,
+                                                                                            "radius":  [
+                                                                                                           0,
+                                                                                                           0,
+                                                                                                           0,
+                                                                                                           0
+                                                                                                       ],
+                                                                                            "shadows":  [
+
+                                                                                                        ]
+                                                                                        },
+                                                                              "layout":  null,
+                                                                              "constraints":  null,
+                                                                              "data":  {
+
+                                                                                       }
+                                                                          },
+                                                        "rectangle-card":  {
+                                                                               "id":  "rectangle-card",
+                                                                               "type":  "rectangle",
+                                                                               "name":  "Card",
+                                                                               "page_id":  "page-poster",
+                                                                               "parent_id":  "group-content",
+                                                                               "children":  [
+
+                                                                                            ],
+                                                                               "x":  0,
+                                                                               "y":  0,
+                                                                               "width":  300,
+                                                                               "height":  120,
+                                                                               "rotation":  0,
+                                                                               "pivot":  {
+                                                                                             "x":  150,
+                                                                                             "y":  60
+                                                                                         },
+                                                                               "scale":  1,
+                                                                               "visible":  true,
+                                                                               "locked":  false,
+                                                                               "opacity":  1,
+                                                                               "clip_content":  false,
+                                                                               "style":  {
+                                                                                             "fill":  {
+                                                                                                          "type":  "solid",
+                                                                                                          "color":  "#006633FF"
+                                                                                                      },
+                                                                                             "stroke":  null,
+                                                                                             "radius":  [
+                                                                                                            8,
+                                                                                                            8,
+                                                                                                            8,
+                                                                                                            8
+                                                                                                        ],
+                                                                                             "shadows":  [
+
+                                                                                                         ]
+                                                                                         },
+                                                                               "layout":  null,
+                                                                               "constraints":  null,
+                                                                               "data":  {
+
+                                                                                        }
+                                                                           },
+                                                        "text-title":  {
+                                                                           "id":  "text-title",
+                                                                           "type":  "text",
+                                                                           "name":  "Title",
+                                                                           "page_id":  "page-poster",
+                                                                           "parent_id":  "group-content",
+                                                                           "children":  [
+
+                                                                                        ],
+                                                                           "x":  10,
+                                                                           "y":  10,
+                                                                           "width":  200,
+                                                                           "height":  60,
+                                                                           "rotation":  0,
+                                                                           "pivot":  {
+                                                                                         "x":  100,
+                                                                                         "y":  30
+                                                                                     },
+                                                                           "scale":  1,
+                                                                           "visible":  true,
+                                                                           "locked":  false,
+                                                                           "opacity":  1,
+                                                                           "clip_content":  false,
+                                                                           "style":  {
+                                                                                         "fill":  {
+                                                                                                      "type":  "solid",
+                                                                                                      "color":  "#FFFFFFFF"
+                                                                                                  },
+                                                                                         "stroke":  null,
+                                                                                         "radius":  [
+                                                                                                        0,
+                                                                                                        0,
+                                                                                                        0,
+                                                                                                        0
+                                                                                                    ],
+                                                                                         "shadows":  [
+
+                                                                                                     ]
+                                                                                     },
+                                                                           "layout":  null,
+                                                                           "constraints":  null,
+                                                                           "data":  {
+                                                                                        "text":  "ltechDesign Studio\nEditable document",
+                                                                                        "typography":  {
+                                                                                                           "font_id":  "font-inter",
+                                                                                                           "font_size":  20,
+                                                                                                           "font_weight":  400,
+                                                                                                           "italic":  false,
+                                                                                                           "alignment":  "left",
+                                                                                                           "vertical_alignment":  "top",
+                                                                                                           "line_height":  {
+                                                                                                                               "unit":  "multiplier",
+                                                                                                                               "value":  1.2
+                                                                                                                           },
+                                                                                                           "letter_spacing":  0,
+                                                                                                           "sizing":  "fixed"
+                                                                                                       }
+                                                                                    }
+                                                                       },
+                                                        "image-pixel":  {
+                                                                            "id":  "image-pixel",
+                                                                            "type":  "image",
+                                                                            "name":  "Embedded pixel",
+                                                                            "page_id":  "page-poster",
+                                                                            "parent_id":  "group-content",
+                                                                            "children":  [
+
+                                                                                         ],
+                                                                            "x":  250,
+                                                                            "y":  80,
+                                                                            "width":  20,
+                                                                            "height":  20,
+                                                                            "rotation":  0,
+                                                                            "pivot":  {
+                                                                                          "x":  10,
+                                                                                          "y":  10
+                                                                                      },
+                                                                            "scale":  1,
+                                                                            "visible":  true,
+                                                                            "locked":  false,
+                                                                            "opacity":  1,
+                                                                            "clip_content":  false,
+                                                                            "style":  {
+                                                                                          "fill":  null,
+                                                                                          "stroke":  null,
+                                                                                          "radius":  [
+                                                                                                         0,
+                                                                                                         0,
+                                                                                                         0,
+                                                                                                         0
+                                                                                                     ],
+                                                                                          "shadows":  [
+
+                                                                                                      ]
+                                                                                      },
+                                                                            "layout":  null,
+                                                                            "constraints":  null,
+                                                                            "data":  {
+                                                                                         "asset_id":  "asset-pixel",
+                                                                                         "fit":  "fit",
+                                                                                         "crop":  {
+                                                                                                      "x":  0,
+                                                                                                      "y":  0,
+                                                                                                      "width":  1,
+                                                                                                      "height":  1
+                                                                                                  }
+                                                                                     }
+                                                                        },
+                                                        "artboard-web":  {
+                                                                             "id":  "artboard-web",
+                                                                             "type":  "artboard",
+                                                                             "name":  "Web",
+                                                                             "page_id":  "page-web",
+                                                                             "parent_id":  null,
+                                                                             "children":  [
+
+                                                                                          ],
+                                                                             "x":  700,
+                                                                             "y":  0,
+                                                                             "width":  300,
+                                                                             "height":  200,
+                                                                             "rotation":  0,
+                                                                             "pivot":  {
+                                                                                           "x":  150,
+                                                                                           "y":  100
+                                                                                       },
+                                                                             "scale":  1,
+                                                                             "visible":  true,
+                                                                             "locked":  false,
+                                                                             "opacity":  1,
+                                                                             "clip_content":  true,
+                                                                             "style":  {
+                                                                                           "fill":  null,
+                                                                                           "stroke":  null,
+                                                                                           "radius":  [
+                                                                                                          0,
+                                                                                                          0,
+                                                                                                          0,
+                                                                                                          0
+                                                                                                      ],
+                                                                                           "shadows":  [
+
+                                                                                                       ]
+                                                                                       },
+                                                                             "layout":  null,
+                                                                             "constraints":  null,
+                                                                             "data":  {
+                                                                                          "unit":  "px",
+                                                                                          "dpi":  96,
+                                                                                          "background":  "#EEEEEEFF"
+                                                                                      }
+                                                                         }
+                                                    }
+                                      },
+                    "assets/index.json":  {
+                                              "schema_version":  "1.0",
+                                              "assets":  [
+                                                             {
+                                                                 "id":  "asset-pixel",
+                                                                 "path":  "assets/data/8b3634ccad5be602a2f51ab1a9b33b3e9826082d2ee187236f6b7916000ec93b",
+                                                                 "media_type":  "image/png",
+                                                                 "byte_length":  68,
+                                                                 "sha256":  "8b3634ccad5be602a2f51ab1a9b33b3e9826082d2ee187236f6b7916000ec93b"
+                                                             }
+                                                         ]
+                                          },
+                    "tokens.json":  {
+                                        "schema_version":  "1.0",
+                                        "tokens":  [
+                                                       {
+                                                           "id":  "token-green",
+                                                           "name":  "Brand green",
+                                                           "type":  "color",
+                                                           "value":  "#006633FF"
+                                                       },
+                                                       {
+                                                           "id":  "token-spacing",
+                                                           "name":  "Spacing",
+                                                           "type":  "number",
+                                                           "value":  8
+                                                       },
+                                                       {
+                                                           "id":  "token-label",
+                                                           "name":  "Label",
+                                                           "type":  "string",
+                                                           "value":  "Studio"
+                                                       }
+                                                   ],
+                                        "bindings":  [
+                                                         {
+                                                             "node_id":  "rectangle-card",
+                                                             "property":  "style.fill.color",
+                                                             "token_id":  "token-green"
+                                                         }
+                                                     ]
+                                    },
+                    "fonts.json":  {
+                                       "schema_version":  "1.0",
+                                       "fonts":  [
+                                                     {
+                                                         "id":  "font-inter",
+                                                         "family":  "Inter",
+                                                         "style":  "Regular",
+                                                         "weight":  400,
+                                                         "italic":  false,
+                                                         "postscript_name":  null,
+                                                         "source":  "system",
+                                                         "asset_id":  null,
+                                                         "fallback_families":  [
+                                                                                   "Arial",
+                                                                                   "sans-serif"
+                                                                               ],
+                                                         "license":  null
+                                                     }
+                                                 ]
+                                   },
+                    "workspace.json":  {
+                                           "schema_version":  "1.0",
+                                           "active_page_id":  "page-poster",
+                                           "views":  [
+                                                         {
+                                                             "page_id":  "page-poster",
+                                                             "pan":  {
+                                                                         "x":  0,
+                                                                         "y":  0
+                                                                     },
+                                                             "zoom":  1
+                                                         }
+                                                     ]
+                                       }
+                },
+    "asset_blobs":  [
+                        {
+                            "path":  "assets/data/8b3634ccad5be602a2f51ab1a9b33b3e9826082d2ee187236f6b7916000ec93b",
+                            "base64":  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aZWQAAAAASUVORK5CYII="
+                        }
+                    ]
+}

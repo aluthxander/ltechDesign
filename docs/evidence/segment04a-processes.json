@@ -1,0 +1,1101 @@
+{
+  "scope": "04A foundation; real processes; no GUI/MCP acceptance",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "python": "3.12.12",
+  "tests": [
+    {
+      "name": "test_second_writer_readonly_and_close_release",
+      "events": [
+        {
+          "response": {
+            "pid": 35468,
+            "ready": true
+          }
+        },
+        {
+          "response": {
+            "pid": 16064,
+            "ready": true
+          }
+        },
+        {
+          "pid": 13912,
+          "request": {
+            "op": "open",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_second_writer_readonly_an0\\source.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 35468,
+            "ok": true,
+            "session_id": "eb14ce8f-14ac-440a-b870-5ece072279ce",
+            "document_id": "doc-example",
+            "revision": 0,
+            "read_only": false
+          }
+        },
+        {
+          "pid": 14368,
+          "request": {
+            "op": "open",
+            "path": "C:\\USERS\\LENOVO\\APPDATA\\LOCAL\\TEMP\\PYTEST-OF-LENOVO\\PYTEST-24\\TEST_SECOND_WRITER_READONLY_AN0\\..\\TEST_SECOND_WRITER_READONLY_AN0\\SOURCE.LTECHDESIGN"
+          }
+        },
+        {
+          "response": {
+            "pid": 16064,
+            "ok": false,
+            "code": "file_owned",
+            "reason": "owner_alive_or_ambiguous"
+          }
+        },
+        {
+          "pid": 14368,
+          "request": {
+            "op": "open",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_second_writer_readonly_an0\\source.ltechdesign",
+            "read_only": true
+          }
+        },
+        {
+          "response": {
+            "pid": 16064,
+            "ok": true,
+            "session_id": "82e0db53-d681-4dc7-a6c0-8551a47a003e",
+            "document_id": "doc-example",
+            "revision": 0,
+            "read_only": true
+          }
+        },
+        {
+          "pid": 14368,
+          "request": {
+            "op": "save"
+          }
+        },
+        {
+          "response": {
+            "pid": 16064,
+            "ok": false,
+            "code": "read_only",
+            "reason": "read_only_source"
+          }
+        },
+        {
+          "pid": 14368,
+          "request": {
+            "op": "close"
+          }
+        },
+        {
+          "response": {
+            "pid": 16064,
+            "ok": true
+          }
+        },
+        {
+          "pid": 13912,
+          "request": {
+            "op": "close"
+          }
+        },
+        {
+          "response": {
+            "pid": 35468,
+            "ok": true
+          }
+        },
+        {
+          "pid": 14368,
+          "request": {
+            "op": "open",
+            "path": "C:\\USERS\\LENOVO\\APPDATA\\LOCAL\\TEMP\\PYTEST-OF-LENOVO\\PYTEST-24\\TEST_SECOND_WRITER_READONLY_AN0\\..\\TEST_SECOND_WRITER_READONLY_AN0\\SOURCE.LTECHDESIGN"
+          }
+        },
+        {
+          "response": {
+            "pid": 16064,
+            "ok": true,
+            "session_id": "2dfe0222-60ab-4e40-adb1-84fa29825098",
+            "document_id": "doc-example",
+            "revision": 0,
+            "read_only": false
+          }
+        },
+        {
+          "pid": 13912,
+          "request": {
+            "op": "exit"
+          }
+        },
+        {
+          "response": {
+            "pid": 35468,
+            "ok": true
+          }
+        },
+        {
+          "pid": 14368,
+          "request": {
+            "op": "exit"
+          }
+        },
+        {
+          "response": {
+            "pid": 16064,
+            "ok": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "test_crash_stale_lock_and_active_owner_never_stolen",
+      "events": [
+        {
+          "response": {
+            "pid": 26828,
+            "ready": true
+          }
+        },
+        {
+          "response": {
+            "pid": 16268,
+            "ready": true
+          }
+        },
+        {
+          "pid": 23560,
+          "request": {
+            "op": "open",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_crash_stale_lock_and_acti0\\source.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 26828,
+            "ok": true,
+            "session_id": "5b099f7a-afb7-4af7-a09a-dc9001be262b",
+            "document_id": "doc-example",
+            "revision": 0,
+            "read_only": false
+          }
+        },
+        {
+          "pid": 4328,
+          "request": {
+            "op": "open",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_crash_stale_lock_and_acti0\\source.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 16268,
+            "ok": false,
+            "code": "file_owned",
+            "reason": "owner_alive_or_ambiguous"
+          }
+        },
+        {
+          "pid": 4328,
+          "request": {
+            "op": "open",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_crash_stale_lock_and_acti0\\source.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 16268,
+            "ok": false,
+            "code": "file_owned",
+            "reason": "owner_alive_or_ambiguous"
+          }
+        },
+        {
+          "pid": 23560,
+          "killed_exit_code": 1
+        },
+        {
+          "pid": 4328,
+          "request": {
+            "op": "open",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_crash_stale_lock_and_acti0\\source.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 16268,
+            "ok": true,
+            "session_id": "5d8ba6dc-fb94-476d-9052-d6b7a41720cc",
+            "document_id": "doc-example",
+            "revision": 0,
+            "read_only": false
+          }
+        },
+        {
+          "pid": 4328,
+          "request": {
+            "op": "close"
+          }
+        },
+        {
+          "response": {
+            "pid": 16268,
+            "ok": true
+          }
+        },
+        {
+          "pid": 4328,
+          "request": {
+            "op": "exit"
+          }
+        },
+        {
+          "response": {
+            "pid": 16268,
+            "ok": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "test_external_replace_blocks_save_and_save_as_recovers[False]",
+      "events": [
+        {
+          "response": {
+            "pid": 34160,
+            "ready": true
+          }
+        },
+        {
+          "response": {
+            "pid": 8912,
+            "ready": true
+          }
+        },
+        {
+          "pid": 25996,
+          "request": {
+            "op": "open",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_external_replace_blocks_s0\\source.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 34160,
+            "ok": true,
+            "session_id": "b265eb28-a511-435f-a9a3-2ff06298b12f",
+            "document_id": "doc-example",
+            "revision": 0,
+            "read_only": false
+          }
+        },
+        {
+          "pid": 2960,
+          "request": {
+            "op": "replace_external",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_external_replace_blocks_s0\\source.ltechdesign",
+            "replacement": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_external_replace_blocks_s0\\external.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 8912,
+            "ok": true
+          }
+        },
+        {
+          "pid": 25996,
+          "request": {
+            "op": "save"
+          }
+        },
+        {
+          "response": {
+            "pid": 34160,
+            "ok": false,
+            "code": "external_change_conflict",
+            "reason": "external_file_changed"
+          }
+        },
+        {
+          "pid": 25996,
+          "request": {
+            "op": "save",
+            "target": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_external_replace_blocks_s0\\rescued.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 34160,
+            "ok": true,
+            "path": "c:\\users\\lenovo\\appdata\\local\\temp\\pytest-of-lenovo\\pytest-24\\test_external_replace_blocks_s0\\rescued.ltechdesign",
+            "session_id": "b265eb28-a511-435f-a9a3-2ff06298b12f"
+          }
+        },
+        {
+          "pid": 2960,
+          "request": {
+            "op": "open",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_external_replace_blocks_s0\\source.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 8912,
+            "ok": true,
+            "session_id": "d9587358-4267-4660-ba0e-eaa5f51b8fd6",
+            "document_id": "doc-example",
+            "revision": 0,
+            "read_only": false
+          }
+        },
+        {
+          "pid": 2960,
+          "request": {
+            "op": "open",
+            "key": "target",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_external_replace_blocks_s0\\rescued.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 8912,
+            "ok": false,
+            "code": "file_owned",
+            "reason": "owner_alive_or_ambiguous"
+          }
+        },
+        {
+          "pid": 25996,
+          "request": {
+            "op": "exit"
+          }
+        },
+        {
+          "response": {
+            "pid": 34160,
+            "ok": true
+          }
+        },
+        {
+          "pid": 2960,
+          "request": {
+            "op": "exit"
+          }
+        },
+        {
+          "response": {
+            "pid": 8912,
+            "ok": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "test_external_replace_blocks_save_and_save_as_recovers[True]",
+      "events": [
+        {
+          "response": {
+            "pid": 37160,
+            "ready": true
+          }
+        },
+        {
+          "response": {
+            "pid": 10920,
+            "ready": true
+          }
+        },
+        {
+          "pid": 27644,
+          "request": {
+            "op": "open",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_external_replace_blocks_s1\\source.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 37160,
+            "ok": true,
+            "session_id": "d675ca5b-0afe-48b7-9521-606f098a1f61",
+            "document_id": "doc-example",
+            "revision": 0,
+            "read_only": false
+          }
+        },
+        {
+          "pid": 37592,
+          "request": {
+            "op": "replace_external",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_external_replace_blocks_s1\\source.ltechdesign",
+            "replacement": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_external_replace_blocks_s1\\external.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 10920,
+            "ok": true
+          }
+        },
+        {
+          "pid": 27644,
+          "request": {
+            "op": "save"
+          }
+        },
+        {
+          "response": {
+            "pid": 37160,
+            "ok": false,
+            "code": "external_change_conflict",
+            "reason": "external_file_changed"
+          }
+        },
+        {
+          "pid": 27644,
+          "request": {
+            "op": "save",
+            "target": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_external_replace_blocks_s1\\rescued.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 37160,
+            "ok": true,
+            "path": "c:\\users\\lenovo\\appdata\\local\\temp\\pytest-of-lenovo\\pytest-24\\test_external_replace_blocks_s1\\rescued.ltechdesign",
+            "session_id": "d675ca5b-0afe-48b7-9521-606f098a1f61"
+          }
+        },
+        {
+          "pid": 37592,
+          "request": {
+            "op": "open",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_external_replace_blocks_s1\\source.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 10920,
+            "ok": true,
+            "session_id": "9212eeec-b410-4810-8d2c-9298b618316f",
+            "document_id": "doc-example",
+            "revision": 0,
+            "read_only": false
+          }
+        },
+        {
+          "pid": 37592,
+          "request": {
+            "op": "open",
+            "key": "target",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_external_replace_blocks_s1\\rescued.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 10920,
+            "ok": false,
+            "code": "file_owned",
+            "reason": "owner_alive_or_ambiguous"
+          }
+        },
+        {
+          "pid": 27644,
+          "request": {
+            "op": "exit"
+          }
+        },
+        {
+          "response": {
+            "pid": 37160,
+            "ok": true
+          }
+        },
+        {
+          "pid": 37592,
+          "request": {
+            "op": "exit"
+          }
+        },
+        {
+          "response": {
+            "pid": 10920,
+            "ok": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "test_save_as_real_io_failure_and_success_lock_lifecycle",
+      "events": [
+        {
+          "response": {
+            "pid": 29164,
+            "ready": true
+          }
+        },
+        {
+          "response": {
+            "pid": 28068,
+            "ready": true
+          }
+        },
+        {
+          "pid": 14908,
+          "request": {
+            "op": "open",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_save_as_real_io_failure_a0\\source.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 29164,
+            "ok": true,
+            "session_id": "15f11fe9-5cb8-404b-a8fe-d89ba22dd5fe",
+            "document_id": "doc-example",
+            "revision": 0,
+            "read_only": false
+          }
+        },
+        {
+          "pid": 31232,
+          "request": {
+            "op": "hold",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_save_as_real_io_failure_a0\\target.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 28068,
+            "ok": true
+          }
+        },
+        {
+          "pid": 14908,
+          "request": {
+            "op": "save",
+            "target": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_save_as_real_io_failure_a0\\target.ltechdesign",
+            "overwrite": true,
+            "pause": true
+          }
+        },
+        {
+          "response": {
+            "pid": 29164,
+            "paused": true
+          }
+        },
+        {
+          "pid": 31232,
+          "request": {
+            "op": "open",
+            "key": "probe-source",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_save_as_real_io_failure_a0\\source.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 28068,
+            "ok": false,
+            "code": "file_owned",
+            "reason": "owner_alive_or_ambiguous"
+          }
+        },
+        {
+          "pid": 31232,
+          "request": {
+            "op": "open",
+            "key": "probe-target",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_save_as_real_io_failure_a0\\target.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 28068,
+            "ok": false,
+            "code": "file_owned",
+            "reason": "owner_alive_or_ambiguous"
+          }
+        },
+        {
+          "pid": 14908,
+          "request": {
+            "op": "resume"
+          }
+        },
+        {
+          "response": {
+            "pid": 29164,
+            "ok": false,
+            "code": "io_error",
+            "reason": "save_failed"
+          }
+        },
+        {
+          "pid": 31232,
+          "request": {
+            "op": "open",
+            "key": "probe-source",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_save_as_real_io_failure_a0\\source.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 28068,
+            "ok": false,
+            "code": "file_owned",
+            "reason": "owner_alive_or_ambiguous"
+          }
+        },
+        {
+          "pid": 31232,
+          "request": {
+            "op": "open",
+            "key": "target",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_save_as_real_io_failure_a0\\target.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 28068,
+            "ok": true,
+            "session_id": "acee725f-255e-4851-b2d2-7b23a1560562",
+            "document_id": "doc-example",
+            "revision": 0,
+            "read_only": false
+          }
+        },
+        {
+          "pid": 31232,
+          "request": {
+            "op": "close",
+            "key": "target"
+          }
+        },
+        {
+          "response": {
+            "pid": 28068,
+            "ok": true
+          }
+        },
+        {
+          "pid": 31232,
+          "request": {
+            "op": "release"
+          }
+        },
+        {
+          "response": {
+            "pid": 28068,
+            "ok": true
+          }
+        },
+        {
+          "pid": 14908,
+          "request": {
+            "op": "save",
+            "target": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_save_as_real_io_failure_a0\\target.ltechdesign",
+            "overwrite": true,
+            "pause": true
+          }
+        },
+        {
+          "response": {
+            "pid": 29164,
+            "paused": true
+          }
+        },
+        {
+          "pid": 31232,
+          "request": {
+            "op": "open",
+            "key": "probe-source",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_save_as_real_io_failure_a0\\source.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 28068,
+            "ok": false,
+            "code": "file_owned",
+            "reason": "owner_alive_or_ambiguous"
+          }
+        },
+        {
+          "pid": 31232,
+          "request": {
+            "op": "open",
+            "key": "probe-target",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_save_as_real_io_failure_a0\\target.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 28068,
+            "ok": false,
+            "code": "file_owned",
+            "reason": "owner_alive_or_ambiguous"
+          }
+        },
+        {
+          "pid": 14908,
+          "request": {
+            "op": "resume"
+          }
+        },
+        {
+          "response": {
+            "pid": 29164,
+            "ok": true,
+            "path": "c:\\users\\lenovo\\appdata\\local\\temp\\pytest-of-lenovo\\pytest-24\\test_save_as_real_io_failure_a0\\target.ltechdesign",
+            "session_id": "15f11fe9-5cb8-404b-a8fe-d89ba22dd5fe"
+          }
+        },
+        {
+          "pid": 31232,
+          "request": {
+            "op": "open",
+            "key": "source",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_save_as_real_io_failure_a0\\source.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 28068,
+            "ok": true,
+            "session_id": "78e1b48c-ca36-43b7-ba9b-1693e140e59a",
+            "document_id": "doc-example",
+            "revision": 0,
+            "read_only": false
+          }
+        },
+        {
+          "pid": 31232,
+          "request": {
+            "op": "open",
+            "key": "target",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_save_as_real_io_failure_a0\\target.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 28068,
+            "ok": false,
+            "code": "file_owned",
+            "reason": "owner_alive_or_ambiguous"
+          }
+        },
+        {
+          "pid": 14908,
+          "request": {
+            "op": "close"
+          }
+        },
+        {
+          "response": {
+            "pid": 29164,
+            "ok": true
+          }
+        },
+        {
+          "pid": 31232,
+          "request": {
+            "op": "open",
+            "key": "target",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_save_as_real_io_failure_a0\\target.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 28068,
+            "ok": true,
+            "session_id": "add0e8d9-7491-4fcb-8b74-f97ffd8955a6",
+            "document_id": "doc-example",
+            "revision": 0,
+            "read_only": false
+          }
+        },
+        {
+          "pid": 14908,
+          "request": {
+            "op": "exit"
+          }
+        },
+        {
+          "response": {
+            "pid": 29164,
+            "ok": true
+          }
+        },
+        {
+          "pid": 31232,
+          "request": {
+            "op": "exit"
+          }
+        },
+        {
+          "response": {
+            "pid": 28068,
+            "ok": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "test_same_document_id_copies_have_independent_sessions",
+      "events": [
+        {
+          "response": {
+            "pid": 16652,
+            "ready": true
+          }
+        },
+        {
+          "response": {
+            "pid": 31428,
+            "ready": true
+          }
+        },
+        {
+          "pid": 3060,
+          "request": {
+            "op": "open",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_same_document_id_copies_h0\\source.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 16652,
+            "ok": true,
+            "session_id": "caf509b1-811c-40d4-a158-35dfd2ec425d",
+            "document_id": "doc-example",
+            "revision": 0,
+            "read_only": false
+          }
+        },
+        {
+          "pid": 2160,
+          "request": {
+            "op": "open",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_same_document_id_copies_h0\\copy.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 31428,
+            "ok": true,
+            "session_id": "645cf3da-11bd-494f-b017-c0c683f6f5ea",
+            "document_id": "doc-example",
+            "revision": 0,
+            "read_only": false
+          }
+        },
+        {
+          "pid": 3060,
+          "request": {
+            "op": "save"
+          }
+        },
+        {
+          "response": {
+            "pid": 16652,
+            "ok": true,
+            "path": "c:\\users\\lenovo\\appdata\\local\\temp\\pytest-of-lenovo\\pytest-24\\test_same_document_id_copies_h0\\source.ltechdesign",
+            "session_id": "caf509b1-811c-40d4-a158-35dfd2ec425d"
+          }
+        },
+        {
+          "pid": 2160,
+          "request": {
+            "op": "save"
+          }
+        },
+        {
+          "response": {
+            "pid": 31428,
+            "ok": true,
+            "path": "c:\\users\\lenovo\\appdata\\local\\temp\\pytest-of-lenovo\\pytest-24\\test_same_document_id_copies_h0\\copy.ltechdesign",
+            "session_id": "645cf3da-11bd-494f-b017-c0c683f6f5ea"
+          }
+        },
+        {
+          "pid": 3060,
+          "request": {
+            "op": "close"
+          }
+        },
+        {
+          "response": {
+            "pid": 16652,
+            "ok": true
+          }
+        },
+        {
+          "pid": 3060,
+          "request": {
+            "op": "open",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_same_document_id_copies_h0\\source.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 16652,
+            "ok": true,
+            "session_id": "b38aac5d-6933-4938-90d7-31c2f629bd97",
+            "document_id": "doc-example",
+            "revision": 0,
+            "read_only": false
+          }
+        },
+        {
+          "pid": 3060,
+          "request": {
+            "op": "open",
+            "key": "other",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_same_document_id_copies_h0\\copy.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 16652,
+            "ok": false,
+            "code": "file_owned",
+            "reason": "owner_alive_or_ambiguous"
+          }
+        },
+        {
+          "pid": 3060,
+          "request": {
+            "op": "exit"
+          }
+        },
+        {
+          "response": {
+            "pid": 16652,
+            "ok": true
+          }
+        },
+        {
+          "pid": 2160,
+          "request": {
+            "op": "exit"
+          }
+        },
+        {
+          "response": {
+            "pid": 31428,
+            "ok": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "test_hardlink_alias_writer_rejected_readonly_allowed",
+      "events": [
+        {
+          "response": {
+            "pid": 25868,
+            "ready": true
+          }
+        },
+        {
+          "response": {
+            "pid": 19992,
+            "ready": true
+          }
+        },
+        {
+          "pid": 30280,
+          "request": {
+            "op": "open",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_hardlink_alias_writer_rej0\\source.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 25868,
+            "ok": false,
+            "code": "path_not_allowed",
+            "reason": "hardlink_writer"
+          }
+        },
+        {
+          "pid": 25428,
+          "request": {
+            "op": "open",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_hardlink_alias_writer_rej0\\hardlink.ltechdesign"
+          }
+        },
+        {
+          "response": {
+            "pid": 19992,
+            "ok": false,
+            "code": "path_not_allowed",
+            "reason": "hardlink_writer"
+          }
+        },
+        {
+          "pid": 30280,
+          "request": {
+            "op": "open",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_hardlink_alias_writer_rej0\\source.ltechdesign",
+            "read_only": true
+          }
+        },
+        {
+          "response": {
+            "pid": 25868,
+            "ok": true,
+            "session_id": "b74e35b0-d6ae-4341-bee7-3d75493ea649",
+            "document_id": "doc-example",
+            "revision": 0,
+            "read_only": true
+          }
+        },
+        {
+          "pid": 25428,
+          "request": {
+            "op": "open",
+            "path": "C:\\Users\\LENOVO\\AppData\\Local\\Temp\\pytest-of-LENOVO\\pytest-24\\test_hardlink_alias_writer_rej0\\hardlink.ltechdesign",
+            "read_only": true
+          }
+        },
+        {
+          "response": {
+            "pid": 19992,
+            "ok": true,
+            "session_id": "e9db99c3-dd46-4198-ba33-eb865002044a",
+            "document_id": "doc-example",
+            "revision": 0,
+            "read_only": true
+          }
+        },
+        {
+          "pid": 30280,
+          "request": {
+            "op": "exit"
+          }
+        },
+        {
+          "response": {
+            "pid": 25868,
+            "ok": true
+          }
+        },
+        {
+          "pid": 25428,
+          "request": {
+            "op": "exit"
+          }
+        },
+        {
+          "response": {
+            "pid": 19992,
+            "ok": true
+          }
+        }
+      ]
+    }
+  ]
+}

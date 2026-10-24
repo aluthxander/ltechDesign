@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ltechdesign:1.0:Fonts",
+  "$comment": "Finite numbers, strict JSON keys, bounds and cross-references also require ltechdesign.domain validators. All fields are required on disk.",
+  "$ref": "#/$defs/Fonts",
+  "$defs": {
+    "Fonts": {
+      "type": "object",
+      "properties": {
+        "fonts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Font"
+          }
+        },
+        "schema_version": {
+          "enum": [
+            "1.0"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "fonts",
+        "schema_version"
+      ],
+      "additionalProperties": false
+    },
+    "Font": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "family": {
+          "type": "string"
+        },
+        "style": {
+          "type": "string"
+        },
+        "weight": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "italic": {
+          "type": "boolean"
+        },
+        "postscript_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source": {
+          "enum": [
+            "system",
+            "embedded"
+          ],
+          "type": "string"
+        },
+        "asset_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fallback_families": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "license": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FontLicense"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "family",
+        "style",
+        "weight",
+        "italic",
+        "postscript_name",
+        "source",
+        "asset_id",
+        "fallback_families",
+        "license"
+      ],
+      "additionalProperties": false
+    },
+    "FontLicense": {
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "embedding_allowed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "identifier",
+        "url",
+        "embedding_allowed"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

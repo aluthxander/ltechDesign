@@ -1,0 +1,48 @@
+"""Shared GUI/AI command engine; no Qt, filesystem, network or widget mutation."""
+
+from .contracts import (
+    Create,
+    Delete,
+    Duplicate,
+    Error,
+    Group,
+    Move,
+    RegisterAsset,
+    RemoveAsset,
+    Reorder,
+    Reparent,
+    Request,
+    Result,
+    SetFont,
+    SetStyle,
+    SetText,
+    SetTokens,
+    Ungroup,
+    Update,
+)
+from .dispatcher import ChangeEvent, Dispatcher, HistoryEntry, SaveCheckpoint
+
+__all__ = [
+    "ChangeEvent",
+    "Create",
+    "Delete",
+    "Dispatcher",
+    "Duplicate",
+    "Error",
+    "Group",
+    "HistoryEntry",
+    "Move",
+    "RegisterAsset",
+    "RemoveAsset",
+    "Reorder",
+    "Reparent",
+    "Request",
+    "Result",
+    "SaveCheckpoint",
+    "SetFont",
+    "SetStyle",
+    "SetText",
+    "SetTokens",
+    "Ungroup",
+    "Update",
+]

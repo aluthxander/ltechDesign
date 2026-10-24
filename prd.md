@@ -692,67 +692,9 @@ ltechDesign/
 
 Semua objek menggunakan skema konsisten.
 
-Contoh:
+Schema final segmen 02 dibekukan dalam [spesifikasi format 1.0](docs/ltechdesign-file-format.md), [fixture JSON final](docs/examples/ltechdesign-v1-contract.json) dan [JSON Schema document](docs/schemas/document.schema.json). Fixture tersebut menggantikan contoh ilustratif sebelumnya: registry nodes ada di document, setiap page memiliki root_ids terurut, setiap node memiliki parent/children, pivot lokal, positive uniform scale dan clip_content. Text memakai data.text/data.typography, font IDs, dan token memakai property-path bindings.
 
-```
-{
-  "schema_version": "1.0",
-  "document_id": "doc-001",
-  "revision": 1,
-  "name": "Landing Page",
-  "pages": [
-    {
-      "id": "page-001",
-      "name": "Home",
-      "nodes": [
-        {
-          "id": "frame-001",
-          "type": "frame",
-          "name": "Desktop Home",
-          "parent_id": null,
-          "x": 0,
-          "y": 0,
-          "width": 1440,
-          "height": 900,
-          "rotation": 0,
-          "visible": true,
-          "locked": false,
-          "opacity": 1,
-          "style": {
-            "fill": "#FFFFFF"
-          },
-          "children": [
-            "rect-001"
-          ]
-        },
-        {
-          "id": "rect-001",
-          "type": "rectangle",
-          "name": "Primary Button",
-          "parent_id": "frame-001",
-          "x": 40,
-          "y": 80,
-          "width": 180,
-          "height": 48,
-          "rotation": 0,
-          "visible": true,
-          "locked": false,
-          "opacity": 1,
-          "style": {
-            "fill": "#006633",
-            "radius": 8
-          },
-          "children": []
-        }
-      ]
-    }
-  ]
-}
-```
-
-Koordinat objek dalam contoh bersifat relatif terhadap parent. Semua renderer, export engine, dan MCP tools harus menggunakan konvensi yang sama.
-
-Contoh JSON di atas bersifat ilustratif, bukan keseluruhan schema final. Implementasi wajib menambahkan urutan `root_ids` per page, pivot/scale dan `clip_content` sesuai bagian 20.2, serta memvalidasi konsistensi daftar nodes, root dan parent/children. `session_id` hanya runtime dan tidak disimpan sebagai identitas portabel proyek. Schema final dibekukan dengan fixture di segmen 02; contoh ini tidak boleh dipakai sebagai alasan melewatkan field kontrak.
+Koordinat relatif terhadap parent memakai T(x,y) T(p) R S T(-p), sesuai 20.2. Session ID dan revision runtime terpisah dari file; manifest.saved_revision hanya checkpoint snapshot. Semua core field wajib, unknown properties ditolak. Fixture historis 00B tetap diuji sebagai schema 1.0 tanpa migrasi. Model, JSON round-trip, structured errors dan invariants dapat diuji tanpa GUI; ZIP writer dan shared renderer mengikuti segmen pemiliknya.
 
 ### Aturan Schema
 

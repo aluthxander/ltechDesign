@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ltechdesign:1.0:Workspace",
+  "$comment": "Finite numbers, strict JSON keys, bounds and cross-references also require ltechdesign.domain validators. All fields are required on disk.",
+  "$ref": "#/$defs/Workspace",
+  "$defs": {
+    "Workspace": {
+      "type": "object",
+      "properties": {
+        "active_page_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "views": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/View"
+          }
+        },
+        "schema_version": {
+          "enum": [
+            "1.0"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "active_page_id",
+        "views",
+        "schema_version"
+      ],
+      "additionalProperties": false
+    },
+    "View": {
+      "type": "object",
+      "properties": {
+        "page_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "pan": {
+          "$ref": "#/$defs/Point"
+        },
+        "zoom": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "required": [
+        "page_id",
+        "pan",
+        "zoom"
+      ],
+      "additionalProperties": false
+    },
+    "Point": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "status": "passed",
+  "mode": "native",
+  "started_at_utc": "2026-10-21T12:31:36.5130547Z",
+  "machine_scope": "development-or-ci-host; not a clean Windows release test",
+  "manual_visual_inspection": false,
+  "expected_title": "ltechDesign Studio",
+  "environment": "Python/Qt paths cleared; PATH restricted to Windows directories",
+  "build_command": "uv run --locked --group packaging python -m PyInstaller --noconfirm --clean --onedir --windowed --noupx --name ltechDesign-Studio --distpath dist/windows --workpath build/pyinstaller --specpath build/pyinstaller scripts/freeze_desktop.py",
+  "executable": "Z:\\project\\ltechDesign\\dist\\windows\\ltechDesign-Studio\\ltechDesign-Studio.exe",
+  "lock_sha256": "86e9ca6f2f80d22b8986a90e3e3c325de8fc6eabe7e80a35d9a3aaa9b27b17cf",
+  "executable_sha256": "b78b7bb053cef7abc7d6d814699df3f0e87171ffceb9ba236b746337e86f0d7d",
+  "required_bundled_files": [
+    {
+      "sha256": "e3d09dc4129ab93f57bf9a30d7e16cdcb87e73cd27fbbc9377dd58275640e7e8",
+      "path": "_internal/python312.dll"
+    },
+    {
+      "sha256": "d8c54af3d84b16c17a086451ee8ef6e821e478603ffb9b91c000a7e50d6a7f6c",
+      "path": "_internal/PySide6/Qt6Core.dll"
+    },
+    {
+      "sha256": "34bc69bb2e21c11a6f318c60430852eddac856848842cf0c5a19d22f7733992b",
+      "path": "_internal/PySide6/Qt6Gui.dll"
+    },
+    {
+      "sha256": "77dff21c7f28072da5d05288822f1e750d37e3827b2e051acad01af18d8d4130",
+      "path": "_internal/PySide6/Qt6Widgets.dll"
+    },
+    {
+      "sha256": "ed2944e4f06239996e27bff7783abc828d76d9497d5a26c339fa916b00ea3f74",
+      "path": "_internal/PySide6/plugins/platforms/qwindows.dll"
+    }
+  ],
+  "bundle_file_count": 161,
+  "bundle_bytes": 117604073,
+  "pid": 35924,
+  "observed_title": "ltechDesign Studio",
+  "window_handle": 461140,
+  "startup_observation_ms": 1377,
+  "loaded_runtime_modules": [
+    {
+      "name": "python312.dll",
+      "path": "Z:\\project\\ltechDesign\\dist\\windows\\ltechDesign-Studio\\_internal\\python312.dll"
+    },
+    {
+      "name": "Qt6Core.dll",
+      "path": "Z:\\project\\ltechDesign\\dist\\windows\\ltechDesign-Studio\\_internal\\PySide6\\Qt6Core.dll"
+    },
+    {
+      "name": "Qt6Widgets.dll",
+      "path": "Z:\\project\\ltechDesign\\dist\\windows\\ltechDesign-Studio\\_internal\\PySide6\\Qt6Widgets.dll"
+    },
+    {
+      "name": "Qt6Gui.dll",
+      "path": "Z:\\project\\ltechDesign\\dist\\windows\\ltechDesign-Studio\\_internal\\PySide6\\Qt6Gui.dll"
+    },
+    {
+      "name": "qwindows.dll",
+      "path": "Z:\\project\\ltechDesign\\dist\\windows\\ltechDesign-Studio\\_internal\\PySide6\\plugins\\platforms\\qwindows.dll"
+    }
+  ],
+  "close_method": "Process.CloseMainWindow (normal WM_CLOSE request)",
+  "close_requested": true,
+  "exit_code": 0,
+  "total_elapsed_ms": 2481,
+  "finished_at_utc": "2026-10-21T12:32:15.2752105Z"
+}

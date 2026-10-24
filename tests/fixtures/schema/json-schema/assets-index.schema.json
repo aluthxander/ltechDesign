@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ltechdesign:1.0:AssetsIndex",
+  "$comment": "Finite numbers, strict JSON keys, bounds and cross-references also require ltechdesign.domain validators. All fields are required on disk.",
+  "$ref": "#/$defs/AssetsIndex",
+  "$defs": {
+    "AssetsIndex": {
+      "type": "object",
+      "properties": {
+        "assets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Asset"
+          }
+        },
+        "schema_version": {
+          "enum": [
+            "1.0"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "assets",
+        "schema_version"
+      ],
+      "additionalProperties": false
+    },
+    "Asset": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?!/)(?!.*[\\\\:\\u0000-\\u001f\\u007f])(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)(?!.*[. ](?:/|$)).*[^/]$",
+          "$comment": "Also enforce NFC, reserved device names and path aliases."
+        },
+        "media_type": {
+          "enum": [
+            "image/png",
+            "image/jpeg",
+            "image/webp",
+            "image/svg+xml",
+            "font/ttf",
+            "font/otf"
+          ],
+          "type": "string"
+        },
+        "byte_length": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "id",
+        "path",
+        "media_type",
+        "byte_length",
+        "sha256"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

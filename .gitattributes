@@ -1,0 +1,11 @@
+* text=auto
+*.py text eol=lf
+*.ps1 text eol=crlf
+*.md text eol=lf
+*.json text eol=lf
+*.toml text eol=lf
+*.yml text eol=lf
+uv.lock text eol=lf
+tests/fixtures/visual/*.txt text eol=lf
+tests/fixtures/fonts/OFL.txt -text
+*.ttf binary

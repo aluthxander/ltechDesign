@@ -1,0 +1,232 @@
+# Progress ltechDesign Studio
+
+Tanggal: 23 Oktober 2026 (Asia/Jakarta). Baseline kode `54162c5` (`first commit`). Implementasi 00–06A masih di working tree; tidak ada commit otomatis. PRD 1.2. Indeks ini dibaca dahulu; lanjutkan hanya source/keputusan terkait segmen aktif.
+
+## Status singkat dan langkah berikutnya
+
+**Segmen aktif 06A: verified untuk fixture conformance yang diminta.** Canvas/PNG/PDF/QGui offscreen memakai traversal yang sama; text primitive awal, device-aligned isolation dan lossless PDF fallback dibuktikan dengan artifact nyata. Full gate 324 core + 19 desktop, lint/type/fixtures/docs/package/wheel dan executable offscreen lulus. Bukti [baseline 06A](baseline-segment06a.md), ADR 0017. Teks PDF berupa outline; UI export/multipage dan text editing tetap segmen pemilik.
+
+**Baseline 06: verified untuk renderer dasar/navigation.** Shared painter traversal, isolated opacity, rounded clip, stable-ID scene adapter dan pan/Ctrl+wheel/zoom controls/fit tersedia. Gate final 324 core + 16 desktop (7 tes renderer baru), lint/type/fixtures/docs/package/wheel lulus; executable offscreen spike exit 0. Demo native fixture dan screenshot diperiksa. Detail [baseline 06](baseline-segment06.md), ADR 0016. 06A menunggu instruksi berikutnya sesuai klarifikasi pengguna.
+
+**Baseline 05: verified untuk shell/lifecycle.** QMainWindow, menu/toolbar, Pages/Layers, Inspector, tabs, selection/history/dirty state per sesi dan async persistence tersedia. Gate final: 324 core + 9 desktop, lint/type/fixtures/docs/build/wheel lulus. Native screenshot loaded-document pada DPR efektif 1/1.5/2 diperiksa; AT-27 monitor fisik/handles/export tetap pending pemiliknya. Detail [baseline 05](baseline-segment05.md) dan ADR 0015. Segmen 06 belum dimulai.
+
+**Baseline 04A: verified.** Tujuh tes memakai dua proses persistence nyata membuktikan writer/read-only, close/crash/stale lock, baseline conflict, Save As gagal/sukses, source lock lifecycle, hardlink dan salinan document_id sama. Gate offline lulus: **324 core + 5 desktop offscreen**, lint/type/fixtures/docs/build/wheel portability. Bukti di [baseline 04A](baseline-segment04a.md). Fondasi 01–04 tetap verified; integrasi GUI/MCP tetap 19B/22.
+
+- [architecture.md](architecture.md): module boundaries, identity/hierarchy, geometry/pivot/group opacity, ownership, lifecycle, renderer, content/session/jobs, dedup/retention, thread/IPC dan batas MCP.
+- [ADR index](adr/README.md): empat belas keputusan dengan konsekuensi dan pemilik pembuktian, termasuk dispatcher runtime, persistence dan asal-usul baseline format baru.
+- [requirements-matrix.md](requirements-matrix.md): FR/NFR/AT, bagian 20, import/export, tools/resources dan deliverables.
+- [audit segmen 00](../scripts/check-segment00.ps1): pemeriksaan struktur/cakupan dokumen dan gate prasyarat terpisah.
+- [Spesifikasi .ltechdesign 1.0](ltechdesign-file-format.md), [contoh JSON kontrak](examples/ltechdesign-v1-contract.json), [native ZIP](../examples/proyek-contoh.ltechdesign), dan [audit contoh](../scripts/check-file-format-spec.ps1): typed validator 02 + codec produksi 04; GUI masih menunggu 05/22.
+
+Berikutnya **07**: artboard presets/drawing/selection. Prasyarat 06A fixture conformance sudah verified; tidak dikerjakan otomatis. Fitur text/image lengkap dan production export tetap 11/12/15–17.
+
+### Handoff segmen 06A
+
+- Checkpoint 06A.fixture/text/targets/handoff verified pada lingkup fixture yang diminta; tidak ada blocker 06A. Artifact actual dan perintah reproduksi di baseline 06A. Base revision 54162c5, working tree belum di-commit; tidak mengubah prd.md pengguna.
+- Source: rendering/text.py, rendering/pdf.py, perbaikan isolation drawing.py, resource port canvas.py, scripts/check_render_conformance.py dan render_compare.py, tiga tes conformance baru + regresi ancestor clip. Domain/format native tidak berubah.
+- Hasil aktual check.ps1 offline exit 0: 324 core + 19 desktop, ruff57 files/mypy53 files, fixtures/docs/build/wheel smoke. smoke-build.ps1 offscreen exit 0, PyInstaller6.22.3; Python3.12.12/PySide6Qt6.10.2 tetap terkunci tanpa dependency baru.
+- Native canvas vs PNG exact; native/offscreen layout exact dan interior pixels0 error, hanya glyph edge max4/255. PDF interior0 error, edge band1px max58/255, regional geometry ≤1px. Alpha overlap127±1/rounded corner0. Dua PDF image objects membuktikan isolation+SMask; shape/text lain vector.
+- Native canvas screenshot dan PDF raster benar-benar diperiksa. Poppler tidak tersedia; QtPdf/PDFium digunakan sebagai rasterizer pembanding. PDF text outline tidak searchable; resolver/inline editing11, image12, shadow10A, UI/multipage/jobs15–17, full acceptance22 tetap pending. Print/monitor fisik dan viewer PDF lain belum diuji.
+- Berikutnya07 not_started. Scope hanya06A; tidak memperluas drawing tools atau export UI.
+
+### Handoff segmen 06 (historis)
+
+- Checkpoint 06.drawing, 06.adapter, 06.navigation, 06.verification: verified pada scope dasar. Tidak ada blocker 06. Source rendering/drawing.py, rendering/canvas.py, integrasi ui/window.py dan scripts/demo_renderer.py; kontrak di ADR 0016.
+- Base revision 54162c5, seluruh implementasi masih working tree, tidak membuat commit. Tidak ada dependency baru. Python 3.12.12, PySide6/Qt 6.10.2 diuji.
+- Verifikasi aktual check.ps1 offline exit 0: 324 core + 16 desktop, lint/format/type (49 files)/fixtures/docs/build/wheel. smoke-build.ps1 offscreen exit 0 (PyInstaller 6.22.3); bukti di baseline 06.
+- Demo native dan shared image diperiksa; navigasi Qt events tidak mengubah model/history; stable item identity diuji setelah command edit. Manual mouse fisik/multi-monitor dan benchmark besar belum dilakukan.
+- Integrasi tertunda: 06A conformance cross-target, text 11, image/SVG 12, shadow/style lengkap 10A, export 15–17 dan acceptance 22. Canvas memberi warning untuk fitur belum didukung; strict offscreen menolak daripada menghasilkan output tak lengkap.
+- Selanjutnya 06A wajib sebelum drawing diperluas; status 06A not_started, tidak dijalankan sesi ini sesuai klarifikasi pengguna.
+
+### Handoff segmen 05 (historis)
+
+- Status `verified` untuk checkpoint shell/lifecycle/verification; source utama ui/window.py, staged service.reload, Dispatcher.set_read_only; tanpa dependency baru. ADR 0015 menjelaskan executor worker.
+- Verifikasi final: check.ps1 offline exit 0 (324 core + 9 desktop, lint/type/fixtures/docs/wheel), smoke-build.ps1 offscreen exit 0. Empat tes GUI baru, native loaded screenshot pada DPR 1/1.5/2 diperiksa.
+- Base revision 54162c5; belum di-commit. Bukti/cara demo/keterbatasan/manual checklist di baseline 05. AT-27 monitor fisik/export/handles, renderer 06/06A dan acceptance 22 tetap pending; 06 belum dimulai.
+
+### Handoff segmen 04A (historis)
+
+- Status `verified`; tidak ada blocker lingkup. Perubahan terbatas pada harness worker, tujuh tes subprocess, konfigurasi type check dan dokumentasi/evidence. Kontrak/service produksi tidak berubah; ADR baru tidak diperlukan.
+- Revision dasar `54162c5f1c7300d5701dd841b0fb961592540d8b`, belum ada commit implementasi. Perubahan pengguna dipertahankan.
+- Reproduksi: `.venv/Scripts/python.exe -m pytest tests/test_persistence_processes.py -v --junitxml=artifacts/segment04a.xml` → **7 passed, 0 skipped**. Child punya PID berbeda, cwd sementara, QLockFile dan service produksi nyata. Save As gagal karena handle baca Windows nyata, tanpa mock replace.
+- Gate: `$env:UV_OFFLINE = 'true'; powershell -NoProfile -ExecutionPolicy Bypass -File scripts/check.ps1` → exit 0, **324 core + 5 desktop**, lint/format/type (41 files)/fixtures/docs/package/installed-wheel smoke lulus. Python 3.12.12 dan PySide6/Qt 6.10.2, tanpa dependency baru.
+- Bukti AT-21/22/26 fondasi dan transcript PID/request/response ada di baseline 04A dan [evidence](evidence/segment04a-processes.json). Acceptance GUI/headless attached/MCP, multi-tab routing/history tetap pending 19B/22; audit junction/ACL/PID reuse ambigu lebih luas di 20.
+- Tidak ada GUI baru atau pemeriksaan visual/manual. Skenario manual GUI/MCP menunggu subsistem pemilik, bukan diklaim lulus dari subprocess.
+- Berikutnya 05 tetap `not_started`; tidak dikerjakan otomatis.
+
+### Handoff segmen 04 (historis, sebelum 04A)
+
+- Status: `verified`; checkpoint 04.codec, 04.ownership, 04.retention dan 04.handoff semuanya verified pada lingkup fondasi; dirinci di baseline 04. Tidak ada blocker lingkup 04.
+- Revision dasar: `54162c5f1c7300d5701dd841b0fb961592540d8b`; seluruh perubahan belum di-commit. `prd.md` pengguna tidak diubah.
+- Perubahan: package persistence/assets, 87 tes fondasi, fixture ZIP valid dan generator khusus fixture, smoke installed-wheel, ADR 0014 dan dokumentasi traceability. Tidak ada dependency baru.
+- Verifikasi aktual: `$env:UV_OFFLINE = 'true'; powershell -NoProfile -ExecutionPolicy Bypass -File scripts/check.ps1` → exit 0, 317 core + 5 desktop, lint/type/fixtures/docs/build/isolated-wheel smoke lulus. `scripts/smoke-build.ps1 -SmokeMode offscreen` → build/executable exit 0. Wheel memuat 2 page/17 objek/3 blob dengan cwd berbeda. Python 3.12.12, PySide6/Qt 6.10.2 dan dependency versions aktual tercatat di baseline 04.
+- Demo: perintah offline pada baseline 04 atau `uv run --offline --locked python scripts/check_persistence.py examples/proyek-contoh.ltechdesign --scratch artifacts/persistence-demo` setelah environment uv dikonfigurasi.
+- Batas: PNG fixture JSON lama corrupt CRC, dipertahankan dan diuji ditolak; fixture native baru memakai PNG valid. Layout/evaluator 13, GUI 05, resolver font 11, renderer/thumbnail/export 06/06A/15–17, persistent recovery 14, job scheduler/MCP 18/19/22 masih pending sesuai pemilik.
+- Visual/manual tidak dilakukan; tidak ada perubahan GUI. Skenario manual dan batas tes otomatis tercatat di baseline 04. Mesin Windows bersih/CI remote tetap pending.
+- Berikutnya 04A tetap `not_started`, tidak dikerjakan otomatis.
+
+### Handoff segmen 03
+
+- Status: `verified`; 03A operasi/hierarchy, 03B transaksi/history, 03C retry/retention ports dan 03D verification/handoff verified pada lingkup fondasi. Rincian ada di baseline 03; tidak ada blocker lingkup 03.
+- Revision dasar: `54162c5f1c7300d5701dd841b0fb961592540d8b`; belum ada commit implementasi. Perubahan pengguna pada `prd.md` dipertahankan.
+- Perubahan: package `commands`, 37 tes perilaku, ADR 0013, architecture/progress/requirements matrix. Tidak ada dependency baru atau rewrite domain 02.
+- Verifikasi aktual: `$env:UV_OFFLINE = 'true'; powershell -NoProfile -ExecutionPolicy Bypass -File scripts/check.ps1` exit 0, 230 core + 5 desktop; lint/format/type/fixtures/docs/build/isolated-wheel smoke lulus. Riwayat kegagalan awal dan pemulihannya tercatat di baseline 03.
+- Demo: `uv run --offline --locked pytest tests/test_commands.py -v`, atau snippet dispatcher pada baseline 03.
+- Integrasi tertunda: blob store/atomic save/ownership 04/04A, GUI/session/gesture 05/08, renderer/export 06/06A/15–17, layout evaluator 13, IPC/MCP 18/19/22 dan benchmark 23. Port metadata default menolak import aset baru tanpa store. Tidak ada journal retry lintas restart.
+- Visual interaktif/manual belum dilakukan; desktop offscreen hanya regresi otomatis. CI remote/clean Windows release tetap pending, tidak memblokir pekerjaan independen 04.
+- Aman melanjutkan ke 04 setelah pengguna memberikan instruksi. 04 tetap `not_started`.
+
+### Handoff segmen 02 (historis, sebelum 03)
+
+- Status: `verified`; tidak ada blocker tersisa untuk lingkup domain/schema 02. Tidak ditemukan AGENTS.md pada workspace atau ancestor yang diperiksa.
+- Revision dasar: `54162c5f1c7300d5701dd841b0fb961592540d8b`; implementasi masih berupa perubahan working tree, belum memiliki commit tersendiri.
+- Verifikasi aktual: `$env:UV_OFFLINE = 'true'`, lalu `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/check.ps1`; exit 0, 193 core + 5 desktop offscreen lulus, lint/type/fixture/docs/package dan installed-wheel domain smoke lulus. Detail environment dan hasil ada di [baseline 02](baseline-segment02.md).
+- Demo tanpa GUI: `uv run --offline --locked python scripts/check_file_format.py` memuat fixture final/historis, memeriksa integrity dan semantic round-trip, serta menolak required capability yang tidak didukung.
+- Pemeriksaan visual manual tidak dilakukan untuk 02; tes desktop hanya regresi otomatis offscreen. CI remote dan mesin rilis Windows bersih belum diuji pada sesi 02.
+- Integrasi tertunda: dispatcher/undo/revision atomik 03, ZIP/asset store/ownership 04/04A, renderer/preview/export pada segmen pemilik, layout evaluator 13, acceptance GUI/MCP 22. Bounds domain bersifat konservatif dan bukan bukti painted pixels.
+- Aman melanjutkan fondasi ke 03 setelah instruksi segmen tersebut diberikan; 03 tetap `not_started` dan tidak dikerjakan otomatis.
+
+## Checkpoint segmen 00
+
+| ID | Lingkup | Status | Bukti dan sisa |
+| --- | --- | --- | --- |
+| 00A | Audit repository, batas modul dan keputusan runtime | verified | Inventaris baseline; arsitektur + ADR ditinjau terhadap PRD 6–9/11–13/17/20; accepted berarti desain saja |
+| 00B | Baseline spesifikasi normatif native dan pencocokan keputusan | verified | Atas otorisasi pengguna, spesifikasi baru 1.0 + ADR 0010; contoh dua page dengan text/token/font/embedded asset; audit positif dan 13 negatif lulus. Native codec/schema produksi tetap belum diimplementasikan |
+| 00C | Pemilik kebutuhan dan roadmap | verified | Audit ID FR-001–033, NFR-001–005, AT-01–34, deliverables dan tools; semua punya owner, status implementasi belum dimulai |
+| 00D | Audit dokumen dan handoff | verified | Audit cakupan/status/link lokal dan gate spesifikasi diselaraskan; hasil awal gagal B-001 dicatat historis, hasil setelah penutupan dicatat pada log. Tidak ada klaim perilaku aplikasi |
+
+Status sah: `not_started`, `in_progress`, `implemented_pending_verification`, `verified`, `blocked`, `not_included`. Induk verified hanya jika semua checkpoint mandatory verified. P0 wajib tidak dapat not_included. Bukti dokumen tidak menaikkan status fitur; fitur yang kodenya ada tetapi belum diuji memakai implemented_pending_verification. Mesin rilis yang belum tersedia dicatat pending tanpa menghentikan kerja independen.
+
+## Roadmap berurutan
+
+Urutan berasal dari indeks roadmap, bukan instruksi otomatis. Satu checkpoint per sesi. `10`, `18`, `19`, `31`–`33`, `36`–`40`, `42` adalah induk dan tidak verified sebelum anaknya. Integrasi pada tiap fitur mencakup serialization, command undo/revision, shared drawing dan export; bila subsistem belum tersedia, catat pending sampai pemiliknya dijalankan.
+
+| ID | Hasil yang dimiliki | Status | Prasyarat/gate utama |
+| --- | --- | --- | --- |
+| 00 | Keputusan arsitektur dan traceability | verified | 00A–00D; lingkup dokumentasi, bukan fitur aplikasi |
+| 01 | src/pyproject, uv lock, separate entries, logging/pytest/pytest-qt/lint/type/CI/check.ps1/run.ps1 | verified | Bukti lokal di baseline-segment01.md; 10 tes, build/install wheel, lint/type; CI remote dan inspeksi GUI belum dijalankan |
+| 01A | Spike executable window minimal | verified | PyInstaller 6.22.3; artifact native title/close exit 0; baseline-segment01a.md + ADR 0011; Windows bersih pending 24 |
+| 02 | Domain, geometry, token minimum, typed schema/fixtures/migration registry | verified | Baseline 02; 193 core + 5 desktop tests; no Qt, final + legacy 1.0 fixtures, typed/JSON schemas, full offline gate dan installed wheel lulus |
+| 03 | Dispatcher, atomic batch, revision/history/dedup/asset staging ports | verified | Baseline 03 + ADR 0013; 37 tes command, 230 core/5 desktop, full offline gate; adapter store/layout/GUI/MCP tertunda sesuai pemilik |
+| 04 | Codec .ltechdesign, asset store, atomic save/ownership/baseline | verified | Baseline 04 + ADR 0014; 87 tes baru, 317 core/5 desktop, full offline gate/wheel portability/executable offscreen lulus; 04A tetap terpisah |
+| 04A | Dua proses nyata ownership/crash/external-change/Save As | verified | Baseline 04A: 7 real-process tests, 324 core/5 desktop, full offline gate lulus; GUI/MCP 19B/22 pending |
+| 05 | Main window/tabs/session registry/New/Open/Import/Save/Close/accessibility dasar | verified | Shell/lifecycle + 4 GUI tests; final 324 core/9 desktop, visual DPR1/1.5/2; baseline 05 |
+| 06 | Shared renderer dasar dan pan/zoom | verified | Baseline 06 + ADR 0016; 7 renderer tests; 324 core/16 desktop + full gate/spike/demo; 06A next |
+| 06A | Canvas/PNG/PDF/offscreen fixture shared drawing | verified | Baseline 06A + ADR 0017; actual fixture/PDF fallback/text outline proof; 324 core/19 desktop, full gate + executable spike |
+| 07 | Artboard presets/drawing/selection | not_started | 06A |
+| 08 | Transform/clipboard/group/undo/nudge/z-order, AT-24 | not_started | 07; baseline 100/1.000 shape |
+| 09 | Pages/layers/search/reorder/reparent | not_started | 08 |
+| 10 | Inspector/style dan snapping/alignment | not_started | 10A, 10B |
+| 10A | Inspector/style/color/basic shadow | not_started | 09, 06A |
+| 10B | Rulers/grid/snap/smart guides/alignment/distribution | not_started | 10A |
+| 11 | Text inline, fonts/shared layout/fallback warning | not_started | 10B |
+| 12 | Raster/SVG/import/crop/replace/asset retention | not_started | 11; ulang baseline ringan dan shared artifacts |
+| 13 | Stack/constraints fixed/hug/fill dasar atomik | not_started | 12 |
+| 14 | Recent/duplicate/autosave/recovery/checkpoint/thumbnail/font metadata | not_started | 13 |
+| 15 | PNG/JPG/WebP job/service/dialog/codec fallback | not_started | 14 |
+| 16 | PDF single/multipage ukuran berbeda P0 | not_started | 15 |
+| 17 | Preview/headless CLI/render artifacts | not_started | 16 |
+| 17A | Subprocess command → GUI owner → canvas → undo/revision spike | not_started | 17; sebelum 18 |
+| 18 | Headless stdio MCP | not_started | 18A, 18B, 18C |
+| 18A | SDK schemas seluruh registry; working discovery/bounded reads/resources | not_started | 17A; versi SDK/protocol aktual |
+| 18B | Working mutation/pages/groups/assets/tokens/staged batch | not_started | 18A |
+| 18C | Working preview/save/export/jobs/status/cancel/transfer | not_started | 18B; seluruh P0 tools pada mode yang didukung |
+| 19 | Attached mode integration | not_started | 19A, 19B |
+| 19A | Bridge lifecycle/session/selection/status/shutdown | not_started | 18, 17A |
+| 19B | Concurrency/retry/two-process ownership/GC | not_started | 19A; ulang baseline ringan |
+| 20 | Service security/allowlist/canonical paths/import/payload/IPC audit | not_started | 19 |
+| 21 | Optional loopback Streamable HTTP | not_included | Default-off; hanya jika pengguna memasukkannya, setelah 20 |
+| 22 | Acceptance integration AT-01–29 dan AT-31–34, fixture poster/web, real client | not_started | 20; 21 jika diaktifkan; bukan otomatis siap rilis |
+| 23 | Comprehensive startup/frame/batch/memory/heavy-export benchmark | not_started | 22; evidence menentukan penutupan NFR-001 dan gate P0 penuh |
+| 24 | Windows x64 bundled build/installer, AT-30 | not_started | 23; ulang 01A/06A sesuai dependency/packaging; mesin bersih belum disiapkan |
+| 25 | Docs/user/developer/MCP/Codex configs dan release smoke | not_started | 24; gate siap rilis berbeda dari selesai fitur |
+| 26 | Token UI/bindings/aliases/theme variables P1 | not_started | 22 verified + gate MVP; release blocker 24/25 tidak memblokir fitur independen |
+| 27 | Components/instances/override/library lokal | not_started | 26 |
+| 28 | Advanced nested layout/min-max/constraints | not_started | 13, 26; 27 untuk instance integration |
+| 29 | Pen/Bézier/path/caps/joins/dash | not_started | 22, 02, 06, 08 |
+| 30 | Boolean/masks/flatten | not_started | 29 |
+| 31 | Advanced typography | not_started | 31A, 31B |
+| 31A | Rich spans/styles/auto-fit | not_started | 11, 22 |
+| 31B | Variable font/text-on-path | not_started | 31A, 29 |
+| 32 | Image adjustment dan creative styling | not_started | 32A, 32B |
+| 32A | Non-destructive brightness/contrast/hue/saturation/blur/grayscale/mask | not_started | 12, 22 |
+| 32B | Gradients/eyedropper/blend/presets/licensed icons | not_started | 10, 12, 22 |
+| 33 | Print/templates/batch export | not_started | 33A, 33B, 33C |
+| 33A | Advanced print units/bleed/safe area/raster resolution | not_started | 04, 14, 15, 16, 22 |
+| 33B | Local templates → new remapped project | not_started | 04, 14, 22 |
+| 33C | Preset/batch output naming/progress/cancel/partial errors | not_started | 15, 16, 22 |
+| 34 | HTML/CSS/assets/CSS tokens/semantic responsive subset | not_started | 26, 28; 27 jika instances dipakai |
+| 38 | Clipboard, guides dan preferences P1 | not_started | 38A, 38B |
+| 38A | Windows image clipboard/in-place actions | not_started | 08, 12, 22 |
+| 38B | Persisted undoable non-export guides/palette/preferences | not_started | 10B, 22 |
+| 39 | Recovery/history productivity P1 | not_started | 39A, 39B |
+| 39A | Session restore/missing dependencies/relink | not_started | 03, 04, 14, 22 |
+| 39B | History UI/named snapshots/retention | not_started | 03, 04, 14, 22 |
+| 40 | AI dry-run dan diagnostics P1 | not_started | 40A, 40B |
+| 40A | Preview operations without live mutation | not_started | 18, 19, 20, 22 |
+| 40B | analyze_design bounds/missing refs diagnostics | not_started | 18, 19, 20, 22; bukan accessibility audit |
+| 41 | SVG export subset with embedded assets/report | not_started | 16, 22; 29/30 jika path/boolean digunakan |
+| 42 | Diagnostics dan UI accessibility P1 | not_started | 42A, 42B |
+| 42A | Redacted local diagnostic bundle | not_started | 05, 20, 22 |
+| 42B | Keyboard/screen-reader/High DPI editor audit | not_started | 05, 22; palette bila 38B ada |
+| 35 | Interactive prototype P2 | not_started | 22; 27 jika component states |
+| 36 | Plugin API dan PDF import P2 | not_started | 36A, 36B; keduanya independen |
+| 36A | Versioned trusted plugin API/capabilities/lifecycle/error isolation | not_started | 22; tidak mengklaim Python sandbox |
+| 36B | PDF multipage raster preview + editable subset fidelity spike | not_started | 22; 36A hanya jika importer dipaketkan plugin |
+| 37 | Advanced capabilities P2 | not_started | 37A, 37B, 37C, 37D |
+| 37A | Brush/erase raster vertical slice with source/undo | not_started | 12, 32A, 22 |
+| 37B | Design accessibility analysis (contrast/text/semantics) | not_started | 40B, 22 |
+| 37C | One advanced codegen target above HTML/CSS | not_started | 34, 22 |
+| 37D | Optional desktop AI adapter with consent/preview/apply/undo | not_started | 19, 20, 40A, 22; credentials/dokumentasi provider diperlukan |
+
+Jalur handoff: 22 → 26 → 28 → 34, dengan 27 jika instances digunakan. Jalur vektor 29 → 30 independen dari handoff. P1/P2 setelah gate MVP dan prasyarat teknis, tidak harus menunggu mesin distribusi bersih. 22 dapat verified untuk lingkup acceptance-nya sementara G-MVP tetap menunggu seluruh bukti P0 termasuk performance 23; ini menghindari siklus prasyarat 22/23. Setiap fitur yang masuk versi distribusi memerlukan regresi/build checks yang terdampak.
+
+## Keputusan tertutup dan bukti yang masih terbuka
+
+| Keputusan / bukti belum tersedia | Pemilik | Gate / tindakan |
+| --- | --- | --- |
+| B-001 (ditutup): spesifikasi awal tidak ada | 00B | Dokumen baru dibuat atas permintaan pengguna; ADR 0010 menetapkan asal-usul dan baseline, audit kontrak lulus. Native example/generator tetap pending 02/04 |
+| Implementasi typed validators/JSON Schema, registry migrasi dan seluruh per-node union | 02 | Field/version/capabilities, token binding dan manifest.saved_revision sudah normatif pada spesifikasi 1.0; implementasikan+uji, jangan mengganti dengan ilustrasi PRD |
+| Dependency pins dan runtime Python yang kompatibel | 01 | uv lock + tes aktual, catat versi, tidak pin dari contoh |
+| Packager/Qt plugins/bundle manifest | 01A | Spike executable nyata; ulang jika dependency berubah; installer 24 |
+| Numeric tolerances/minimum dimensions dan stable canonical JSON digest encoding | 02, 03 | Freeze fixture matematika/validator/retry, independent Qt |
+| Raster fallback resolution/font baseline/pixel diff tolerances dan font redistribusi | 06A, 11, 24 | Shared artifacts nyata dan license review, tidak menutupi alpha/geometry mismatch |
+| Windows aliases/ACL/stale-lock process identity dan named-pipe authentication behavior | 04A, 17A, 20 | Dua proses dan subprocess nyata; desain ownership/thread sudah dipilih |
+| Queue/history/memory budgets terhadap hardware acuan | 23 | Ukur baseline 08/12/19B lebih awal, full budget report 23; perubahan budget lewat ADR |
+| Mesin Windows bersih dan monitor DPI untuk release evidence | 24, 25 | Pending penyediaan lingkungan; jangan klaim AT-30/high-DPI manual lulus tanpa menjalankan |
+| Lingkup kecil P2 yang belum dirinci PRD | 36A, 36B, 37A, 37B, 37C, 37D | Freeze capability/threat model/fidelity di checkpoint masing-masing, tidak memperluas MVP |
+
+Ownership, pivot/group opacity, content/session/job boundaries, monotonic revision, staging save/load dan thread authority **bukan keputusan terbuka**. Integrasi implementasi semuanya masih tertunda ke segmen pemilik pada roadmap.
+
+## Log verifikasi segmen 00
+
+Lingkungan shell PowerShell Windows di workspace `Z:\project\ltechDesign`; host belum dipakai sebagai mesin uji produk. uv 0.12.1 terdeteksi; Python/PySide6/MCP belum diinstal atau diuji. Pemeriksaan command discovery tidak menemukan python/py pada PATH, sehingga tidak ada klaim runtime Python 3.12 lulus.
+
+| Perintah / pemeriksaan | Hasil aktual |
+| --- | --- |
+| `git ls-files`; `git log -1 --format='%h %s'`; `git status --short` | Baseline 54162c5, dua dokumen tracked, awal sesi clean; file baru segmen 00 belum di-commit |
+| `rg` headings/IDs + pembacaan UTF-8 bagian PRD/roadmap terkait | Inventaris FR 33/NFR 5/AT 34, contracts 20.1–20.9 dan deliverables 13 ditemukan |
+| `Test-Path scripts/check.ps1` | False; subsystem runner belum tersedia (pemilik 01) |
+| `uv --version` | uv 0.12.1; bukan tes dependency aplikasi |
+| Audit awal `scripts/check-segment00.ps1` sebelum spesifikasi dibuat | Historis: exit 0 untuk cakupan/status/link; 184 baris, 79 segmen/checkpoint, 37 tools, 13 Markdown; B-001 dilaporkan |
+| Gate awal `scripts/check-segment00.ps1 -RequirePrerequisites` | Historis: exit 1 khusus B-001. Digantikan hasil setelah spesifikasi baru dibuat di bawah, bukan disembunyikan sebagai lulus sejak awal |
+| `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/check-file-format-spec.ps1` | Exit 0: contoh dua page/6 node, hierarchy/ref/token/font/runtime exclusions dan inventory/embedded SHA-256 valid; 13 kasus negatif ditolak dengan reason yang sesuai. Invariants terpilih saja, bukan full schema/ZIP loader; dijalankan juga oleh prerequisite gate |
+| `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/check-segment00.ps1` setelah penutupan B-001 | Exit 0: 184 baris matriks, 79 segmen/checkpoint, 37 tools MCP, 15 Markdown; pemilik/status/P0/link lokal valid. Semua FR/NFR/AT produk tetap belum verified |
+| `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/check-segment00.ps1 -RequirePrerequisites` setelah penutupan B-001 | Exit 0: audit kontrak positif dan 13 negatif lulus, disusul audit cakupan/link/status. B-001 ditutup pada lingkup spesifikasi dokumentasi |
+| .NET System.Drawing decode atas embedded example PNG | Gambar 1×1 berhasil dibaca; 68 byte, SHA-256 8b3634ccad5be602a2f51ab1a9b33b3e9826082d2ee187236f6b7916000ec93b. Ini pemeriksaan fixture, bukan visual renderer Qt |
+| `git diff --check` + whitespace check file baru melalui audit | Exit 0; diff tracked kosong karena file baru belum tracked, sehingga whitespace/link/UTF-8 file baru diperiksa oleh audit |
+| PowerShell AST Parser `ParseFile` untuk kedua script audit; whitespace seluruh docs/scripts | Exit 0: kedua script tanpa syntax error; seluruh file docs/scripts tanpa trailing whitespace. Tidak ada source/lint/type aplikasi yang dijalankan |
+
+Review dokumen terhadap sumber resmi: dataclasses Python 3.12, Qt QLockFile/QLocalServer/Threads and QObjects, dan official MCP Python SDK; tautan dicatat di architecture. Review API bukan eksekusi runtime atau bukti versi kompatibel. Tidak ada perubahan dependency/rendering/packaging yang diimplementasikan, sehingga spike 01A/06A/17A belum dijalankan.
+
+Tes otomatis aplikasi, lint/type aplikasi: belum ada konfigurasi/source dan tidak dijalankan. Pemeriksaan visual Qt/canvas/PDF: tidak dilakukan, belum ada aplikasi. Manual GUI belum dapat dilakukan; skenario yang harus dijalankan pemilik segmen: dua tab/copy document ID, New→Open/Import→edit→Save As→close/reopen, second-process ownership dan external replacement, group nested rotation/overlap opacity, DPI 100/150/200% antar-monitor, lost MCP response retry, cancel job sebelum/sesudah commit. Segmen 00 hanya memverifikasi dokumen dan mapping; seluruh bukti perilaku tetap pending.
+
+
+## Handoff segmen 01
+
+21 Oktober 2026: fondasi runtime diuji dengan Python 3.12.12, PySide6/Qt 6.10.2 dan uv 0.12.1. Tidak ada perubahan status fitur editor/AT produk. scripts/check.ps1 hanya menawarkan subsistem yang tersedia; schema/migration/visual belum menjadi gate palsu. Fixture font Abel SIL OFL 1.1 disertakan, generator memeriksa hash dan drift. Detail perintah, hardware/display dan batas pembuktian ada di README dan baseline-segment01.md.
+
+
+## Handoff segmen 01A
+
+21 Oktober 2026: scripts/smoke-build.ps1 membangun bundle Windows minimal lalu menjalankan artifact aktual. Native title/handle, loaded runtime dari bundle dan WM_CLOSE/exit 0 tercatat; offscreen juga lulus. Dependency packaging terkunci di group packaging. Bukti dan batas ada di baseline-segment01a.md serta ADR 0011. Tidak ada installer atau UI editor baru; segmen 24 wajib mengulang smoke pada Windows bersih.

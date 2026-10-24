@@ -1,0 +1,35 @@
+name: Windows foundation checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: pwsh
+    env:
+      UV_CACHE_DIR: ${{ github.workspace }}/.cache/uv
+      UV_PYTHON_INSTALL_DIR: ${{ github.workspace }}/.cache/python
+      QT_QPA_PLATFORM: offscreen
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.12.1'
+          enable-cache: false
+      - run: uv python install 3.12.12
+      - run: uv sync --locked
+      - run: ./scripts/check.ps1
+      - name: Build Windows executable and smoke the artifact offscreen
+        run: ./scripts/smoke-build.ps1 -SmokeMode offscreen
+      - name: Record dependencies, hardware and synthetic Qt screen
+        if: always()
+        run: uv run --locked python scripts/baseline.py --output artifacts/ci-baseline.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-foundation-evidence
+          path: artifacts/
+          if-no-files-found: warn

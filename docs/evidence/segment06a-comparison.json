@@ -1,0 +1,140 @@
+{
+  "native": {
+    "app": "QApplication",
+    "font_sha256": "8809dcad25318225052f88333e208c5aad4adcb7b2c934c135735ec19aa410b4",
+    "text_metrics": [
+      {
+        "y": 0.0,
+        "ascent": 23.5,
+        "width": 139.953125,
+        "height": 31.0
+      },
+      {
+        "y": 28.799999999999997,
+        "ascent": 23.5,
+        "width": 79.0,
+        "height": 31.0
+      }
+    ],
+    "members": {
+      "document.json": "c50cfb352d5ee16a3026692a32ac424ec5917ea44b0849fa214aefa9ad0ace7d",
+      "tokens.json": "9751fd0d9889060a0851f981cc22595f1e79a792d8b986e43679924c29816eb3",
+      "fonts.json": "2b332eac1e2a8043bbb4c94b292d331f001462637d9dd55954bdd2e666dce376",
+      "assets/index.json": "8de2947648a62ab7167728122be274b7477cccaa0ecaf0e295220d48d9ccc543",
+      "manifest.json": "44536f20d9d95ba0726e8375c29ea3ba970760270d8c6cbde832105e4e8c0494"
+    },
+    "probes": {
+      "clip_corner": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "frame_center": [
+        17,
+        170,
+        119,
+        255
+      ],
+      "overlap": [
+        24,
+        92,
+        233,
+        127
+      ],
+      "single_child": [
+        255,
+        64,
+        48,
+        127
+      ]
+    },
+    "pdf_text": "",
+    "rasterized": [
+      "group"
+    ],
+    "pdf_points": [
+      450.0,
+      300.0
+    ]
+  },
+  "offscreen": {
+    "app": "QGuiApplication",
+    "font_sha256": "8809dcad25318225052f88333e208c5aad4adcb7b2c934c135735ec19aa410b4",
+    "text_metrics": [
+      {
+        "y": 0.0,
+        "ascent": 23.5,
+        "width": 139.953125,
+        "height": 31.0
+      },
+      {
+        "y": 28.799999999999997,
+        "ascent": 23.5,
+        "width": 79.0,
+        "height": 31.0
+      }
+    ],
+    "members": {
+      "document.json": "c50cfb352d5ee16a3026692a32ac424ec5917ea44b0849fa214aefa9ad0ace7d",
+      "tokens.json": "9751fd0d9889060a0851f981cc22595f1e79a792d8b986e43679924c29816eb3",
+      "fonts.json": "2b332eac1e2a8043bbb4c94b292d331f001462637d9dd55954bdd2e666dce376",
+      "assets/index.json": "8de2947648a62ab7167728122be274b7477cccaa0ecaf0e295220d48d9ccc543",
+      "manifest.json": "44536f20d9d95ba0726e8375c29ea3ba970760270d8c6cbde832105e4e8c0494"
+    },
+    "probes": {
+      "clip_corner": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "frame_center": [
+        17,
+        170,
+        119,
+        255
+      ],
+      "overlap": [
+        24,
+        92,
+        233,
+        127
+      ],
+      "single_child": [
+        255,
+        64,
+        48,
+        127
+      ]
+    },
+    "pdf_text": "",
+    "rasterized": [
+      "group"
+    ],
+    "pdf_points": [
+      450.0,
+      300.0
+    ]
+  },
+  "pixel_offscreen": {
+    "changed": 474,
+    "max_error": 4,
+    "interior_max": 0,
+    "edge_changed": 474
+  },
+  "pdf": {
+    "canvas": {
+      "changed": 3456,
+      "max_error": 58,
+      "interior_max": 0,
+      "edge_changed": 3456
+    },
+    "offscreen": {
+      "changed": 3110,
+      "max_error": 58,
+      "interior_max": 0,
+      "edge_changed": 3110
+    }
+  }
+}

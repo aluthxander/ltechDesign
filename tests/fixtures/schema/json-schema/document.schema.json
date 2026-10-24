@@ -1,0 +1,1001 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ltechdesign:1.0:Document",
+  "$comment": "Finite numbers, strict JSON keys, bounds and cross-references also require ltechdesign.domain validators. All fields are required on disk.",
+  "$ref": "#/$defs/Document",
+  "$defs": {
+    "Document": {
+      "type": "object",
+      "properties": {
+        "document_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "name": {
+          "type": "string"
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Page"
+          },
+          "minItems": 1
+        },
+        "nodes": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/Node"
+          }
+        },
+        "schema_version": {
+          "enum": [
+            "1.0"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "document_id",
+        "name",
+        "pages",
+        "nodes",
+        "schema_version"
+      ],
+      "additionalProperties": false
+    },
+    "Page": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "name": {
+          "type": "string"
+        },
+        "root_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "root_ids"
+      ],
+      "additionalProperties": false
+    },
+    "Node": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "type": {
+          "enum": [
+            "artboard",
+            "frame",
+            "group",
+            "rectangle",
+            "ellipse",
+            "line",
+            "polygon",
+            "text",
+            "image",
+            "svg"
+          ],
+          "type": "string"
+        },
+        "page_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "width": {
+          "type": "number",
+          "minimum": 0
+        },
+        "height": {
+          "type": "number",
+          "minimum": 0
+        },
+        "pivot": {
+          "$ref": "#/$defs/Point"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EmptyData"
+            },
+            {
+              "$ref": "#/$defs/FrameData"
+            },
+            {
+              "$ref": "#/$defs/LineData"
+            },
+            {
+              "$ref": "#/$defs/PolygonData"
+            },
+            {
+              "$ref": "#/$defs/TextData"
+            },
+            {
+              "$ref": "#/$defs/MediaData"
+            }
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "parent_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+          },
+          "uniqueItems": true
+        },
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "rotation": {
+          "type": "number"
+        },
+        "scale": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "visible": {
+          "type": "boolean"
+        },
+        "locked": {
+          "type": "boolean"
+        },
+        "opacity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "clip_content": {
+          "type": "boolean"
+        },
+        "style": {
+          "$ref": "#/$defs/Style"
+        },
+        "layout": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Layout"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "constraints": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Constraints"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "page_id",
+        "width",
+        "height",
+        "pivot",
+        "data",
+        "name",
+        "parent_id",
+        "children",
+        "x",
+        "y",
+        "rotation",
+        "scale",
+        "visible",
+        "locked",
+        "opacity",
+        "clip_content",
+        "style",
+        "layout",
+        "constraints"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "rectangle"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/EmptyData"
+              },
+              "width": {
+                "exclusiveMinimum": 0
+              },
+              "height": {
+                "exclusiveMinimum": 0
+              },
+              "children": {
+                "maxItems": 0
+              },
+              "clip_content": {
+                "const": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ellipse"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/EmptyData"
+              },
+              "width": {
+                "exclusiveMinimum": 0
+              },
+              "height": {
+                "exclusiveMinimum": 0
+              },
+              "children": {
+                "maxItems": 0
+              },
+              "clip_content": {
+                "const": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "group"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/EmptyData"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "artboard"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/FrameData"
+              },
+              "width": {
+                "exclusiveMinimum": 0
+              },
+              "height": {
+                "exclusiveMinimum": 0
+              },
+              "parent_id": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "frame"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/FrameData"
+              },
+              "width": {
+                "exclusiveMinimum": 0
+              },
+              "height": {
+                "exclusiveMinimum": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "line"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/LineData"
+              },
+              "children": {
+                "maxItems": 0
+              },
+              "clip_content": {
+                "const": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "polygon"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/PolygonData"
+              },
+              "width": {
+                "exclusiveMinimum": 0
+              },
+              "height": {
+                "exclusiveMinimum": 0
+              },
+              "children": {
+                "maxItems": 0
+              },
+              "clip_content": {
+                "const": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "text"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/TextData"
+              },
+              "width": {
+                "exclusiveMinimum": 0
+              },
+              "height": {
+                "exclusiveMinimum": 0
+              },
+              "children": {
+                "maxItems": 0
+              },
+              "clip_content": {
+                "const": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "image"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/MediaData"
+              },
+              "width": {
+                "exclusiveMinimum": 0
+              },
+              "height": {
+                "exclusiveMinimum": 0
+              },
+              "children": {
+                "maxItems": 0
+              },
+              "clip_content": {
+                "const": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "svg"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "$ref": "#/$defs/MediaData"
+              },
+              "width": {
+                "exclusiveMinimum": 0
+              },
+              "height": {
+                "exclusiveMinimum": 0
+              },
+              "children": {
+                "maxItems": 0
+              },
+              "clip_content": {
+                "const": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Point": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ],
+      "additionalProperties": false
+    },
+    "EmptyData": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "FrameData": {
+      "type": "object",
+      "properties": {
+        "unit": {
+          "enum": [
+            "px",
+            "mm",
+            "cm",
+            "in"
+          ],
+          "type": "string"
+        },
+        "dpi": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "background": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^#[0-9A-F]{8}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "unit",
+        "dpi",
+        "background"
+      ],
+      "additionalProperties": false
+    },
+    "LineData": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "$ref": "#/$defs/Point"
+        },
+        "end": {
+          "$ref": "#/$defs/Point"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "additionalProperties": false
+    },
+    "PolygonData": {
+      "type": "object",
+      "properties": {
+        "points": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Point"
+          },
+          "minItems": 3
+        }
+      },
+      "required": [
+        "points"
+      ],
+      "additionalProperties": false
+    },
+    "TextData": {
+      "type": "object",
+      "properties": {
+        "typography": {
+          "$ref": "#/$defs/Typography"
+        },
+        "text": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "typography",
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "Typography": {
+      "type": "object",
+      "properties": {
+        "font_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "font_size": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "font_weight": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "italic": {
+          "type": "boolean"
+        },
+        "alignment": {
+          "enum": [
+            "left",
+            "center",
+            "right",
+            "justify"
+          ],
+          "type": "string"
+        },
+        "vertical_alignment": {
+          "enum": [
+            "top",
+            "center",
+            "bottom"
+          ],
+          "type": "string"
+        },
+        "line_height": {
+          "$ref": "#/$defs/LineHeight"
+        },
+        "letter_spacing": {
+          "type": "number"
+        },
+        "sizing": {
+          "enum": [
+            "fixed",
+            "auto_width",
+            "auto_height"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "font_id",
+        "font_size",
+        "font_weight",
+        "italic",
+        "alignment",
+        "vertical_alignment",
+        "line_height",
+        "letter_spacing",
+        "sizing"
+      ],
+      "additionalProperties": false
+    },
+    "LineHeight": {
+      "type": "object",
+      "properties": {
+        "unit": {
+          "enum": [
+            "multiplier",
+            "px"
+          ],
+          "type": "string"
+        },
+        "value": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "required": [
+        "unit",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "MediaData": {
+      "type": "object",
+      "properties": {
+        "asset_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "fit": {
+          "enum": [
+            "fit",
+            "fill",
+            "stretch"
+          ],
+          "type": "string"
+        },
+        "crop": {
+          "$ref": "#/$defs/Crop"
+        }
+      },
+      "required": [
+        "asset_id",
+        "fit",
+        "crop"
+      ],
+      "additionalProperties": false
+    },
+    "Crop": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "number",
+          "minimum": 0
+        },
+        "y": {
+          "type": "number",
+          "minimum": 0
+        },
+        "width": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "height": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "width",
+        "height"
+      ],
+      "additionalProperties": false
+    },
+    "Style": {
+      "type": "object",
+      "properties": {
+        "fill": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Fill"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stroke": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Stroke"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "radius": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "number",
+              "minimum": 0
+            }
+          ],
+          "items": false,
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "shadows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Shadow"
+          },
+          "maxItems": 8
+        }
+      },
+      "required": [
+        "fill",
+        "stroke",
+        "radius",
+        "shadows"
+      ],
+      "additionalProperties": false
+    },
+    "Fill": {
+      "type": "object",
+      "properties": {
+        "color": {
+          "type": "string",
+          "pattern": "^#[0-9A-F]{8}$"
+        },
+        "type": {
+          "enum": [
+            "solid"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "color",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "Stroke": {
+      "type": "object",
+      "properties": {
+        "color": {
+          "type": "string",
+          "pattern": "^#[0-9A-F]{8}$"
+        },
+        "width": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "required": [
+        "color",
+        "width"
+      ],
+      "additionalProperties": false
+    },
+    "Shadow": {
+      "type": "object",
+      "properties": {
+        "offset_x": {
+          "type": "number"
+        },
+        "offset_y": {
+          "type": "number"
+        },
+        "blur": {
+          "type": "number",
+          "minimum": 0
+        },
+        "spread": {
+          "type": "number",
+          "minimum": 0
+        },
+        "color": {
+          "type": "string",
+          "pattern": "^#[0-9A-F]{8}$"
+        }
+      },
+      "required": [
+        "offset_x",
+        "offset_y",
+        "blur",
+        "spread",
+        "color"
+      ],
+      "additionalProperties": false
+    },
+    "Layout": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": [
+            "stack"
+          ],
+          "type": "string"
+        },
+        "direction": {
+          "enum": [
+            "horizontal",
+            "vertical"
+          ],
+          "type": "string"
+        },
+        "padding": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "number",
+              "minimum": 0
+            }
+          ],
+          "items": false,
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "gap": {
+          "type": "number",
+          "minimum": 0
+        },
+        "align_main": {
+          "enum": [
+            "start",
+            "center",
+            "end"
+          ],
+          "type": "string"
+        },
+        "align_cross": {
+          "enum": [
+            "start",
+            "center",
+            "end",
+            "stretch"
+          ],
+          "type": "string"
+        },
+        "sizing_x": {
+          "enum": [
+            "fixed",
+            "hug",
+            "fill"
+          ],
+          "type": "string"
+        },
+        "sizing_y": {
+          "enum": [
+            "fixed",
+            "hug",
+            "fill"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "direction",
+        "padding",
+        "gap",
+        "align_main",
+        "align_cross",
+        "sizing_x",
+        "sizing_y"
+      ],
+      "additionalProperties": false
+    },
+    "Constraints": {
+      "type": "object",
+      "properties": {
+        "horizontal": {
+          "enum": [
+            "start",
+            "end",
+            "center",
+            "stretch"
+          ],
+          "type": "string"
+        },
+        "vertical": {
+          "enum": [
+            "start",
+            "end",
+            "center",
+            "stretch"
+          ],
+          "type": "string"
+        },
+        "sizing_x": {
+          "enum": [
+            "fixed",
+            "hug",
+            "fill"
+          ],
+          "type": "string"
+        },
+        "sizing_y": {
+          "enum": [
+            "fixed",
+            "hug",
+            "fill"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "horizontal",
+        "vertical",
+        "sizing_x",
+        "sizing_y"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

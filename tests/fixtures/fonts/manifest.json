@@ -1,0 +1,15 @@
+{
+  "family": "Abel",
+  "fixture_version": 1,
+  "license": "SIL-OFL-1.1",
+  "not_implemented": [
+    "renderer",
+    "visual-golden"
+  ],
+  "sha256": {
+    "Abel-Regular.ttf": "8809dcad25318225052f88333e208c5aad4adcb7b2c934c135735ec19aa410b4",
+    "OFL.txt": "4f4bc3806a1e55789c6ef75ca5fc628297b05292f74966474dc0d40324abc609"
+  },
+  "source": "https://github.com/google/fonts/tree/9437b806936896fa1a8c812e561067a5f30f5933/ofl/abel",
+  "subsystem": "desktop-font-smoke"
+}

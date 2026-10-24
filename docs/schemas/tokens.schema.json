@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ltechdesign:1.0:Tokens",
+  "$comment": "Finite numbers, strict JSON keys, bounds and cross-references also require ltechdesign.domain validators. All fields are required on disk.",
+  "$ref": "#/$defs/Tokens",
+  "$defs": {
+    "Tokens": {
+      "type": "object",
+      "properties": {
+        "tokens": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ColorToken"
+              },
+              {
+                "$ref": "#/$defs/NumberToken"
+              },
+              {
+                "$ref": "#/$defs/StringToken"
+              }
+            ]
+          }
+        },
+        "bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Binding"
+          }
+        },
+        "schema_version": {
+          "enum": [
+            "1.0"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "tokens",
+        "bindings",
+        "schema_version"
+      ],
+      "additionalProperties": false
+    },
+    "ColorToken": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^#[0-9A-F]{8}$"
+        },
+        "type": {
+          "enum": [
+            "color"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "value",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "NumberToken": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "number"
+        },
+        "type": {
+          "enum": [
+            "number"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "value",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "StringToken": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "string"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "value",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "Binding": {
+      "type": "object",
+      "properties": {
+        "node_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "property": {
+          "enum": [
+            "style.fill.color",
+            "style.stroke.color",
+            "x",
+            "y",
+            "width",
+            "height",
+            "rotation",
+            "scale",
+            "opacity",
+            "data.typography.font_size",
+            "data.typography.letter_spacing",
+            "data.text"
+          ],
+          "type": "string"
+        },
+        "token_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        }
+      },
+      "required": [
+        "node_id",
+        "property",
+        "token_id"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
