@@ -48,9 +48,16 @@ class SceneAdapter:
         self.document: Document | None = None
         self.page = 0
         self.resources: Resources | None = None
+        self._synced_resources: Resources | None = None
 
     def sync(self, document: Document, page: int = 0) -> None:
         """Reconcile metadata by ID; no scene.clear or replacing unchanged items."""
+        if (
+            self.document is document
+            and self.page == page
+            and self.resources is self._synced_resources
+        ):
+            return
         roots = document.pages[page].root_ids
         keys: list[NodeId] = []
 
@@ -70,6 +77,8 @@ class SceneAdapter:
         if old:
             changed_keys.update(old.nodes.keys() - document.nodes.keys())
         dirty_roots: set[NodeId] = set()
+        if self.resources is not self._synced_resources:
+            dirty_roots.update(roots)
         for source in (old, document):
             if source:
                 for key in changed_keys & source.nodes.keys():
@@ -100,6 +109,7 @@ class SceneAdapter:
             if key in dirty_roots:
                 item.update()
         self.document, self.page = document, page
+        self._synced_resources = self.resources
         self.scene.setSceneRect(self.scene.itemsBoundingRect().adjusted(-500, -500, 500, 500))
 
 

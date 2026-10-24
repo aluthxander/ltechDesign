@@ -7,9 +7,10 @@ from pathlib import Path
 from typing import Any, Literal
 from uuid import uuid4
 
-from PySide6.QtCore import QObject, Qt, Signal
-from PySide6.QtGui import QAction, QCloseEvent, QKeySequence
+from PySide6.QtCore import QItemSelection, QItemSelectionModel, QObject, Qt, Signal
+from PySide6.QtGui import QAction, QActionGroup, QCloseEvent, QKeySequence
 from PySide6.QtWidgets import (
+    QDialog,
     QDockWidget,
     QFileDialog,
     QFormLayout,
@@ -19,6 +20,7 @@ from PySide6.QtWidgets import (
     QListWidget,
     QMainWindow,
     QMessageBox,
+    QSpinBox,
     QTabWidget,
     QToolBar,
     QTreeWidget,
@@ -28,13 +30,16 @@ from PySide6.QtWidgets import (
 )
 
 from ltechdesign.assets import BlobStore
-from ltechdesign.commands import Dispatcher, Request, Update
+from ltechdesign.commands import Create, Dispatcher, Request, Update
 from ltechdesign.domain import create_project
 from ltechdesign.domain.errors import ModelError
-from ltechdesign.domain.models import NodeId
+from ltechdesign.domain.models import Node, NodeId, NodeType, Point
 from ltechdesign.persistence import FileHandle, PersistenceService, SaveResult
-from ltechdesign.rendering.canvas import CanvasView
 from ltechdesign.rendering.drawing import warnings as render_warnings
+from ltechdesign.rendering.hit_testing import eligible, paint_order
+from ltechdesign.ui.artboard import ArtboardDialog
+from ltechdesign.ui.canvas import EditorCanvas
+from ltechdesign.ui.editing import EditingActions
 
 
 class Completion(QObject):
@@ -47,7 +52,7 @@ class Tab:
     dispatcher: Dispatcher
     store: BlobStore
     widget: QWidget
-    view: CanvasView | None = None
+    view: EditorCanvas | None = None
     selection: tuple[NodeId, ...] = ()
     active_page: int = 0
     status: str = "Belum disimpan"
@@ -76,6 +81,7 @@ class StudioWindow(QMainWindow):
         self.pages.currentRowChanged.connect(self.page_changed)
         self.layers = QTreeWidget()
         self.layers.setHeaderLabel("Layers")
+        self._layer_items: dict[NodeId, QTreeWidgetItem] = {}
         self.layers.setAccessibleName("Layers — pilih objek")
         self.layers.itemSelectionChanged.connect(self.selection_changed)
         self.layers.setSelectionMode(QTreeWidget.SelectionMode.ExtendedSelection)
@@ -95,7 +101,10 @@ class StudioWindow(QMainWindow):
         self.object_name.editingFinished.connect(self.rename_object)
         form.addRow("Proyek", self.project_name)
         form.addRow("Nama objek", self.object_name)
-        pending = QLabel("Geometri, style dan drawing tersedia pada segmen berikutnya.")
+        pending = QLabel(
+            "Select: drag objek untuk move, handles untuk resize, lingkaran untuk rotate. "
+            "Shift menjaga rasio; Alt resize dari pusat."
+        )
         pending.setWordWrap(True)
         form.addRow(pending)
         self._dock("Inspector", inspector, Qt.DockWidgetArea.RightDockWidgetArea)
@@ -123,19 +132,42 @@ class StudioWindow(QMainWindow):
                 toolbar.addAction(action)
         edit_menu = self.menuBar().addMenu("&Edit")
         for key, shortcut in (("undo", "Ctrl+Z"), ("redo", "Ctrl+Shift+Z")):
-            action = QAction(key.title(), self)
-            action.setShortcut(QKeySequence(shortcut))
+            action = QAction(f"{key.title()} (canvas: {shortcut})", self)
             action.triggered.connect(lambda checked=False, k=key: self.history(k))
             self.menu_actions[key] = action
             edit_menu.addAction(action)
-        for label in (
-            "Select canvas — belum tersedia",
-            "Rectangle — belum tersedia",
-            "Text — belum tersedia",
-            "Export — belum tersedia",
-        ):
-            action = toolbar.addAction(label)
-            action.setEnabled(False)
+        select_all = edit_menu.addAction("Select all (canvas: Ctrl+A)")
+        select_all.triggered.connect(self.select_all)
+        self.menu_actions["select_all"] = select_all
+        self.editing = EditingActions(self, edit_menu)
+        insert_menu = self.menuBar().addMenu("&Insert")
+        artboard = insert_menu.addAction("Artboard preset / custom…")
+        artboard.triggered.connect(self.create_artboard)
+        toolbar.addAction(artboard)
+        self.menu_actions["artboard"] = artboard
+        self.tool_actions: dict[NodeType | None, QAction] = {}
+        tools = QActionGroup(self)
+        drawing_tools: tuple[tuple[NodeType | None, str], ...] = (
+            (None, "Select"),
+            ("frame", "Frame"),
+            ("rectangle", "Rectangle"),
+            ("ellipse", "Ellipse"),
+            ("line", "Line"),
+            ("polygon", "Polygon"),
+        )
+        for kind, title in drawing_tools:
+            action = toolbar.addAction(title)
+            action.setCheckable(True)
+            tools.addAction(action)
+            action.triggered.connect(lambda checked=False, k=kind: self.set_tool(k))
+            self.tool_actions[kind] = action
+        toolbar.addWidget(QLabel("Polygon sides:"))
+        self.polygon_sides = QSpinBox()
+        self.polygon_sides.setRange(3, 64)
+        self.polygon_sides.setValue(5)
+        self.polygon_sides.setAccessibleName("Jumlah sisi polygon")
+        self.polygon_sides.valueChanged.connect(self.set_polygon_sides)
+        toolbar.addWidget(self.polygon_sides)
         QWidget.setTabOrder(self.tabs, self.pages)
         QWidget.setTabOrder(self.pages, self.layers)
         QWidget.setTabOrder(self.layers, self.object_name)
@@ -201,7 +233,16 @@ class StudioWindow(QMainWindow):
         label = QLabel(" ".join(render_warnings(handle.loaded.project.document)))
         label.setWordWrap(True)
         layout.addWidget(label)
-        view = CanvasView()
+
+        def submit(node: Node, revision: int) -> bool:
+            return self.execute(
+                tab,
+                (Create(node=node),),
+                expected_revision=revision,
+                action_name=f"Draw {node.type}",
+            )
+
+        view = EditorCanvas(dispatcher, submit)
         from PySide6.QtWidgets import QCheckBox, QDoubleSpinBox, QHBoxLayout, QPushButton
 
         controls = QHBoxLayout()
@@ -251,10 +292,68 @@ class StudioWindow(QMainWindow):
             else "Belum disimpan",
         )
         self.documents.append(tab)
+        self.editing.bind(tab, view)
+        view.selection_changed.connect(lambda keys: self.canvas_selection(tab, keys))
+        view.message.connect(
+            lambda message: self.statusBar().showMessage(message, 5000),
+            Qt.ConnectionType.QueuedConnection,
+        )
         dispatcher.subscribe(lambda event: self.refresh())
         self.tabs.addTab(widget, handle.admission.project.document.name)
         self.tabs.setCurrentWidget(widget)
         self.refresh()
+
+    def set_tool(self, tool: NodeType | None) -> None:
+        if self.current and self.current.view:
+            self.current.view.set_tool(tool)
+
+    def set_polygon_sides(self, sides: int) -> None:
+        if self.current and self.current.view:
+            self.current.view.cancel_gesture()
+            self.current.view.sides = sides
+
+    def select_all(self) -> None:
+        if self.current and self.current.view:
+            self.current.view.select_all()
+
+    def canvas_selection(self, tab: Tab, keys: tuple[NodeId, ...]) -> None:
+        tab.selection = keys
+        if tab is self.current:
+            self._sync_layer_selection(keys)
+            self.update_inspector()
+            self.editing.refresh()
+
+    def _sync_layer_selection(self, keys: tuple[NodeId, ...]) -> None:
+        previous = self.layers.blockSignals(True)
+        selection = QItemSelection()
+        for key in keys:
+            if key in self._layer_items:
+                index = self.layers.indexFromItem(self._layer_items[key])
+                selection.select(index, index)
+        model = self.layers.selectionModel()
+        assert model is not None
+        model.select(selection, QItemSelectionModel.SelectionFlag.ClearAndSelect)
+        self.layers.blockSignals(previous)
+
+    def create_artboard(self) -> None:
+        tab = self.current
+        if tab is None or tab.handle.read_only or self.busy or tab.view is None:
+            return
+        tab.view.cancel_gesture()
+        revision = tab.dispatcher.snapshot.revision
+        page = tab.dispatcher.snapshot.project.document.pages[tab.active_page]
+        bounds = [tab.view.adapter.items[k].sceneBoundingRect() for k in page.root_ids]
+        origin = Point(x=max((b.right() for b in bounds), default=-100) + 100)
+        dialog = ArtboardDialog(self)
+        if dialog.exec() != QDialog.DialogCode.Accepted:
+            return
+        # Append to the right of existing root geometry, independent of pan/zoom.
+        node = dialog.node(page.id, origin)
+        if self.execute(
+            tab, (Create(node=node),), expected_revision=revision, action_name="Create artboard"
+        ):
+            tab.view.set_selection((node.id,))
+            tab.view.fit_bounds(tab.view.adapter.items[node.id].sceneBoundingRect())
 
     def new_document(self) -> None:
         name, accepted = QInputDialog.getText(self, "New Project", "Nama proyek:", text="Untitled")
@@ -404,11 +503,17 @@ class StudioWindow(QMainWindow):
     def selection_changed(self) -> None:
         tab = self.current
         if tab:
-            tab.selection = tuple(
+            keys = tuple(
                 NodeId(item.data(0, Qt.ItemDataRole.UserRole))
                 for item in self.layers.selectedItems()
             )
+            doc = tab.dispatcher.snapshot.project.document
+            tab.selection = tuple(k for k in keys if eligible(doc, k))
+            for item in self.layers.selectedItems():
+                if item.data(0, Qt.ItemDataRole.UserRole) not in tab.selection:
+                    item.setSelected(False)
             self.update_inspector()
+            self.editing.refresh()
 
     def update_inspector(self) -> None:
         tab = self.current
@@ -439,20 +544,32 @@ class StudioWindow(QMainWindow):
         tab: Tab,
         operations: tuple[Any, ...] = (),
         action: Literal["execute", "undo", "redo"] = "execute",
-    ) -> None:
+        *,
+        expected_revision: int | None = None,
+        action_name: str = "Edit",
+    ) -> bool:
         request = Request(
             session_id=tab.dispatcher.snapshot.session_id,
-            expected_revision=tab.dispatcher.snapshot.revision,
+            expected_revision=tab.dispatcher.snapshot.revision
+            if expected_revision is None
+            else expected_revision,
             request_id=str(uuid4()),
-            action_name="Edit",
+            action_name=action_name,
             source="GUI",
             operations=operations,
             action=action,
         )
         result = tab.dispatcher.dispatch(request, client_id="local-user")
         if not result.ok:
-            self.show_error(ValueError(str(result.error)))
-        self.refresh()
+            assert result.error is not None
+            self.show_error(
+                ModelError(
+                    result.error.message, code=result.error.code, details=dict(result.error.details)
+                )
+            )
+            self.refresh()
+        # Successful publication already notified the subscribed GUI once.
+        return result.ok
 
     def history(self, action: Literal["undo", "redo"]) -> None:
         if self.current:
@@ -460,6 +577,8 @@ class StudioWindow(QMainWindow):
 
     def refresh(self, *_: object) -> None:
         tab = self.current
+        if hasattr(self, "editing"):
+            self.editing.refresh()
         for key, action in self.menu_actions.items():
             action.setEnabled(
                 not self.busy and (key in ("new", "open", "import") or tab is not None)
@@ -471,14 +590,29 @@ class StudioWindow(QMainWindow):
         self.menu_actions["redo"].setEnabled(
             bool(tab and tab.dispatcher.redo_history and not tab.handle.read_only and not self.busy)
         )
+        writable = bool(tab and not tab.handle.read_only)
+        self.menu_actions["artboard"].setEnabled(writable and not self.busy)
+        for tool, action in self.tool_actions.items():
+            action.setEnabled(bool(tab) and (tool is None or writable))
+            action.setChecked(bool(tab and tab.view and tab.view.tool == tool))
+        self.polygon_sides.setEnabled(writable)
+        if tab and tab.view:
+            self.polygon_sides.blockSignals(True)
+            self.polygon_sides.setValue(tab.view.sides)
+            self.polygon_sides.blockSignals(False)
         self.pages.blockSignals(True)
         self.layers.blockSignals(True)
         self.pages.clear()
         self.layers.clear()
+        self._layer_items.clear()
         if tab:
             project = tab.dispatcher.snapshot.project
+            allowed = set(paint_order(project.document, tab.active_page))
+            tab.selection = tuple(
+                k for k in tab.selection if k in allowed and eligible(project.document, k)
+            )
             if tab.view:
-                tab.view.adapter.sync(project.document, tab.active_page)
+                tab.view.sync(tab.active_page, writable=writable)
             self.project_name.setText(project.document.name)
             self.pages.addItems([page.name for page in project.document.pages])
             self.pages.setCurrentRow(tab.active_page)
@@ -487,16 +621,19 @@ class StudioWindow(QMainWindow):
                 for key in reversed(keys):
                     node = project.document.nodes[key]
                     item = QTreeWidgetItem([node.name or node.type])
+                    self._layer_items[key] = item
                     item.setData(0, Qt.ItemDataRole.UserRole, key)
+                    if not eligible(project.document, key):
+                        item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsSelectable)
                     if parent:
                         parent.addChild(item)
                     else:
                         self.layers.addTopLevelItem(item)
-                    item.setSelected(key in tab.selection)
                     add(node.children, item)
 
             add(project.document.pages[tab.active_page].root_ids)
             self.layers.expandAll()
+            self._sync_layer_selection(tab.selection)
         else:
             self.project_name.setText("—")
         self.pages.blockSignals(False)

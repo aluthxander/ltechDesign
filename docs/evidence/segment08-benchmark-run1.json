@@ -1,0 +1,109 @@
+{
+  "scope": "warm local development host, not segment23/reference release hardware",
+  "python": "3.12.12 (main, Feb 12 2026, 00:40:26) [MSC v.1944 64 bit (AMD64)]",
+  "os": "Windows-11-10.0.26300-SP0",
+  "cpu": "Intel64 Family 6 Model 191 Stepping 2, GenuineIntel",
+  "logical_processors": 16,
+  "ram_bytes": 34053414912,
+  "disk_type": "not verified; no clean reference-machine claim",
+  "run_kind": "warm run; cold launch and comprehensive release benchmark remain segment23",
+  "qt": "6.10.2",
+  "platform": "windows",
+  "screens": [
+    {
+      "name": "\\\\.\\DISPLAY1",
+      "dpr": 1.25,
+      "logical_dpi": 96.0
+    },
+    {
+      "name": "PM161Q J",
+      "dpr": 1.5,
+      "logical_dpi": 96.0
+    }
+  ],
+  "seconds_per_phase": 10.0,
+  "source_sha256": "a225122dfa5f68280ec0a4d0045e187a48e92d184b25a0939df23819671b8aff",
+  "phases": [
+    {
+      "nodes": 100,
+      "kind": "pan",
+      "intervals": {
+        "samples": 625,
+        "p95_ms": 16.840500000398606,
+        "p99_ms": 17.022699990775436,
+        "max_ms": 17.16419999138452
+      },
+      "callback_and_repaint": {
+        "samples": 624,
+        "p95_ms": 2.905900008045137,
+        "p99_ms": 4.161499993642792,
+        "max_ms": 5.735799990361556
+      },
+      "admission_ms": 12.684299988904968,
+      "resident_bytes": 91410432,
+      "longest_event_gap_ms": 17.16419999138452,
+      "freeze_over_16ms_ms": 1.1641999913845211,
+      "release_commit_gui_ms": 0.0,
+      "history_entries": 0
+    },
+    {
+      "nodes": 100,
+      "kind": "drag",
+      "intervals": {
+        "samples": 625,
+        "p95_ms": 16.77180000115186,
+        "p99_ms": 16.974400001345202,
+        "max_ms": 17.492399987531826
+      },
+      "callback_and_repaint": {
+        "samples": 624,
+        "p95_ms": 3.273599984822795,
+        "p99_ms": 3.8742999895475805,
+        "max_ms": 7.161100016674027
+      },
+      "admission_ms": 8.544699987396598,
+      "resident_bytes": 92401664,
+      "longest_event_gap_ms": 17.492399987531826,
+      "freeze_over_16ms_ms": 1.492399987531826,
+      "release_commit_gui_ms": 10.425299988128245,
+      "history_entries": 1
+    },
+    {
+      "nodes": 1000,
+      "kind": "pan_selection",
+      "intervals": {
+        "samples": 605,
+        "p95_ms": 17.116400005761534,
+        "p99_ms": 48.73160002171062,
+        "max_ms": 54.03440000372939
+      },
+      "callback_and_repaint": {
+        "samples": 604,
+        "p95_ms": 16.119100007927045,
+        "p99_ms": 48.66150001180358,
+        "max_ms": 53.936999989673495
+      },
+      "admission_ms": 66.2914999993518,
+      "resident_bytes": 95223808,
+      "longest_event_gap_ms": 54.03440000372939,
+      "freeze_over_16ms_ms": 38.03440000372939,
+      "release_commit_gui_ms": 0.0,
+      "history_entries": 0
+    }
+  ],
+  "memory_rounds": [
+    98103296,
+    98426880,
+    98455552
+  ],
+  "errors": [],
+  "cpu_model": "13th Gen Intel(R) Core(TM) i5-13450HX",
+  "batch100_commit_only": {
+    "samples": 3,
+    "p95_ms": 48.293500003637746,
+    "p99_ms": 48.293500003637746,
+    "max_ms": 48.293500003637746
+  },
+  "batch100_gui_command_ms": 91.46470000268891,
+  "batch100_gui_heartbeat_gap_ms": 111.07099999208003
+}

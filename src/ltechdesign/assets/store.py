@@ -89,6 +89,13 @@ class BlobStore:
                 del self._blobs[path]
             return removed
 
+    def discard_staging(self, keys: tuple[str, ...]) -> None:
+        """Release uncommitted imports if preparation fails before dispatcher admission."""
+        with self._lock:
+            for key in keys:
+                if key not in self._reserved:
+                    self._staged.pop(key, None)
+
 
 @dataclass(slots=True)
 class BlobLease:

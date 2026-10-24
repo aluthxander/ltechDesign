@@ -148,6 +148,8 @@ class Dispatcher:
         self._owner = threading.get_ident()
         self._state = _State(session)
         self._clean = fingerprint(session.project) if initially_saved else None
+        self._fingerprint_project: Project | None = session.project if initially_saved else None
+        self._fingerprint_value: str | None = self._clean
         self._history_budget = history_budget
         self._capacity = dedup_capacity
         self._retention = retention_seconds
@@ -174,7 +176,13 @@ class Dispatcher:
 
     @property
     def dirty(self) -> bool:
-        return fingerprint(self.snapshot.project) != self._clean
+        if self._clean is None:
+            return True
+        project = self.snapshot.project
+        if project is not self._fingerprint_project:
+            self._fingerprint_value = fingerprint(project)
+            self._fingerprint_project = project
+        return self._fingerprint_value != self._clean
 
     @property
     def undo_history(self) -> tuple[HistoryEntry, ...]:
@@ -413,8 +421,9 @@ class Dispatcher:
                 id_map=id_map,
                 history_evicted=evicted,
             )
+            after_fingerprint = fingerprint(after)
             event = ChangeEvent(
-                snapshot, request.action, metadata, fingerprint(after) != self._clean, evicted
+                snapshot, request.action, metadata, after_fingerprint != self._clean, evicted
             )
             lease = self._assets.prepare(roots, staged)
             if cancelled is not None and cancelled():
@@ -435,6 +444,7 @@ class Dispatcher:
         # Everything fallible has completed. Adapter commit is a non-throwing root swap.
         lease.commit()
         self._state = state
+        self._fingerprint_project, self._fingerprint_value = after, after_fingerprint
         return result, event
 
     def set_read_only(self, value: bool) -> None:

@@ -2,6 +2,7 @@
 
 from dataclasses import replace
 
+from ltechdesign.domain.editing import around, resized, selection_roots
 from ltechdesign.domain.errors import fail
 from ltechdesign.domain.geometry import (
     Bounds,
@@ -10,6 +11,7 @@ from ltechdesign.domain.geometry import (
     local_matrix,
     normalize_group,
     primitive_bounds,
+    translation,
     with_matrix,
 )
 from ltechdesign.domain.models import (
@@ -31,17 +33,23 @@ from .contracts import (
     Create,
     Delete,
     Duplicate,
+    EditNodes,
     Group,
     Move,
     Operation,
+    PasteNodes,
     RegisterAsset,
     RemoveAsset,
     Reorder,
     Reparent,
+    ReparentNodes,
+    ResizeNode,
+    ScaleNodes,
     SetFont,
     SetStyle,
     SetText,
     SetTokens,
+    TransformNodes,
     Ungroup,
     Update,
 )
@@ -136,7 +144,99 @@ class Draft:
             fail("duplicate_id")
 
     def apply(self, op: Operation) -> None:
-        if isinstance(op, Create):
+        if isinstance(op, ScaleNodes):
+            matrix = around(op.center, factor=op.factor)
+            for key in self.selected_roots(op.node_ids):
+                node = self.node(key)
+                old_world = self.world(key)
+                desired = matrix @ old_world
+                if node.type in ("frame", "artboard"):
+                    if any(
+                        self.node(k).layout or self.node(k).constraints for k in self.subtree(key)
+                    ):
+                        fail("layout_evaluator_unavailable", code="unsupported_capability")
+                    node = resized(node, node.width * op.factor, node.height * op.factor, Point())
+                    desired = Matrix(
+                        old_world.a, old_world.b, old_world.c, old_world.d, desired.tx, desired.ty
+                    )
+                self.nodes[key] = with_matrix(node, self.world(node.parent_id).inverse() @ desired)
+        elif isinstance(op, TransformNodes):
+            op.matrix.similarity_scale()
+            for key in self.selected_roots(op.node_ids):
+                node = self.node(key)
+                self.nodes[key] = with_matrix(
+                    node, self.world(node.parent_id).inverse() @ op.matrix @ self.world(key)
+                )
+        elif isinstance(op, ResizeNode):
+            node = self.node(op.node_id)
+            if any(self.node(k).layout or self.node(k).constraints for k in self.subtree(node.id)):
+                fail("layout_evaluator_unavailable", code="unsupported_capability")
+            self.nodes[node.id] = resized(node, op.width, op.height, op.anchor)
+        elif isinstance(op, EditNodes):
+            keys = self.selected_roots(op.node_ids)
+            if op.edit in ("forward", "backward"):
+                selected = set(keys)
+                parents = {(self.node(k).page_id, self.node(k).parent_id) for k in keys}
+                for page, parent in parents:
+                    ids = list(self.siblings(page, parent))
+                    indices = (
+                        range(len(ids) - 2, -1, -1) if op.edit == "forward" else range(1, len(ids))
+                    )
+                    for i in indices:
+                        j = i + 1 if op.edit == "forward" else i - 1
+                        if ids[i] in selected and ids[j] not in selected:
+                            ids[i], ids[j] = ids[j], ids[i]
+                    self.set_siblings(page, parent, tuple(ids))
+            else:
+                for key in keys:
+                    if op.edit == "delete":
+                        self.apply(Delete(node_id=key))
+                    elif op.edit == "ungroup":
+                        self.apply(Ungroup(node_id=key))
+                    else:
+                        node = self.node(key)
+                        parent_world = self.world(node.parent_id)
+                        delta = parent_world.inverse().point(
+                            Point(x=parent_world.tx + 10, y=parent_world.ty + 10)
+                        )
+                        self.apply(Duplicate(node_id=key, dx=delta.x, dy=delta.y))
+        elif isinstance(op, ReparentNodes):
+            for key in self.selected_roots(op.node_ids):
+                self.apply(Reparent(node_id=key, page_id=op.page_id, parent_id=op.parent_id))
+        elif isinstance(op, PasteNodes):
+            incoming = op.project
+            if incoming.manifest.extensions or len(incoming.document.pages) != 1:
+                fail("unsupported_clipboard_project")
+            self.siblings(op.page_id, op.parent_id)
+            for asset in incoming.assets.assets:
+                if self.assets.get(asset.id) != asset:
+                    fail("missing_staged_asset")
+            for font in incoming.fonts.fonts:
+                if any(f.id == font.id for f in self.fonts.fonts):
+                    fail("duplicate_id")
+            self.fonts = replace(self.fonts, fonts=self.fonts.fonts + incoming.fonts.fonts)
+            if {t.id for t in self.tokens.tokens} & {t.id for t in incoming.tokens.tokens}:
+                fail("duplicate_id")
+            self.tokens = replace(
+                self.tokens,
+                tokens=self.tokens.tokens + incoming.tokens.tokens,
+                bindings=self.tokens.bindings + incoming.tokens.bindings,
+            )
+            for key, node in incoming.document.nodes.items():
+                self.fresh(key)
+                self.nodes[key] = replace(node, page_id=op.page_id)
+            for key in incoming.document.pages[0].root_ids:
+                node = self.node(key)
+                moved = with_matrix(
+                    node,
+                    self.world(op.parent_id).inverse()
+                    @ translation(op.offset.x, op.offset.y)
+                    @ local_matrix(node),
+                )
+                moved = replace(moved, parent_id=op.parent_id)
+                self.nodes[key] = moved
+                self.insert(moved, None)
+        elif isinstance(op, Create):
             self.fresh(op.node.id)
             if op.node.children:
                 fail("create_requires_empty_children")
@@ -147,9 +247,9 @@ class Draft:
             self.insert(op.node, op.index)
         elif isinstance(op, Update):
             old = self.node(op.node.id)
-            for key in ("type", "page_id", "parent_id", "children"):
-                if getattr(old, key) != getattr(op.node, key):
-                    fail("structural_update_forbidden", field=key)
+            for field in ("type", "page_id", "parent_id", "children"):
+                if getattr(old, field) != getattr(op.node, field):
+                    fail("structural_update_forbidden", field=field)
             if old.type == "group" and (old.width, old.height, old.pivot) != (
                 op.node.width,
                 op.node.height,
@@ -216,6 +316,10 @@ class Draft:
             del self.assets[op.asset_id]
         else:
             fail("unsupported_operation")
+
+    def selected_roots(self, keys: tuple[NodeId, ...]) -> tuple[NodeId, ...]:
+        # Use the current draft graph (also valid after prior operations in the batch).
+        return selection_roots(self.nodes, keys)
 
     def group(self, op: Group) -> None:
         self.fresh(op.group_id)

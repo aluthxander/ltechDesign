@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 from typing import Literal
 
+from ltechdesign.domain.geometry import Matrix
 from ltechdesign.domain.models import (
     Asset,
     AssetId,
@@ -12,6 +13,8 @@ from ltechdesign.domain.models import (
     Nonempty,
     Number,
     PageId,
+    Point,
+    Project,
     Record,
     Revision,
     SessionId,
@@ -117,6 +120,48 @@ class RemoveAsset(Record):
     asset_id: AssetId
 
 
+@dataclass(frozen=True, slots=True, kw_only=True)
+class TransformNodes(Record):
+    node_ids: tuple[NodeId, ...]
+    matrix: Matrix  # world-space positive similarity
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class ResizeNode(Record):
+    node_id: NodeId
+    width: Number
+    height: Number
+    anchor: Point
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class ScaleNodes(Record):
+    node_ids: tuple[NodeId, ...]
+    factor: Number
+    center: Point
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class EditNodes(Record):
+    node_ids: tuple[NodeId, ...]
+    edit: Literal["delete", "duplicate", "forward", "backward", "ungroup"]
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class ReparentNodes(Record):
+    node_ids: tuple[NodeId, ...]
+    page_id: PageId
+    parent_id: NodeId | None = None
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class PasteNodes(Record):
+    project: Project  # validated, fresh IDs; assets already staged in the same transaction
+    page_id: PageId
+    parent_id: NodeId | None = None
+    offset: Point = Point(x=10, y=10)
+
+
 Operation = (
     Create
     | Update
@@ -133,6 +178,12 @@ Operation = (
     | SetFont
     | RegisterAsset
     | RemoveAsset
+    | TransformNodes
+    | ResizeNode
+    | ScaleNodes
+    | EditNodes
+    | ReparentNodes
+    | PasteNodes
 )
 
 

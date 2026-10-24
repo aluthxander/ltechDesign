@@ -1,10 +1,14 @@
 # Progress ltechDesign Studio
 
-Tanggal: 23 Oktober 2026 (Asia/Jakarta). Baseline kode `54162c5` (`first commit`). Implementasi 00–06A masih di working tree; tidak ada commit otomatis. PRD 1.2. Indeks ini dibaca dahulu; lanjutkan hanya source/keputusan terkait segmen aktif.
+Tanggal: 24 Oktober 2026 (Asia/Jakarta). Baseline historis `54162c5`; HEAD aktual `23515f3`. Implementasi segmen 07/08 di working tree; tidak ada commit otomatis. PRD 1.2. Indeks ini dibaca dahulu; lanjutkan hanya source/keputusan terkait segmen aktif.
 
 ## Status singkat dan langkah berikutnya
 
-**Segmen aktif 06A: verified untuk fixture conformance yang diminta.** Canvas/PNG/PDF/QGui offscreen memakai traversal yang sama; text primitive awal, device-aligned isolation dan lossless PDF fallback dibuktikan dengan artifact nyata. Full gate 324 core + 19 desktop, lint/type/fixtures/docs/package/wheel dan executable offscreen lulus. Bukti [baseline 06A](baseline-segment06a.md), ADR 0017. Teks PDF berupa outline; UI export/multipage dan text editing tetap segmen pemilik.
+**Segmen aktif 08: blocked pada integrasi layout13.** Semua checkpoint independen08.transforms/editing/clipboard/baseline/handoff verified: 352 core+53 desktop, lint/type/fixtures/docs/package/wheel,7 GUI native dan executable spike lulus. Induk08 tidak verified: evaluator Constraints/Layout13 belum ada. Frame default fixed berfungsi; tidak mengarang evaluator atau menskalakan anak sebagai pengganti. Dua baseline10detik tersimpan, respons GUI batch110,69/111,07ms masih melampaui target100ms. Detail [baseline08](baseline-segment08.md), ADR0019.
+
+**Baseline 07: verified.** Preset/custom artboard, lima drawing tools, ephemeral preview, hit-testing dan session selection tersedia. Gate final 344 core + 46 desktop, lint/type/fixtures/docs/package/installed-wheel, 27 tes GUI native serta executable offscreen spike lulus. Screenshot native canvas/dialog benar-benar diperiksa. Detail [baseline 07](baseline-segment07.md), ADR 0018.
+
+**Baseline 06A: verified untuk fixture conformance yang diminta.** Canvas/PNG/PDF/QGui offscreen memakai traversal yang sama; text primitive awal, device-aligned isolation dan lossless PDF fallback dibuktikan dengan artifact nyata. Full gate 324 core + 19 desktop, lint/type/fixtures/docs/package/wheel dan executable offscreen lulus. Bukti [baseline 06A](baseline-segment06a.md), ADR 0017. Teks PDF berupa outline; UI export/multipage dan text editing tetap segmen pemilik.
 
 **Baseline 06: verified untuk renderer dasar/navigation.** Shared painter traversal, isolated opacity, rounded clip, stable-ID scene adapter dan pan/Ctrl+wheel/zoom controls/fit tersedia. Gate final 324 core + 16 desktop (7 tes renderer baru), lint/type/fixtures/docs/package/wheel lulus; executable offscreen spike exit 0. Demo native fixture dan screenshot diperiksa. Detail [baseline 06](baseline-segment06.md), ADR 0016. 06A menunggu instruksi berikutnya sesuai klarifikasi pengguna.
 
@@ -18,9 +22,28 @@ Tanggal: 23 Oktober 2026 (Asia/Jakarta). Baseline kode `54162c5` (`first commit`
 - [audit segmen 00](../scripts/check-segment00.ps1): pemeriksaan struktur/cakupan dokumen dan gate prasyarat terpisah.
 - [Spesifikasi .ltechdesign 1.0](ltechdesign-file-format.md), [contoh JSON kontrak](examples/ltechdesign-v1-contract.json), [native ZIP](../examples/proyek-contoh.ltechdesign), dan [audit contoh](../scripts/check-file-format-spec.ps1): typed validator 02 + codec produksi 04; GUI masih menunggu 05/22.
 
-Berikutnya **07**: artboard presets/drawing/selection. Prasyarat 06A fixture conformance sudah verified; tidak dikerjakan otomatis. Fitur text/image lengkap dan production export tetap 11/12/15–17.
+Segmen08 aktif atas instruksi pengguna. Berikutnya09 tetap not_started; blocker khusus constraints/layout13 dicatat eksplisit, tidak diimplementasikan sebagai segmen tambahan. Text/image lengkap dan production export tetap11/12/15–17.
 
-### Handoff segmen 06A
+### Handoff segmen08
+
+- Status induk `blocked` hanya untuk08.layout: `Layout`/`Constraints` masih ditolak oleh Project validator dan Draft; perlu evaluator13 nyata, admission dan tes resize-frame+layout+undo atomik. Checkpoint08.transforms/editing/clipboard/baseline/handoff `verified` pada lingkup independen. Tidak ada prasyarat lain yang diarang atau P0 ditandai not_included.
+- Implementasi: domain/editing.py, semantic selection commands di commands, wireframe gesture/handles di ui/transforms.py, action/clipboard/context/focus routing di ui/editing.py, portable embedded clipboard di persistence/clipboard.py; integrasi canvas/window, bounded staging cleanup dan cache proyeksi/fingerprint. ADR0019 mencatat modifier, parent/world, aspect/anchor, frame-vs-group dan clipboard limits.
+- Tes aktual: `scripts/check.ps1` offline exit0, **352 core+53 desktop**; targeted15=8core+7GUI;7GUI native exit0. Ruff70/mypy66 files, fixtures/docs/sdist/wheel/isolated-wheel smoke lulus. `scripts/smoke-build.ps1 -SmokeMode offscreen` exit0, PyInstaller6.22.3. Python3.12.12/PySide6Qt6.10.2 tanpa dependency baru; perintah/log di baseline08.
+- AT24: actual PNG group→reparent rotated parent→ungroup, max byte-channel delta≤1/255, undo memulihkan hierarchy/project tepat. Nested anchor/member/group scaling, delete-subtree/history/redo-branch, asset clipboard setelah source close, GC+undo/redo+save/reload, stale/corrupt clipboard dan text-safe shortcuts diuji. Screenshot handles/context Windows native dan PNG benar-benar diperiksa; mouse fisik/multi-monitor belum manual.
+- Dua benchmark10detik native disimpan; [evidence terbaru](evidence/segment08-benchmark.json):100pan p95/p9916,45/16,83ms;100drag16,49/16,84ms;1000pan-selection16,90/48,04ms, gapmax53,30ms. Commit100 p95/max49,16ms; GUI heartbeat110,69ms **melewati100ms**, tetap pending23. Resident1000~94,77MB, tiga siklus97,69–97,99MB; run pertama dipertahankan. Tidak mengklaim reference hardware/cold launch/leak-free.
+- Revision dasar `23515f33714519cf732ded30e818ef9fc0ff0c28`, perubahan07 yang sudah ada dipertahankan, PRD tidak diubah, belum ada commit sesi ini. Native serialization/shared drawing/PNG dan PDF conformance terhubung; public export/jobs15–17, MCP18/19, acceptance22/23/24 tetap pemilik.
+- Berikutnya09 not_started. Infrastruktur hierarchy/commands untuk bagian09 yang independen tersedia; penutupan induk08 tetap menunggu08.layout/13. Tidak otomatis mengerjakan09 atau13.
+
+### Handoff segmen 07 (historis)
+
+- 07.artboards, 07.gestures, 07.selection dan 07.handoff semuanya verified pada lingkup segmen. Tidak ada blocker. Artboard1080×1350 dan custom unit/orientasi/DPI, lima tool, nested parent space, preview/cancellation, single undo, hidden/locked dan selection sinkron Layers dibuktikan.
+- Source utama domain/authoring.py, ui/artboard.py, ui/canvas.py, rendering/hit_testing.py dan integrasi ui/window.py. Serialization/native/shared drawing/PNG/PDF proof memakai implementasi yang sudah ada; tidak mengubah schema atau dependency. ADR0018 mencatat pilihan parent/polygon/marquee/toleransi.
+- Base revision aktual `23515f33714519cf732ded30e818ef9fc0ff0c28`, belum ada commit sesi ini. PRD tidak diubah.
+- Verifikasi aktual: `scripts/check.ps1` offline exit0, 344 core + 46 desktop, ruff63/mypy59 files, fixtures/docs/build/wheel smoke. Target 20 core + 27 GUI baru lulus; 27 GUI yang sama juga lulus pada platform Windows native. `scripts/smoke-build.ps1 -SmokeMode offscreen` final exit0, PyInstaller6.22.3. Python3.12.12, PySide6/Qt6.10.2 diuji tanpa dependency baru. Perintah/log di baseline07.
+- Save/close/Open seluruh node mempertahankan posisi/ID/hierarchy/data; custom mm/300DPI juga diuji save/reload. Fixture editable dan screenshot canvas/dialog Windows native di artifacts/drawing07; screenshot benar-benar diperiksa. Mouse fisik/multi-monitor/mesin rilis bersih belum diuji manual.
+- Integrasi tertunda sesuai pemilik: handles/transform08, layer management09, text11/image12, production export/jobs15–17, MCP18/19, acceptance22/performance23/clean release24. Tidak ada tool text/image dummy. Berikutnya08 tidak dikerjakan otomatis.
+
+### Handoff segmen 06A (historis)
 
 - Checkpoint 06A.fixture/text/targets/handoff verified pada lingkup fixture yang diminta; tidak ada blocker 06A. Artifact actual dan perintah reproduksi di baseline 06A. Base revision 54162c5, working tree belum di-commit; tidak mengubah prd.md pengguna.
 - Source: rendering/text.py, rendering/pdf.py, perbaikan isolation drawing.py, resource port canvas.py, scripts/check_render_conformance.py dan render_compare.py, tiga tes conformance baru + regresi ancestor clip. Domain/format native tidak berubah.
@@ -99,7 +122,7 @@ Status sah: `not_started`, `in_progress`, `implemented_pending_verification`, `v
 
 ## Roadmap berurutan
 
-Urutan berasal dari indeks roadmap, bukan instruksi otomatis. Satu checkpoint per sesi. `10`, `18`, `19`, `31`–`33`, `36`–`40`, `42` adalah induk dan tidak verified sebelum anaknya. Integrasi pada tiap fitur mencakup serialization, command undo/revision, shared drawing dan export; bila subsistem belum tersedia, catat pending sampai pemiliknya dijalankan.
+Urutan berasal dari indeks roadmap, bukan instruksi otomatis. Checkpoint08 pada baseline08; `08`, `10`, `18`, `19`, `31`–`33`, `36`–`40`, `42` adalah induk dan tidak verified sebelum anak wajibnya. Integrasi pada tiap fitur mencakup serialization, command undo/revision, shared drawing dan export; bila subsistem belum tersedia, catat pending sampai pemiliknya dijalankan.
 
 | ID | Hasil yang dimiliki | Status | Prasyarat/gate utama |
 | --- | --- | --- | --- |
@@ -113,8 +136,8 @@ Urutan berasal dari indeks roadmap, bukan instruksi otomatis. Satu checkpoint pe
 | 05 | Main window/tabs/session registry/New/Open/Import/Save/Close/accessibility dasar | verified | Shell/lifecycle + 4 GUI tests; final 324 core/9 desktop, visual DPR1/1.5/2; baseline 05 |
 | 06 | Shared renderer dasar dan pan/zoom | verified | Baseline 06 + ADR 0016; 7 renderer tests; 324 core/16 desktop + full gate/spike/demo; 06A next |
 | 06A | Canvas/PNG/PDF/offscreen fixture shared drawing | verified | Baseline 06A + ADR 0017; actual fixture/PDF fallback/text outline proof; 324 core/19 desktop, full gate + executable spike |
-| 07 | Artboard presets/drawing/selection | not_started | 06A |
-| 08 | Transform/clipboard/group/undo/nudge/z-order, AT-24 | not_started | 07; baseline 100/1.000 shape |
+| 07 | Artboard presets/drawing/selection | verified | Baseline07 + ADR0018; 344 core/46 desktop full gate, 27 GUI native, visual canvas/dialog dan executable offscreen spike |
+| 08 | Transform/clipboard/group/undo/nudge/z-order, AT-24 | blocked | Baseline08 + ADR0019; checkpoint independen verified,352core/53desktop+7native+spike;08.layout menunggu evaluator13; dua baseline10detik disimpan, GUI heartbeat110,69–111,07ms pending23 |
 | 09 | Pages/layers/search/reorder/reparent | not_started | 08 |
 | 10 | Inspector/style dan snapping/alignment | not_started | 10A, 10B |
 | 10A | Inspector/style/color/basic shadow | not_started | 09, 06A |

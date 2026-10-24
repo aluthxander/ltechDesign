@@ -26,3 +26,7 @@ Versi dependency dan packager yang diuji dicatat pada ADR 0011 serta baseline 01
 - [0016 — Shared painter scene](0016-shared-painter-scene.md): accepted, 06; root invalidation, explicit drawing/isolation dan view overlays.
 
 - [0017 — Render conformance](0017-render-conformance.md): accepted, 06A; explicit fonts/text outlines, device-aligned isolation dan PDF lossless proof.
+
+- [0018 — Drawing dan selection](0018-drawing-and-selection.md): accepted, 07; artboard preset/unit/DPI, ephemeral gestures, parent space, hit paths dan session selection.
+
+- [0019 — Transform dan clipboard editor](0019-editor-transform-clipboard.md): accepted, 08; semantic selection commands, anchor/scale/frame semantics, validated portable clipboard, safe focus routing dan baseline. Evaluator constraints/layout tetap13.
