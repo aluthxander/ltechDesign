@@ -1,0 +1,494 @@
+{
+  "segment": "11",
+  "status": "verified",
+  "date_local": "2026-10-25",
+  "timezone": "Asia/Jakarta",
+  "base_revision": "f1918d2d28f2139f31fe4d2f5cc1a65ff533cc95",
+  "working_tree_note": "Initially clean. No automatic commit; only segment11 implemented.",
+  "checkpoints": {
+    "11.commands": "verified",
+    "11.layout": "verified",
+    "11.editor": "verified",
+    "11.handoff": "verified"
+  },
+  "versions": {
+    "Python": "3.12.12",
+    "PySide6": "6.10.2",
+    "Qt": "6.10.2",
+    "Pillow": "12.3.0",
+    "PyInstaller_spike": "6.22.3"
+  },
+  "suites": {
+    "core": {
+      "tests": 418,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "desktop_offscreen": {
+      "tests": 124,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "targeted_offscreen": {
+      "tests": 27,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "native_text_and_regressions": {
+      "tests": 28,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "native_scale_factor15": {
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "native_scale_factor2": {
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "check_ps1_exit": 0,
+    "lint_format_files": 96,
+    "mypy_files": 92,
+    "fixtures_docs_package_wheel": true,
+    "build_smoke_offscreen_exit": 0,
+    "isolated_wheel_text_exit": 0,
+    "final_docs_exit": 0
+  },
+  "qt_native_screens": [
+    {
+      "platform": "windows",
+      "dpr": 1.25,
+      "window_logical": [
+        1200,
+        800
+      ],
+      "capture_pixels": [
+        1500,
+        1000
+      ]
+    },
+    {
+      "platform": "windows",
+      "dpr": 1.875,
+      "window_logical": [
+        1074,
+        563
+      ],
+      "capture_pixels": [
+        2014,
+        1056
+      ]
+    },
+    {
+      "platform": "windows",
+      "dpr": 2.5,
+      "window_logical": [
+        1074,
+        504
+      ],
+      "capture_pixels": [
+        2685,
+        1260
+      ]
+    }
+  ],
+  "conformance": {
+    "native": {
+      "mode": "canvas",
+      "platform": "windows",
+      "font_asset_sha256": "8809dcad25318225052f88333e208c5aad4adcb7b2c934c135735ec19aa410b4",
+      "metrics": {
+        "title": [
+          {
+            "y": 0.0,
+            "ascent": 31.34375,
+            "width": 393.109375,
+            "height": 41.0
+          }
+        ],
+        "wrapped": [
+          {
+            "y": 0.0,
+            "ascent": 23.5,
+            "width": 162.09375,
+            "height": 31.0
+          },
+          {
+            "y": 33.599999999999994,
+            "ascent": 23.5,
+            "width": 0.0,
+            "height": 31.0
+          },
+          {
+            "y": 67.19999999999999,
+            "ascent": 23.5,
+            "width": 167.15625,
+            "height": 31.0
+          },
+          {
+            "y": 100.79999999999998,
+            "ascent": 23.5,
+            "width": 152.53125,
+            "height": 31.0
+          },
+          {
+            "y": 134.39999999999998,
+            "ascent": 23.5,
+            "width": 0.0,
+            "height": 31.0
+          }
+        ],
+        "unicode": [
+          {
+            "y": 0.0,
+            "ascent": 25.890625,
+            "width": 109.875,
+            "height": 32.0
+          },
+          {
+            "y": 33.599999999999994,
+            "ascent": 25.890625,
+            "width": 121.0625,
+            "height": 33.0
+          }
+        ],
+        "styled": [
+          {
+            "y": 0.0,
+            "ascent": 28.046875,
+            "width": 434.625,
+            "height": 35.0
+          }
+        ],
+        "missing": [
+          {
+            "y": 0.0,
+            "ascent": 21.546875,
+            "width": 250.140625,
+            "height": 29.0
+          }
+        ]
+      },
+      "notes": [
+        "emoji_monochrome_outline:unicode",
+        "font_missing:missing:Missing_Font11_conformance -> Abel",
+        "glyph_fallback:unicode:Microsoft YaHei",
+        "glyph_fallback:unicode:Segoe UI Emoji"
+      ],
+      "rasterized": [
+        "group"
+      ],
+      "roundtrip": true,
+      "embedded_font_from_reopened_bytes": true
+    },
+    "offscreen": {
+      "mode": "offscreen",
+      "platform": "offscreen",
+      "font_asset_sha256": "8809dcad25318225052f88333e208c5aad4adcb7b2c934c135735ec19aa410b4",
+      "metrics": {
+        "title": [
+          {
+            "y": 0.0,
+            "ascent": 31.34375,
+            "width": 393.109375,
+            "height": 41.0
+          }
+        ],
+        "wrapped": [
+          {
+            "y": 0.0,
+            "ascent": 23.5,
+            "width": 162.09375,
+            "height": 31.0
+          },
+          {
+            "y": 33.599999999999994,
+            "ascent": 23.5,
+            "width": 0.0,
+            "height": 31.0
+          },
+          {
+            "y": 67.19999999999999,
+            "ascent": 23.5,
+            "width": 167.15625,
+            "height": 31.0
+          },
+          {
+            "y": 100.79999999999998,
+            "ascent": 23.5,
+            "width": 152.53125,
+            "height": 31.0
+          },
+          {
+            "y": 134.39999999999998,
+            "ascent": 23.5,
+            "width": 0.0,
+            "height": 31.0
+          }
+        ],
+        "unicode": [
+          {
+            "y": 0.0,
+            "ascent": 25.890625,
+            "width": 109.875,
+            "height": 32.0
+          },
+          {
+            "y": 33.599999999999994,
+            "ascent": 25.890625,
+            "width": 121.0625,
+            "height": 33.0
+          }
+        ],
+        "styled": [
+          {
+            "y": 0.0,
+            "ascent": 28.046875,
+            "width": 434.625,
+            "height": 35.0
+          }
+        ],
+        "missing": [
+          {
+            "y": 0.0,
+            "ascent": 21.546875,
+            "width": 250.140625,
+            "height": 29.0
+          }
+        ]
+      },
+      "notes": [
+        "emoji_monochrome_outline:unicode",
+        "font_missing:missing:Missing_Font11_conformance -> Abel",
+        "glyph_fallback:unicode:Microsoft YaHei",
+        "glyph_fallback:unicode:Segoe UI Emoji"
+      ],
+      "rasterized": [
+        "group"
+      ],
+      "roundtrip": true,
+      "embedded_font_from_reopened_bytes": true
+    },
+    "pixels": {
+      "changed": 2115,
+      "max_error": 19,
+      "interior_max": 0,
+      "edge_changed": 2115
+    },
+    "pdf": {
+      "canvas": {
+        "changed": 31201,
+        "max_error": 40,
+        "interior_max": 2,
+        "edge_changed": 25150
+      },
+      "offscreen": {
+        "changed": 31270,
+        "max_error": 38,
+        "interior_max": 2,
+        "edge_changed": 25221
+      }
+    }
+  },
+  "isolated_wheel": {
+    "mode": "offscreen",
+    "platform": "offscreen",
+    "font_asset_sha256": "8809dcad25318225052f88333e208c5aad4adcb7b2c934c135735ec19aa410b4",
+    "metrics": {
+      "title": [
+        {
+          "y": 0.0,
+          "ascent": 31.34375,
+          "width": 393.109375,
+          "height": 41.0
+        }
+      ],
+      "wrapped": [
+        {
+          "y": 0.0,
+          "ascent": 23.5,
+          "width": 162.09375,
+          "height": 31.0
+        },
+        {
+          "y": 33.599999999999994,
+          "ascent": 23.5,
+          "width": 0.0,
+          "height": 31.0
+        },
+        {
+          "y": 67.19999999999999,
+          "ascent": 23.5,
+          "width": 167.15625,
+          "height": 31.0
+        },
+        {
+          "y": 100.79999999999998,
+          "ascent": 23.5,
+          "width": 152.53125,
+          "height": 31.0
+        },
+        {
+          "y": 134.39999999999998,
+          "ascent": 23.5,
+          "width": 0.0,
+          "height": 31.0
+        }
+      ],
+      "unicode": [
+        {
+          "y": 0.0,
+          "ascent": 25.890625,
+          "width": 109.875,
+          "height": 32.0
+        },
+        {
+          "y": 33.599999999999994,
+          "ascent": 25.890625,
+          "width": 121.0625,
+          "height": 33.0
+        }
+      ],
+      "styled": [
+        {
+          "y": 0.0,
+          "ascent": 28.046875,
+          "width": 434.625,
+          "height": 35.0
+        }
+      ],
+      "missing": [
+        {
+          "y": 0.0,
+          "ascent": 21.546875,
+          "width": 250.140625,
+          "height": 29.0
+        }
+      ]
+    },
+    "notes": [
+      "emoji_monochrome_outline:unicode",
+      "font_missing:missing:Missing_Font11_conformance -> Abel",
+      "glyph_fallback:unicode:Microsoft YaHei",
+      "glyph_fallback:unicode:Segoe UI Emoji"
+    ],
+    "rasterized": [
+      "group"
+    ],
+    "roundtrip": true,
+    "embedded_font_from_reopened_bytes": true
+  },
+  "visual_inspection": {
+    "performed": true,
+    "examined": [
+      "Native Inspector minimum-height correction and scrolling at actual DPR1.25/1.875/2.5",
+      "Shared PNG Unicode/Arabic/CJK/combining/emoji and embedded fallback",
+      "Actual QtPdf/PDFium raster of outlined PDF with isolated group opacity"
+    ],
+    "physical_input": false,
+    "physical_monitor_switching": false,
+    "clean_release_machine": false
+  },
+  "limitations": [
+    "Emoji monochrome outlines only when available; replacement/warning otherwise",
+    "System fonts require local installation; missing metadata preserved with warning",
+    "PDF text is outlined, not searchable",
+    "Physical IME candidate window not manually tested",
+    "08.layout still blocked on13; no new blocker11"
+  ],
+  "next_segment": {
+    "id": "12",
+    "status": "not_started",
+    "safe_to_continue": true
+  },
+  "source_sha256": {
+    "pyproject.toml": "6f4f4dca8365f7fb6e75b5fe0541b4e6132d274c59a8df13b4ab14237e384101",
+    "scripts/check_text_conformance.py": "660f37f70f5fecd4210c8a1f72a11c70196b35d03ca165f5b0d2a26480ad3746",
+    "src/ltechdesign/commands/__init__.py": "1dda18dd58aadd01642f7ce14f9d875da4940a7bd85df635aa7043f8af6efef9",
+    "src/ltechdesign/commands/contracts.py": "7b406183b485190defe661cd31e70366c9a6a90bb724182d4cb8de9d0652cc4e",
+    "src/ltechdesign/commands/dispatcher.py": "44e8b823c205c5e5840405380a1815df47e73979c132fe9fab0658443e572166",
+    "src/ltechdesign/commands/planning.py": "5f5701e10d4d3703b9d80ec4e651f167b51052be4b65d003bb836b3fbd10a4ca",
+    "src/ltechdesign/domain/editing.py": "5507333443c531b74b666ba1566af9b75e97ee15e6f1bb720526ddcf662c3d4a",
+    "src/ltechdesign/domain/inspector.py": "908085bf3242f8fa0bc9a338cf1f889e2d11652c155986db9e073386d30a06b2",
+    "src/ltechdesign/domain/typography.py": "c1eacd231ebabbff7eb9b4de3e6755effb890fdc8436d7012751233d65d7f523",
+    "src/ltechdesign/rendering/canvas.py": "7dc7bab47475f31ea46d14375ef20a31b2a1ff4f700f0b4f04bf222d3d6baffa",
+    "src/ltechdesign/rendering/drawing.py": "c7bbfdf447fe1dea60d49b13d2162b97422aa8570e748658990f1733c9fe44f4",
+    "src/ltechdesign/rendering/fonts.py": "816190e5d7ba38c8d8d0a9d042092740776dd998d2080294f916d90fada9350e",
+    "src/ltechdesign/rendering/pdf.py": "911b75d2c1e56ab8933278a2a307b0a7eddadcd3933e2d5b1aee65751e1bf744",
+    "src/ltechdesign/rendering/text.py": "347bf9bb9ab12b8aa5c0acc57c4428546ff146a283aa12bad11aaea0990b6237",
+    "src/ltechdesign/ui/canvas.py": "c7568d869c8ba06bdeb8d1d66ca6ca729f97c5cc76055198bcd1e67ce6bdae17",
+    "src/ltechdesign/ui/editing.py": "825d29cd0171cd15aa4a696df4bf6b4dfc3495d4337789060343eb2d3bd8c84e",
+    "src/ltechdesign/ui/inspector.py": "3401f62e10231f38cba835c70a0b028ec570708738790fddf1451f1f47d836a2",
+    "src/ltechdesign/ui/text_editing.py": "783a6e9696ae7c563ac225581669178c4b9c93cff6def53cb360d26bad119972",
+    "src/ltechdesign/ui/transforms.py": "0384db6c7405817f6b8ff0d32c29252e64dda0f52b367ee7857b39bcb6674fa7",
+    "src/ltechdesign/ui/typography.py": "6db9bf08795fda68c0d95ce156a0ed2f3e1df052b8d0e05affc29554febcf3bf",
+    "src/ltechdesign/ui/window.py": "1404e6efaa5ff0e989f2eed83ce30fc77c14f4d9dc3032051634936c56d3feec",
+    "tests/test_text_conformance.py": "2c5b7bfd579172cfcbc7583281d8e28e1f9f7882485f6c9fa50f3d5f7673848e",
+    "tests/test_text_editor.py": "a28a766ae8e4650588f3c5e2194384ffbad8912e7ab5126fea84dcb7b9f30a9c",
+    "tests/test_text_layout.py": "3c0f26770057ea7803326a28429c4559fd4d7359d9a8719c6c8985e660724b81",
+    "tests/test_typography_commands.py": "eae147171ae7bcbad3b4283b47bb439784e1e58c5787239b4e028ce5c4581cf6"
+  },
+  "artifact_sha256": {
+    "artifacts/core.xml": "9fe416a781cfc00d2e3f58c62443b1431bcd774b566fe41ad536c195935ac6f1",
+    "artifacts/desktop.xml": "0984fd9fc9f46e3448995f7edf659b30a02904f0987da9745bbf1a750eb928eb",
+    "artifacts/segment01a-offscreen.json": "fe6cdebbcb943fe93d5b8a702b2d74758ff73795f17dcd5c136fc03b70a2a4e8",
+    "artifacts/segment11-build.log": "5ecf9ac4127b07bbc5f69425a354b521bd578e938370ec19a3b4b70449999e8b",
+    "artifacts/segment11-check.log": "6d0ef12d70b84c42534a46ff05487f098dbe37c1da71825f7e996f01f24f3308",
+    "artifacts/segment11-native-dpr15.xml": "5bc4e896444a35156f1b7ac9969bd7a48639ab64b2f410376c636da380a35c26",
+    "artifacts/segment11-native-dpr2.xml": "d2b1668176f93b4c5dfdb1ca7269ba4407d6bdb67217e8fd62c833aea5eaa073",
+    "artifacts/segment11-native.xml": "0e0b4f2b5158378ef5b733e81406eb073f60a2ed276f96431814fbc068481f04",
+    "artifacts/segment11-targeted.xml": "baa7160a08b29c8dfa48a4dc1f805e35706fd17a1b8bc10bfebaa667d0b53c1d",
+    "artifacts/text11-comparison.json": "b591131f864ff90c201e4181c4e0b5ef743c840bd573f54c6c87e6da18359960",
+    "artifacts/text11-dpr15/test_inline_preedit_external_r0/canonical.pdf": "875a0a0cfb6c9b7f42a93842bfa61624e9863ce489dad73e09edb862830d353a",
+    "artifacts/text11-dpr15/test_inline_preedit_external_r0/editable-text.ltechdesign": "132ad885aed14837150ddbd121bf3323831529c82b7f6fdf678672af75224e97",
+    "artifacts/text11-dpr15/test_inline_preedit_external_r0/preedit.pdf": "bf967fd00c31855b4269827dae1f63bb835dcde6e4ec672e049a2b946f1a2681",
+    "artifacts/text11-dpr15/test_inline_preedit_external_r0/screen.json": "23d200fc3e12fbf4aba3277695c50e39efe8f5a9db1f5f91837bd474dd237ca8",
+    "artifacts/text11-dpr15/test_inline_preedit_external_r0/text-editor-native.png": "f5c655e99522568b86035f0927c525734e24b860c30eefaad23e0ccdd0132c2f",
+    "artifacts/text11-dpr15/test_inline_preedit_external_r0/text.png": "bc8f02ce76139402d30286e07a17845f2ef47e9fc85dad735c371e2082e03622",
+    "artifacts/text11-dpr2/test_inline_preedit_external_r0/canonical.pdf": "d73dd3b63ae7bd3e5ad29b6e40317036f96667c23c193590277cc5353224482d",
+    "artifacts/text11-dpr2/test_inline_preedit_external_r0/editable-text.ltechdesign": "3daa99ec57c1e289662efe310b5f2b1fae16b52f1c2679f7fe4a3e579e9e70c6",
+    "artifacts/text11-dpr2/test_inline_preedit_external_r0/preedit.pdf": "71cfaeb060e12b7e53e45e5f515a6a1f992c6202e8fdd8c5694a663d0df9877b",
+    "artifacts/text11-dpr2/test_inline_preedit_external_r0/screen.json": "791e5907666ea1b3ce60bc73ec8b16dd2b005e9f9348d5338a56b53dbc834379",
+    "artifacts/text11-dpr2/test_inline_preedit_external_r0/text-editor-native.png": "48c7f146a195ca3b1072dfdc81d6a9398ed500250821237c9bee076cfbfe37ef",
+    "artifacts/text11-dpr2/test_inline_preedit_external_r0/text.png": "bc8f02ce76139402d30286e07a17845f2ef47e9fc85dad735c371e2082e03622",
+    "artifacts/text11-gui/test_inline_preedit_external_r0/canonical.pdf": "3749ce1113810bacd907136a8c0a299fc267708833bebe14bfc017aea883f14e",
+    "artifacts/text11-gui/test_inline_preedit_external_r0/editable-text.ltechdesign": "7cf8d15db754936d7863bd783ea77479e05ab70572bdc4efab3133858f10c9a9",
+    "artifacts/text11-gui/test_inline_preedit_external_r0/preedit.pdf": "2ce7866a32c5d598d3b3e90e7f5ec07550fb690f89b1be958fa79306ac72c4e1",
+    "artifacts/text11-gui/test_inline_preedit_external_r0/screen.json": "1bbe27ecbae49487d273027e389f7b4c471be0957bcc92a8d3489d9d49319938",
+    "artifacts/text11-gui/test_inline_preedit_external_r0/text-editor-native.png": "7597a38b42025067836100a7004148701ec57215c3bda11e090b6f5ef1964356",
+    "artifacts/text11-gui/test_inline_preedit_external_r0/text.png": "bc8f02ce76139402d30286e07a17845f2ef47e9fc85dad735c371e2082e03622",
+    "artifacts/text11-native/canvas.png": "92909fc83290c39b621336a8c84ef953e902199f4c5aab428c7c80ecc5a054a0",
+    "artifacts/text11-native/editable-text.ltechdesign": "b09576bfc90697c4daae76ed15075c30e5e0a9d1c713e3822c93a592a60f923d",
+    "artifacts/text11-native/pdf-raster-2x.png": "02cc2c1243484d904071c27dd43213145ec2d11b0c846c4349163a310ff88d36",
+    "artifacts/text11-native/report.json": "4a8c3b7188ed65fb9a40aa1f95b377067f29007838495b08d9c08c3b755b3a75",
+    "artifacts/text11-native/shared-2x.png": "71597a81a98f5a4d3c3880f3a82dc04c8536861273166fdfbfd3c8e212727e6c",
+    "artifacts/text11-native/shared.pdf": "88cb0d574ec73de6e532edc506a7e2f98574c19fe4a2506ebe5f50d370ef3d0c",
+    "artifacts/text11-native/shared.png": "92909fc83290c39b621336a8c84ef953e902199f4c5aab428c7c80ecc5a054a0",
+    "artifacts/text11-offscreen/editable-text.ltechdesign": "2bd6de1140ff6ac72bc5d02d1aa4749a591036a6eaae37f347bd7320e3a90368",
+    "artifacts/text11-offscreen/pdf-raster-2x.png": "04a0ad667f92cfa3ef467407b72e982686a42311753ca499929351e545b8d1d3",
+    "artifacts/text11-offscreen/report.json": "819177cd87d9fdb6d49062cb235ef142016a6a23755bf5f8193c161cc2aca990",
+    "artifacts/text11-offscreen/shared-2x.png": "b90b9302fca06677c2e3e2e29e1d1682181c2ba6ee5f3d5db7d7cbffe8cb52e0",
+    "artifacts/text11-offscreen/shared.pdf": "fa6b4532546ba7ebbba194e5ae46f3561afa7dd4f09a3b9627559090b664b3c0",
+    "artifacts/text11-offscreen/shared.png": "60679358c7df5e3e557d2366e6443a40ae1f3ae3720cc3108ed6dba185294344",
+    "artifacts/text11-wheel/editable-text.ltechdesign": "35c639a6ef0976d75774c56138b2ba4807cd2dbd796919ae3d2c2cf6653655a0",
+    "artifacts/text11-wheel/pdf-raster-2x.png": "04a0ad667f92cfa3ef467407b72e982686a42311753ca499929351e545b8d1d3",
+    "artifacts/text11-wheel/report.json": "819177cd87d9fdb6d49062cb235ef142016a6a23755bf5f8193c161cc2aca990",
+    "artifacts/text11-wheel/shared-2x.png": "b90b9302fca06677c2e3e2e29e1d1682181c2ba6ee5f3d5db7d7cbffe8cb52e0",
+    "artifacts/text11-wheel/shared.pdf": "aaf9b18a57dec92dc8a50c63b36a19c3e2d9fa1ec5d224f7de4a6eb48c4f5792",
+    "artifacts/text11-wheel/shared.png": "60679358c7df5e3e557d2366e6443a40ae1f3ae3720cc3108ed6dba185294344",
+    "dist/ltechdesign-0.1.0-py3-none-any.whl": "6d986517a6020b686ef9d85f194a1b8c8e87075e315ab2654eae44d4ae791aa3",
+    "dist/windows/ltechDesign-Studio/ltechDesign-Studio.exe": "a70c264c4fff2793b0e0b073f07540efaa1caf71bfdd23e45d201e5a3f991a6b",
+    "artifacts/segment11-docs.log": "e7afd93419fb862c9b9789117e84ed3b7c81a13035720d562142db555e6217fd"
+  }
+}

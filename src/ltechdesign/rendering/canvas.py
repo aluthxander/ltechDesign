@@ -1,6 +1,7 @@
 """Stable-ID scene indexing with explicit shared subtree painting and session navigation."""
 
 import math
+from dataclasses import replace
 
 from PySide6.QtCore import QPoint, QPointF, QRect, QRectF, Qt, Signal
 from PySide6.QtGui import QColor, QMouseEvent, QPainter, QPen, QWheelEvent
@@ -35,7 +36,10 @@ class NodeItem(QGraphicsItem):
         self, painter: QPainter, option: QStyleOptionGraphicsItem, widget: QWidget | None = None
     ) -> None:
         try:
-            draw_node(painter, self.document, self.key, local=True, resources=self.resources)
+            resources = self.resources
+            if resources is not None and resources.previews and widget is None:
+                resources = replace(resources, previews={})
+            draw_node(painter, self.document, self.key, local=True, resources=resources)
         except ModelError as error:
             painter.setPen(QColor("red"))
             painter.drawText(self.bounds, str(error.code))

@@ -25,6 +25,7 @@ from ltechdesign.domain.models import (
     TextData,
     Tokens,
 )
+from ltechdesign.domain.typography import TypographyProperty
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
@@ -107,6 +108,13 @@ class SetProperties(Record):
 class SetText(Record):
     node_id: NodeId
     data: TextData
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class SetTypography(Record):
+    node_ids: tuple[NodeId, ...]
+    property: TypographyProperty
+    value: Number | str | bool
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
@@ -234,6 +242,7 @@ Operation = (
     | SetStyle
     | SetProperties
     | SetText
+    | SetTypography
     | SetTokens
     | SetFont
     | RegisterAsset

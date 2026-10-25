@@ -359,7 +359,7 @@ class TransformController:
         self.view.viewport().update()
 
     def draw(self, painter: QPainter) -> None:
-        if self.view.tool is not None or not self.view.writable:
+        if self.view.tool is not None or not self.view.writable or self.view.text.active:
             return
         painter.save()
         pen = QPen(QColor("#0067C0"), 1)

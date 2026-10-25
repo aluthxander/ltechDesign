@@ -30,6 +30,7 @@ from ltechdesign.domain.models import (
     create_node,
     new_id,
 )
+from ltechdesign.domain.typography import changed as typography_changed
 from ltechdesign.domain.validation import CONTAINERS
 
 from .contracts import (
@@ -59,6 +60,7 @@ from .contracts import (
     SetStyle,
     SetText,
     SetTokens,
+    SetTypography,
     TransformNodes,
     Ungroup,
     Update,
@@ -387,6 +389,10 @@ class Draft:
             self.nodes[op.node_id] = replace(self.node(op.node_id), style=op.style)
         elif isinstance(op, SetText):
             self.nodes[op.node_id] = replace(self.node(op.node_id), data=op.data)
+        elif isinstance(op, SetTypography):
+            self.selected_roots(op.node_ids)
+            for key in op.node_ids:
+                self.nodes[key] = typography_changed(self.node(key), op.property, op.value)
         elif isinstance(op, SetTokens):
             self.tokens = op.tokens
         elif isinstance(op, SetFont):

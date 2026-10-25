@@ -38,10 +38,10 @@ Mesin rilis yang belum tersedia membuat bukti AT-30 pending, bukan verified dan 
 | FR-003 | P0 | 08 | 03, 06, 07, 09, 10B, 11, 22 | in_progress | 08 transform/history/clipboard/nudge +09 hierarchy;10B rulers/grid/world snap/smart guides dan align/distribute tersedia, 10B verified:58targeted/47native,405core+110desktop/full gate/spike, DPR1/1.5/2; overlay-free PNG/PDF/native roundtrip lulus. Frame layout13/full22 tetap pemilik |
 | FR-004 | P0 | 07 | 02, 08, 13, 16, 22 | verified | 07: 11 preset PRD/custom px/mm/cm/in, orientasi/DPI/background, data editable dan ukuran akurat; 20 tes core/27 GUI, full gate dan visual native; integrasi layout13/export16/acceptance22 tetap pemilik |
 | FR-005 | P0 | 09 | 03, 05, 08, 22 | verified | 09: nested tree/selection dua arah, name/type search, rename/duplicate/hide-lock, actual Qt drag/reorder/reparent via dispatcher dan external-command projection;18targeted+10native,360core/63desktop full gate dan visual native lulus; acceptance22 diulang |
-| FR-006 | P0 | 07 | 02, 06, 08, 11, 12, 22 | in_progress | 07: frame/rectangle/ellipse/line/polygon;08 group/ungroup dan transform/clipboards teruji. Text11/image/SVG12 pending; tanpa dummy tools |
+| FR-006 | P0 | 07 | 02, 06, 08, 11, 12, 22 | in_progress | 07 shapes;08 group/transform/clipboard;11 editable text tool/shared renderer verified. Image/SVG12 dan acceptance22 tetap pemilik; tanpa dummy tools |
 | FR-007 | P1 | 29 | 30, 41 | not_started | Pen/Bézier/path edit, cap/join/dash; boolean/masks/flatten di 30 |
-| FR-008 | P0 | 10A | 08, 10B, 11, 13, 15, 16, 22 | in_progress | 10A geometry/style/shadow/color/Mixed terhubung dispatcher/model/canvas/native/PNG/PDF proof; 10A verified;10B align/distribute dan canvas/Inspector/undo sync verified,405core+110desktop/full gate/spike lulus; text/constraints/export Inspector lengkap tetap11/13/15–17 |
-| FR-009 | P0 | 11 | 02, 04, 06A, 15, 16, 17, 22 | not_started | Font lokal, size/weight/italic, multiline/alignment/line spacing/letter spacing, text bounds/auto size, Unicode/emoji sesuai capabilities |
+| FR-008 | P0 | 10A | 08, 10B, 11, 13, 15, 16, 22 | in_progress | 10A geometry/style/color/Mixed,10B arrange dan11 typography Inspector terhubung dispatcher/model/canvas/native/PNG/PDF proof, masing-masing verified. Final11:418core+124desktop/full gate/spike. Constraints13 dan production export Inspector15–17 tetap pemilik |
+| FR-009 | P0 | 11 | 02, 04, 06A, 15, 16, 17, 22 | verified | Text tool/inline multiline, validated Mixed typography, atomic auto size, local/embedded fallback, Unicode/emoji warnings dan shared layout/outline/native/PNG/PDF;27targeted/28native,418core+124desktop, full gate/wheel/executable spike lulus. Bukti baseline11/ADR0023; production export15–17/acceptance22 tetap pemilik |
 | FR-010 | P1 | 31A | 11, 29, 31B | not_started | Rich spans/global styles/auto-fit; fallback/substitution metadata aman; variable font dan text-on-path 31B |
 | FR-011 | P0 | 12 | 04, 06, 15, 16, 22 | not_started | Raster/SVG subset, dialog/drop, fit/fill/stretch/crop/rounded clip, rotate/opacity, replace container tetap |
 | FR-012 | P1 | 32A | 12, 32B, 36A | not_started | Non-destructive adjustment/masking; background removal opsional plugin, core tidak bergantung layanan |
@@ -82,7 +82,7 @@ Mesin rilis yang belum tersedia membuat bukti AT-30 pending, bukan verified dan 
 | ID | Prioritas/gate | Pemilik | Integrasi/verifikasi | Status | Bukti / kriteria selesai |
 | --- | --- | --- | --- | --- | --- |
 | AT-01 | P0 / MVP | 07 | 22 | verified | 07: dialog preset menghasilkan artboard1080×1350 tepat, drawing lima tools dan Save/close/Open editable; native dan offscreen lulus; ulang fixture acceptance penuh22 |
-| AT-02 | P0 / MVP | 11 | 06A, 07, 22 | not_started | Rectangle dan text nyata tampil canvas |
+| AT-02 | P0 / MVP | 11 | 06A, 07, 22 | verified | Rectangle07 dan text inline11 nyata tampil canvas; UI/domain/render/save-reopen serta native visual dibuktikan baseline11; ulang acceptance22 |
 | AT-03 | P0 / MVP | 08 | 10A, 22 | in_progress | 08: resize/rotate handles sinkron ke model, anchor/pivot/parent rotations dan undo diuji; Inspector geometry10A verified termasuk nested parent-space input/undo; layout13/acceptance22 pending |
 | AT-04 | P0 / MVP | 08 | 03, 09, 22 | verified | Lingkup08: GUI group/ungroup, hierarchy/undo tepat, world pose dan actual PNG tetap; preserve-appearance menolak stacking/clip/isolation yang tak representable. Full fixture22 tetap diulang |
 | AT-05 | P0 / MVP | 04 | 05, 14, 22 | not_started | Save/reopen struktur sama |
@@ -112,7 +112,7 @@ Mesin rilis yang belum tersedia membuat bukti AT-30 pending, bukan verified dan 
 | AT-29 | P0 / MVP | 18C | 12, 14, 15, 16, 17, 19A, 22 | not_started | Cancel heavy job sebelum/sesudah barrier, UI responsif, staging bersih |
 | AT-30 | P0 / release | 24 | 25 | not_started | Windows bersih tanpa Python dev; startup/project/font/codecs/SVG/PDF/stdio MCP; mesin uji belum disiapkan |
 | AT-31 | P0 / MVP | 22 | 02, 04, 05, 13, 14, 18C, 19A | in_progress | 04 fondasi: dua page/nested/IDs/order/transforms/text/style/token bindings + dispatcher edit-save-undo; layout solver/GUI Import/MCP pending |
-| AT-32 | P0 / MVP | 22 | 04, 11, 12, 14 | in_progress | 04: pindah file, hapus sumber bytes dan load tanpa network/cwd dependency; embedded bytes sama. Font resolution/fallback warning dan GUI pending 11/22 |
+| AT-32 | P0 / MVP | 22 | 04, 11, 12, 14 | in_progress | 04 portable embedded bytes;11 embedded font dipulihkan dari ZIP setelah resolver lama ditutup, missing-font warning tanpa metadata rewrite dan GUI text save/reopen teruji. Full asset fixtures/image12/acceptance22 tetap pending |
 | AT-33 | P0 / MVP | 22 | 02, 04, 05 | in_progress | 04: malformed manifest/hash/missing assets/version/capability ditolak tanpa admission/model/lock parsial; tab GUI belum tersedia 05 |
 | AT-34 | P0 / MVP | 22 | 02, 04, 06A, 11, 12, 13, 14 | in_progress | 04: repeated native semantic/byte round-trip, runtime excluded, opaque/workspace/thumbnail preservation; preview visual/advanced fixtures pending |
 

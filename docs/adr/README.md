@@ -36,3 +36,5 @@ Versi dependency dan packager yang diuji dicatat pada ADR 0011 serta baseline 01
 - [0021 — Inspector dan shared shadow](0021-inspector-and-shared-shadow.md): accepted,10A; parent translation, validated Mixed input, client-scoped history grouping, local palette dan shared alpha shadow/PDF fallback.
 
 - [0022 — Canvas aids dan arrangement](0022-canvas-aids-and-arrangement.md): accepted,10B; physical-pixel snap tolerance, per-view ruler/grid/guides, constrained handles dan atomic world align/equal-gap distribution.
+
+- [0023 — Inline text dan shared layout](0023-inline-text-and-layout.md): accepted,11; typography units, atomic auto-size metrics port, Unicode/IME input, local/embedded fallback dan shared outline diagnostics.

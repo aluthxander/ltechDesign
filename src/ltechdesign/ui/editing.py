@@ -65,6 +65,13 @@ class EditingActions(QObject):
         )
         view.action_requested.connect(self.perform)
         view.context_requested.connect(lambda pos: self.show_context(tab, pos))
+        view.apply_text = lambda ops, revision, name, group: self.window.execute(
+            tab,
+            ops,
+            expected_revision=revision,
+            action_name=name,
+            history_group=group,
+        )
 
     def eventFilter(self, watched: QObject, event: QEvent) -> bool:
         if watched is self.window.layers and event.type() == QEvent.Type.KeyPress:
@@ -93,6 +100,10 @@ class EditingActions(QObject):
     def perform(self, action: str) -> None:
         window, tab = self.window, self.window.current
         if tab is None or tab.view is None:
+            return
+        if action == "tool_text":
+            window.set_tool("text")
+            window.refresh()
             return
         if action == "select_all":
             tab.view.select_all()

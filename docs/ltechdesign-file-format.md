@@ -8,10 +8,12 @@ Update implementasi 04: reader/writer ZIP produksi dan byte store kini tersedia
 di `src/ltechdesign/persistence` dan `assets`, dengan bukti pada
 [baseline 04](baseline-segment04.md). Kontrak versi/schema tidak berubah.
 [ADR 0014](adr/0014-native-persistence.md) merinci batas I/O/decode/lock yang diuji.
-GUI restore, font resolver, renderer dan migrasi historis tetap belum diklaim.
+Pada baseline04, GUI restore, font resolver, renderer dan migrasi historis belum diklaim.
 Fixture native baru memakai PNG valid; fixture JSON historis tetap utuh dan PNG
 CRC-rusaknya ditolak decoder produksi. Format conformance JSON tidak sama dengan
 validasi actual media.
+
+Update11: GUI restore05, shared renderer06A dan font/inline text11 kini teruji pada lingkupnya. [Baseline11](baseline-segment11.md) membuktikan editable text/style/font metadata, embedded font bytes dan hasil layout setelah reopen; tidak mengubah schema1.0. Migrasi historis/full acceptance22 serta production export15–17 tetap pemilik masing-masing.
 
 ## 1. Tujuan dan batas portabilitas
 
@@ -100,6 +102,8 @@ Setiap Node wajib memiliki semua field ini: `id`, `type`, `name`, `page_id`, `pa
 Image/svg crop memilih source rect lebih dahulu, kemudian fit/fill/stretch memetakan source rect ke container geometry. Fill dan rounded image clipping mengikuti container, bukan menulis ulang byte aset; original byte tetap utuh. SVG adalah objek vektor berbasis asset sumber untuk subset yang dinyatakan didukung, bukan janji semua XML menjadi node editable individual. Script/external fetch/unsafe SVG ditolak; unsupported semantics tidak boleh diraster diam-diam pada native save.
 
 Typography tepat `{font_id, font_size, font_weight, italic, alignment, vertical_alignment, line_height, letter_spacing, sizing}`. FontId wajib ada dalam fonts registry; font_size finite >0 logical pixel; font_weight integer 1..1000; italic boolean; alignment left/center/right/justify; vertical_alignment top/center/bottom; line_height `{unit:"multiplier"|"px", value:positive finite}`; letter_spacing finite logical pixel; sizing fixed/auto_width/auto_height. Warna teks memakai style.fill. Explicit newline disimpan `\n`; reader tidak mengubah string atau metadata font karena fallback. Rich spans/variable axes/text-on-path bukan core 1.0, perlu capability/schema extension di 31.
+
+Semantik11: line_height menentukan jarak baseline (`value × font_size` untuk multiplier, literal logical px untuk px); letter_spacing adalah tambahan advance logical px melalui AbsoluteSpacing. Fixed dan auto_height membungkus pada width; auto_width hanya explicit newline. Auto dimensions dimaterialisasi pada node width/height (ceil1/64px), sehingga editable restore tidak memerlukan preview. Runtime resolver/IME composition tidak serialized. Font yang tidak tersedia memberi warning tanpa mengganti metadata; outline emoji monokrom hanya bila tersedia. Rincian [ADR0023](adr/0023-inline-text-and-layout.md), tanpa perubahan schema/native1.0.
 
 ### 4.4 Layout dan constraints
 

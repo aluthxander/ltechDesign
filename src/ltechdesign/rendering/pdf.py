@@ -1,5 +1,6 @@
 """Single-page proof adapter; export jobs/dialogs/multipage policy belong to 15–17."""
 
+from dataclasses import replace
 from pathlib import Path
 
 from PySide6.QtCore import QMarginsF, QRectF, QSizeF
@@ -20,7 +21,14 @@ def render_pdf(
     *,
     resources: Resources | None = None,
     dpi: int = 96,
+    notes: list[str] | None = None,
 ) -> tuple[NodeId, ...]:
+    if resources is not None and resources.previews:
+        resources = replace(resources, previews={})
+    if notes is not None and resources is not None:
+        from .text import diagnostics
+
+        notes.extend(diagnostics(document, resources))
     if warnings(document, resources) or bounds.isEmpty() or dpi < 72 or dpi > 600:
         fail("unsupported_pdf_input", code="unsupported_capability")
     writer = QPdfWriter(str(target))

@@ -1,8 +1,10 @@
 # Progress ltechDesign Studio
 
-Tanggal: 25 Oktober 2026 (Asia/Jakarta). Baseline historis `54162c5`; HEAD saat mulai10B `d05a7e1` (perubahan09/10A sudah ada). Implementasi09/10A/10B di working tree; tidak ada commit otomatis. PRD 1.2. Indeks ini dibaca dahulu; lanjutkan hanya source/keputusan terkait segmen aktif.
+Tanggal: 25 Oktober 2026 (Asia/Jakarta). Baseline historis `54162c5`; HEAD saat mulai11 `f1918d2` (09/10A/10B sudah committed oleh pengguna). Working tree awal11 bersih; tidak ada commit otomatis. PRD 1.2. Indeks ini dibaca dahulu; lanjutkan hanya source/keputusan terkait segmen aktif.
 
 ## Status singkat dan langkah berikutnya
+
+**Segmen aktif11: verified.** Text tool/inline multiline, validated Mixed typography Inspector, local/embedded font resolver dan shared layout/outline terhubung command/native/PNG/PDF. Final418core+124desktop,27targeted/28native, lint96/mypy92, fixtures/docs/package/wheel/executable spike lulus. Native DPR aktual1.25/1.875/2.5, PNG/PDF dan screenshot Inspector diperiksa. [Baseline11](baseline-segment11.md), [evidence11](evidence/segment11-verification.json), ADR0023. Base HEAD `f1918d2d28f2139f31fe4d2f5cc1a65ff533cc95`; tanpa commit otomatis. Segmen12 tidak dikerjakan.
 
 **Segmen aktif10B: verified; induk10 verified.** Rulers/grid, world grid/object snapping, smart guides, master snap toggle dan Inspector align/equal-gap distribution tersedia. Final405core+110desktop,58targeted/47native, lint/type/fixtures/docs/package/wheel/executable spike lulus; native DPR1/1.5/2 dan PNG/PDF diperiksa. [Baseline10B](baseline-segment10b.md), [evidence](evidence/segment10b-verification.json), ADR0022. Tidak mengerjakan11 atau manual guides38B otomatis.
 
@@ -24,7 +26,17 @@ Tanggal: 25 Oktober 2026 (Asia/Jakarta). Baseline historis `54162c5`; HEAD saat 
 - [audit segmen 00](../scripts/check-segment00.ps1): pemeriksaan struktur/cakupan dokumen dan gate prasyarat terpisah.
 - [Spesifikasi .ltechdesign 1.0](ltechdesign-file-format.md), [contoh JSON kontrak](examples/ltechdesign-v1-contract.json), [native ZIP](../examples/proyek-contoh.ltechdesign), dan [audit contoh](../scripts/check-file-format-spec.ps1): typed validator 02 + codec produksi 04; GUI masih menunggu 05/22.
 
-Segmen09/10A verified dan perubahannya dipertahankan.10B/induk10 verified pada scope yang diminta, independen dari blocker08.layout/13. Berikutnya11 tetap not_started; image lengkap dan production export tetap12/15–17. Manual guides P1 tetap38B.
+Segmen09/10A/10B/induk10 dan11 verified pada scope yang diminta, independen dari blocker08.layout/13. Berikutnya12 tetap not_started; image lengkap dan production export tetap12/15–17. Manual guides P1 tetap38B.
+
+### Handoff segmen11
+
+- 11.commands,11.layout,11.editor,11.handoff `verified`; tidak ada blocker lingkup11. Text tool klik auto_width/drag fixed; inline multiline/F2/double click, Unicode/IME/clipboard/Delete dan grouped undo melalui dispatcher yang sama. Typography fields/Mixed/validation, color/opacity10A, auto_height/resize, missing-font warning dan explicit replacement/undo tersedia.
+- Shared QTextLayout96dpi/design advances, outline/fallback/emoji diagnostics dan UTF16 caret dipakai canvas/PNG/PDF; serialization native1.0 mempertahankan data/font IDs/embedded bytes dan ukuran. Font registry fallback diselesaikan setelah seluruh embedded font dimuat; reopen tidak mengandalkan path font sumber. IME preedit/session selection tidak ikut PNG/scene.render/PDF/history/native.
+- Base HEAD `f1918d2d28f2139f31fe4d2f5cc1a65ff533cc95`, working tree awal bersih; tanpa commit otomatis/ubah PRD. Python3.12.12/PySide6Qt6.10.2/Pillow12.3.0 tidak berubah. Kontrak unit baseline/letter spacing, metrics port tanpa Qt, limits dan fallback di ADR0023.
+- Aktual27targeted (13core+14desktop),28native (13text/layout+15regresi Inspector/transforms),7text native masing-masing DPR aktual1.875/2.5; native utama DPR1.25. Full check.ps1 offline exit0:418core+124desktop, Ruff96/mypy92, fixtures/docs/build/installed-wheel lulus. PyInstaller6.22.3 offscreen executable spike exit0; isolated-wheel embedded-font conformance exit0.
+- Canvas==PNG exact, metrics native/offscreen exact; outline edges max19/interior0, PDF2x native40/offscreen38 dan interior2/255 (nested alpha quantization). Existing06A tests tidak dilonggarkan. Native font controls/scroll layout pada tiga DPR, shared Unicode/emoji PNG dan actual PDF raster benar-benar diperiksa. Artifact/log/hash di baseline11/evidence11.
+- Batas: emoji outline monokrom bila tersedia, replacement+warning jika tidak; PDF text outline tidak searchable. Physical IME candidate-window/keyboard/mouse, screen reader, monitor switching/OS DPI fisik, viewer PDF lain/mesin rilis bersih pending22/24. Rich spans/fonts lanjutan31, layout13, image12, public export/jobs15–17/MCP18/19 tetap pemilik.
+- Berikutnya12 `not_started`; aman melanjutkan sesuai scope/prasyaratnya, tidak dijalankan otomatis. Existing08.layout tetap blocked pada13.
 
 ### Handoff segmen10B
 
@@ -176,7 +188,7 @@ Urutan berasal dari indeks roadmap, bukan instruksi otomatis. Checkpoint08 pada 
 | 10 | Inspector/style dan snapping/alignment | verified | 10A verified +10B verified; baseline10A/10B, ADR0021/0022 dan full gate/spike |
 | 10A | Inspector/style/color/basic shadow | verified | Baseline10A+ADR0021;34targeted/18native,376core+81desktop full gate; screenshot native, wheel shadow probe dan executable spike lulus |
 | 10B | Rulers/grid/snap/smart guides/alignment/distribution | verified | Baseline10B+ADR0022;58targeted/47native,405core+110desktop full gate; DPR1/1.5/2/visual/wheel/executable spike |
-| 11 | Text inline, fonts/shared layout/fallback warning | not_started | 10B |
+| 11 | Text inline, fonts/shared layout/fallback warning | verified | Baseline11+ADR0023;27targeted/28native,418core+124desktop full gate, local/embedded restore dan shared PNG/PDF; packaging/wheel spike lulus |
 | 12 | Raster/SVG/import/crop/replace/asset retention | not_started | 11; ulang baseline ringan dan shared artifacts |
 | 13 | Stack/constraints fixed/hug/fill dasar atomik | not_started | 12 |
 | 14 | Recent/duplicate/autosave/recovery/checkpoint/thumbnail/font metadata | not_started | 13 |

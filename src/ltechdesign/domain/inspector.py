@@ -35,6 +35,8 @@ def supported(node: Node, field: str) -> bool:
     if field == "radius":
         return node.type in ("rectangle", "frame", "artboard")
     if field in ("fill", "stroke", "stroke_width"):
+        if node.type == "text" and field in ("stroke", "stroke_width"):
+            return False
         return node.type != "group" and (field != "fill" or node.type != "line")
     return True
 

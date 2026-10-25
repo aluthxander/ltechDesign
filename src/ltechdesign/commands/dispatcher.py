@@ -24,6 +24,7 @@ from ltechdesign.domain.models import (
     SessionId,
 )
 from ltechdesign.domain.typing import check_record, primitive
+from ltechdesign.domain.typography import require_metrics
 
 from .contracts import Error, RegisterAsset, Request, Result
 from .planning import Draft
@@ -135,6 +136,7 @@ class Dispatcher:
         clock: Callable[[], float] = time.monotonic,
         assets: AssetRetention | None = None,
         layout: Callable[[Project], Project] | None = None,
+        text_layout: Callable[[Project, Project], Project] | None = None,
         read_only: bool = False,
     ) -> None:
         if (
@@ -156,6 +158,7 @@ class Dispatcher:
         self._clock = clock
         self._assets = assets if assets is not None else MetadataOnlyRetention()
         self._layout = layout if layout is not None else lambda project: project
+        self._text_layout = text_layout if text_layout is not None else require_metrics
         self._read_only = read_only
         self._closed = False
         self._busy = False
@@ -393,7 +396,8 @@ class Dispatcher:
                 for op in request.operations:
                     draft.apply(op)
                 planned = draft.finish()
-                after = self._layout(planned)
+                reflowed = self._text_layout(before, planned)
+                after = self._layout(reflowed)
                 if (
                     type(after) is not Project
                     or after.document.document_id != before.document.document_id

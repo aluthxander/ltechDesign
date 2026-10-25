@@ -31,7 +31,10 @@ from ltechdesign.domain.errors import ModelError
 from ltechdesign.domain.models import Node, NodeId, NodeType, PageId, Point
 from ltechdesign.persistence import FileHandle, PersistenceService, SaveResult
 from ltechdesign.rendering.drawing import warnings as render_warnings
+from ltechdesign.rendering.fonts import FontResolver
 from ltechdesign.rendering.hit_testing import eligible, paint_order
+from ltechdesign.rendering.text import display_notes as text_diagnostics
+from ltechdesign.rendering.text import reflow as text_reflow
 from ltechdesign.ui.artboard import ArtboardDialog
 from ltechdesign.ui.canvas import EditorCanvas
 from ltechdesign.ui.canvas_aids import CanvasAidControls
@@ -56,6 +59,7 @@ class Tab:
     active_page_id: PageId | None = None
     hierarchy_state: HierarchyState = field(default_factory=HierarchyState)
     status: str = "Belum disimpan"
+    warning_label: QLabel | None = None
 
 
 class StudioWindow(QMainWindow):
@@ -70,6 +74,7 @@ class StudioWindow(QMainWindow):
         self.busy = False
         self._exit_requested = False
         self.documents: list[Tab] = []
+        self.font_resolver = FontResolver()
         self.tabs = QTabWidget()
         self.tabs.setAccessibleName("Dokumen terbuka")
         self.tabs.setTabsClosable(True)
@@ -137,6 +142,7 @@ class StudioWindow(QMainWindow):
             ("ellipse", "Ellipse"),
             ("line", "Line"),
             ("polygon", "Polygon"),
+            ("text", "Text"),
         )
         for kind, title in drawing_tools:
             action = toolbar.addAction(title)
@@ -204,11 +210,19 @@ class StudioWindow(QMainWindow):
                 lease.release()
                 self.tabs.setCurrentIndex(index)
                 return
+
+        def measure_text(before: Any, planned: Any) -> Any:
+            with store.pin(planned.assets.assets) as pinned:
+                return text_reflow(
+                    before, planned, self.font_resolver.resolve(planned, pinned.blobs)
+                )
+
         dispatcher = Dispatcher(
             handle.admission,
             initially_saved=handle.path is not None,
             assets=store.retention(),
             read_only=handle.read_only,
+            text_layout=measure_text,
         )
         lease.release()
         widget = QWidget()
@@ -262,6 +276,7 @@ class StudioWindow(QMainWindow):
             store,
             widget,
             view=view,
+            warning_label=label,
             status="Read-only"
             if handle.read_only
             else "Tersimpan"
@@ -538,6 +553,7 @@ class StudioWindow(QMainWindow):
             if tab.view.selection != tab.selection:
                 tab.view.cancel_gesture()
             tab.view.selection = tab.selection
+            tab.view.text.sync()
             tab.view.viewport().update()
         selected = (
             tab.dispatcher.snapshot.project.document.nodes[tab.selection[0]]
@@ -631,6 +647,21 @@ class StudioWindow(QMainWindow):
                 k for k in tab.selection if k in allowed and eligible(project.document, k)
             )
             if tab.view:
+                with tab.store.pin(project.assets.assets) as pinned:
+                    resources = self.font_resolver.resolve(project, pinned.blobs)
+                # Reuse an unchanged resources object so scene invalidation stays incremental.
+                if resources != tab.view.adapter.resources:
+                    tab.view.adapter.resources = resources
+                warning_label = tab.warning_label
+                if isinstance(warning_label, QLabel):
+                    warning_label.setText(
+                        "\n".join(
+                            (
+                                *render_warnings(project.document, resources),
+                                *text_diagnostics(project, resources),
+                            )
+                        )
+                    )
                 tab.view.sync(tab.active_page, writable=writable)
             self.project_name.setText(project.document.name)
         else:
@@ -663,4 +694,5 @@ class StudioWindow(QMainWindow):
             self.close_tab(self.tabs.currentIndex())
         else:
             self.executor.shutdown(wait=False)
+            self.font_resolver.close()
             event.accept()

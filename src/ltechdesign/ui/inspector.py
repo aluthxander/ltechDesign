@@ -26,6 +26,7 @@ from ltechdesign.domain.models import NodeId
 from ltechdesign.rendering.drawing import color
 
 from .arrangement import ArrangementControls
+from .typography import TypographyPanel
 
 if TYPE_CHECKING:
     from .window import StudioWindow, Tab
@@ -76,6 +77,9 @@ class InspectorPanel(QScrollArea):
         body = QWidget()
         self.setWidget(body)
         form = QFormLayout(body)
+        # Typography adds a variable-height section. Preserve control minimum
+        # heights and let the scroll area scroll instead of squeezing nested rows.
+        form.setSizeConstraint(QFormLayout.SizeConstraint.SetMinimumSize)
         self.project_name = QLabel("—")
         self.project_name.setWordWrap(True)
         self.object_name = QLineEdit()
@@ -88,6 +92,8 @@ class InspectorPanel(QScrollArea):
         form.addRow(self.summary)
         self.arrangement = ArrangementControls(window)
         form.addRow(self.arrangement)
+        self.typography = TypographyPanel(window)
+        form.addRow(self.typography)
         self.fields: dict[str, Field] = {}
         self.pickers: dict[str, QPushButton] = {}
         self.edits: dict[str, Edit] = {}
@@ -292,6 +298,7 @@ class InspectorPanel(QScrollArea):
 
     def sync(self) -> None:
         self.arrangement.sync()
+        self.typography.sync()
         tab = self.studio.current
         context = (tab, tab.selection, tab.dispatcher.snapshot.revision) if tab else None
         if context != self.context and not self.publishing:

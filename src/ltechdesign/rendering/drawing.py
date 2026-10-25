@@ -1,6 +1,7 @@
 """Shared traversal for canvas and offscreen targets. No scene or editor overlays."""
 
 import math
+from dataclasses import replace
 
 from PySide6.QtCore import QPointF, QRectF, Qt
 from PySide6.QtGui import (
@@ -186,7 +187,7 @@ def draw_body(
     budget: list[int],
     resources: Resources | None,
 ) -> None:
-    node = document.nodes[key]
+    node = resources.previews.get(key, document.nodes[key]) if resources else document.nodes[key]
     shape = path(node)
     if node.type == "text" and resources is not None:
         draw_text(painter, node, resources)
@@ -225,8 +226,15 @@ def render_image(
     scale: float = 1,
     *,
     resources: Resources | None = None,
+    notes: list[str] | None = None,
 ) -> QImage:
     """Strict offscreen contract for preview/export callers; no editor decorations."""
+    if resources is not None and resources.previews:
+        resources = replace(resources, previews={})
+    if notes is not None and resources is not None:
+        from .text import diagnostics
+
+        notes.extend(diagnostics(document, resources))
     if warnings(document, resources):
         fail(
             "renderer_feature_unavailable",

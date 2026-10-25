@@ -9,6 +9,7 @@ from PySide6.QtGui import (
     QContextMenuEvent,
     QFocusEvent,
     QHideEvent,
+    QInputMethodEvent,
     QKeyEvent,
     QKeySequence,
     QMouseEvent,
@@ -34,6 +35,7 @@ from ltechdesign.rendering.hit_testing import (
 )
 
 from .canvas_aids import CanvasAids
+from .text_editing import InlineTextController
 from .transforms import TransformController, edit_shortcut
 
 
@@ -69,9 +71,11 @@ class EditorCanvas(CanvasView):
         self.gesture: Gesture | None = None
         self.preview: Node | None = None
         self.apply_operations: Callable[[tuple[Operation, ...], int, str], bool] | None = None
+        self.apply_text: Callable[[tuple[Operation, ...], int, str, str], bool] | None = None
         self.aids = CanvasAids(self)
         self.aids.layout_rulers()
         self.transforms = TransformController(self)
+        self.text = InlineTextController(self)
         self.setMouseTracking(True)
         self.setAccessibleName(
             "Canvas — drawing drag; Shift/Ctrl multiselect; Esc cancel; Ctrl+A select all"
@@ -90,11 +94,16 @@ class EditorCanvas(CanvasView):
             self.message.emit("Drawing dibatalkan: dokumen atau halaman berubah.")
         self.writable = writable
         self.adapter.sync(self.dispatcher.snapshot.project.document, page)
+        self.text.sync()
+
+    def submit_text(self, ops: tuple[Operation, ...], revision: int, name: str, group: str) -> bool:
+        return self.apply_text(ops, revision, name, group) if self.apply_text else False
 
     def set_tool(self, tool: NodeType | None) -> None:
-        if tool not in (None, "frame", "rectangle", "ellipse", "line", "polygon"):
+        if tool not in (None, "frame", "rectangle", "ellipse", "line", "polygon", "text"):
             raise ValueError("Unsupported drawing tool")
         self.cancel_gesture()
+        self.text.finish()
         self.tool = tool
         self.setCursor(Qt.CursorShape.CrossCursor if tool else Qt.CursorShape.ArrowCursor)
 
@@ -120,6 +129,9 @@ class EditorCanvas(CanvasView):
         self.gesture = None
         self.preview = None
         self.aids.clear()
+        if hasattr(self, "text"):
+            self.text.placement = None
+            self.text.dragging = False
         self.viewport().update()
 
     def _preview(self, position: QPoint) -> None:
@@ -180,6 +192,9 @@ class EditorCanvas(CanvasView):
             return
         screen = event.position().toPoint()
         point = self.mapToScene(screen)
+        if self.text.press(point, screen, event.modifiers()):
+            event.accept()
+            return
         additive = bool(
             event.modifiers()
             & (Qt.KeyboardModifier.ShiftModifier | Qt.KeyboardModifier.ControlModifier)
@@ -213,7 +228,9 @@ class EditorCanvas(CanvasView):
         event.accept()
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
-        if self.transforms.active:
+        if self.text.move(self.mapToScene(event.position().toPoint())):
+            event.accept()
+        elif self.transforms.active:
             self.transforms.update(event.position().toPoint(), event.modifiers())
             event.accept()
         elif self.gesture is not None:
@@ -223,7 +240,11 @@ class EditorCanvas(CanvasView):
             super().mouseMoveEvent(event)
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:
-        if event.button() == Qt.MouseButton.LeftButton and self.transforms.active:
+        if event.button() == Qt.MouseButton.LeftButton and self.text.release(
+            event.position().toPoint()
+        ):
+            event.accept()
+        elif event.button() == Qt.MouseButton.LeftButton and self.transforms.active:
             self.transforms.release(event.position().toPoint(), event.modifiers())
             event.accept()
         elif event.button() == Qt.MouseButton.LeftButton and self.gesture is not None:
@@ -268,7 +289,16 @@ class EditorCanvas(CanvasView):
                 )
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
-        if event.key() == Qt.Key.Key_Escape:
+        if self.text.handle_key(event):
+            return
+        if event.key() == Qt.Key.Key_F2 and len(self.selection) == 1:
+            if self.text.begin(self.selection[0]):
+                event.accept()
+                return
+        if event.key() == Qt.Key.Key_T and event.modifiers() == Qt.KeyboardModifier.NoModifier:
+            self.action_requested.emit("tool_text")
+            event.accept()
+        elif event.key() == Qt.Key.Key_Escape:
             self.cancel_gesture()
             event.accept()
         elif event.matches(QKeySequence.StandardKey.SelectAll):
@@ -303,10 +333,13 @@ class EditorCanvas(CanvasView):
 
     def focusOutEvent(self, event: QFocusEvent) -> None:
         self.cancel_gesture()
+        if event.reason() != Qt.FocusReason.PopupFocusReason:
+            self.text.finish()
         super().focusOutEvent(event)
 
     def hideEvent(self, event: QHideEvent) -> None:
         self.cancel_gesture()
+        self.text.finish()
         super().hideEvent(event)
 
     def resizeEvent(self, event: QResizeEvent) -> None:
@@ -349,3 +382,36 @@ class EditorCanvas(CanvasView):
         painter.restore()
         self.transforms.draw(painter)
         self.aids.draw_guides(painter)
+        self.text.draw(painter)
+
+    def mouseDoubleClickEvent(self, event: QMouseEvent) -> None:
+        doc = self.adapter.document
+        if doc is not None:
+            point = self.mapToScene(event.position().toPoint())
+            key = hit_test(doc, self.adapter.page, point, self.zoom, self.devicePixelRatioF())
+            if key is not None and doc.nodes[key].type == "text" and self.text.begin(key):
+                self.text.place_cursor(point, word=True)
+                event.accept()
+                return
+        super().mouseDoubleClickEvent(event)
+
+    def inputMethodEvent(self, event: QInputMethodEvent) -> None:
+        if self.text.active:
+            self.text.input_method(event)
+            event.accept()
+        else:
+            super().inputMethodEvent(event)
+
+    def inputMethodQuery(self, query: Qt.InputMethodQuery) -> object:
+        if hasattr(self, "text") and self.text.active:
+            node, resources = self.text.node(), self.adapter.resources
+            if query == Qt.InputMethodQuery.ImCursorRectangle and node and resources:
+                from ltechdesign.rendering.text import cursor_rect
+
+                rect = cursor_rect(node, resources, self.text.input.textCursor().position())
+                return (
+                    transform(world_matrix(self.dispatcher.snapshot.project.document, node.id))
+                    * self.viewportTransform()
+                ).mapRect(rect)
+            return self.text.input.inputMethodQuery(query)
+        return super().inputMethodQuery(query)

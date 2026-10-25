@@ -6,7 +6,7 @@ from dataclasses import replace
 
 from .errors import fail
 from .geometry import Matrix, local_matrix, translation, with_matrix
-from .models import Document, LineData, Node, NodeId, Point, PolygonData
+from .models import Document, LineData, Node, NodeId, Point, PolygonData, TextData
 
 MIN_SIZE = 0.01
 
@@ -55,6 +55,10 @@ def resized(node: Node, width: float, height: float, anchor: Point) -> Node:
             height = 0
     sx, sy = width / node.width if node.width else 1, height / node.height if node.height else 1
     data = node.data
+    if isinstance(data, TextData) and data.typography.sizing != "fixed":
+        keep_auto_height = data.typography.sizing == "auto_height" and height == node.height
+        if not keep_auto_height:
+            data = replace(data, typography=replace(data.typography, sizing="fixed"))
 
     def scaled(p: Point) -> Point:
         return Point(
