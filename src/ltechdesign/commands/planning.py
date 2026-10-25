@@ -17,6 +17,7 @@ from ltechdesign.domain.geometry import (
     world_matrix,
 )
 from ltechdesign.domain.inspector import inspected
+from ltechdesign.domain.layout import fills, mode
 from ltechdesign.domain.models import (
     AssetsIndex,
     Document,
@@ -55,8 +56,10 @@ from .contracts import (
     ReparentNodes,
     ResizeNode,
     ScaleNodes,
+    SetConstraints,
     SetFont,
     SetLayerState,
+    SetLayout,
     SetMedia,
     SetProperties,
     SetStyle,
@@ -220,10 +223,7 @@ class Draft:
                 old_world = self.world(key)
                 desired = matrix @ old_world
                 if node.type in ("frame", "artboard"):
-                    if any(
-                        self.node(k).layout or self.node(k).constraints for k in self.subtree(key)
-                    ):
-                        fail("layout_evaluator_unavailable", code="unsupported_capability")
+                    self.check_resize(node, node.width * op.factor, node.height * op.factor)
                     node = resized(node, node.width * op.factor, node.height * op.factor, Point())
                     desired = Matrix(
                         old_world.a, old_world.b, old_world.c, old_world.d, desired.tx, desired.ty
@@ -251,8 +251,7 @@ class Draft:
                 )
         elif isinstance(op, ResizeNode):
             node = self.node(op.node_id)
-            if any(self.node(k).layout or self.node(k).constraints for k in self.subtree(node.id)):
-                fail("layout_evaluator_unavailable", code="unsupported_capability")
+            self.check_resize(node, op.width, op.height)
             self.nodes[node.id] = resized(node, op.width, op.height, op.anchor)
         elif isinstance(op, EditNodes):
             keys = self.selected_roots(op.node_ids)
@@ -339,6 +338,10 @@ class Draft:
                 type="svg" if media_asset.media_type == "image/svg+xml" else "image",
                 data=op.data,
             )
+        elif isinstance(op, SetLayout):
+            self.nodes[op.node_id] = replace(self.node(op.node_id), layout=op.layout)
+        elif isinstance(op, SetConstraints):
+            self.nodes[op.node_id] = replace(self.node(op.node_id), constraints=op.constraints)
         elif isinstance(op, Update):
             old = self.node(op.node.id)
             for field in ("type", "page_id", "parent_id", "children"):
@@ -371,6 +374,8 @@ class Draft:
         elif isinstance(op, Reparent):
             node = self.node(op.node_id)
             self.siblings(op.page_id, op.parent_id)
+            if op.preserve_appearance and op.parent_id and self.node(op.parent_id).layout:
+                fail("layout_reparent_changes_position", code="unsupported_visual_preservation")
             if op.parent_id in self.subtree(node.id):
                 fail("hierarchy_cycle")
             if op.preserve_appearance and self.context(node.parent_id) != self.context(
@@ -394,10 +399,12 @@ class Draft:
             self.selected_roots(op.node_ids)  # validates explicit targets and selection budget
             for key in op.node_ids:
                 node = self.node(key)
-                if op.property in ("width", "height") and any(
-                    self.node(k).layout or self.node(k).constraints for k in self.subtree(key)
-                ):
-                    fail("layout_evaluator_unavailable", code="unsupported_capability")
+                if op.property in ("width", "height"):
+                    for axis, field in enumerate(("width", "height")):
+                        if op.property == field and (
+                            mode(node, axis) != "fixed" or fills(self.nodes, node, axis)
+                        ):
+                            fail("layout_size_is_derived", node_id=key, axis=axis)
                 self.nodes[key] = inspected(node, op.property, op.value)
         elif isinstance(op, SetStyle):
             self.nodes[op.node_id] = replace(self.node(op.node_id), style=op.style)
@@ -423,6 +430,11 @@ class Draft:
             del self.assets[op.asset_id]
         else:
             fail("unsupported_operation")
+
+    def check_resize(self, node: Node, width: float, height: float) -> None:
+        for axis, old, new in ((0, node.width, width), (1, node.height, height)):
+            if old != new and (mode(node, axis) != "fixed" or fills(self.nodes, node, axis)):
+                fail("layout_size_is_derived", node_id=node.id, axis=axis)
 
     def selected_roots(self, keys: tuple[NodeId, ...]) -> tuple[NodeId, ...]:
         # Use the current draft graph (also valid after prior operations in the batch).
@@ -466,6 +478,8 @@ class Draft:
         self.id_map.extend(mapping.items())
 
     def relocate(self, op: RelocateNodes) -> None:
+        if op.preserve_appearance and op.parent_id and self.node(op.parent_id).layout:
+            fail("layout_reparent_changes_position", code="unsupported_visual_preservation")
         roots = self.selected_roots(op.node_ids)
         order = {
             key: i
@@ -644,8 +658,8 @@ class Draft:
         if any(f.source == "embedded" for f in self.fonts.fonts):
             capabilities.add("fonts.embedded/1")
         for node in self.nodes.values():
-            if node.layout is not None or node.constraints is not None:
-                fail("layout_evaluator_unavailable", code="unsupported_capability")
+            if node.layout is not None:
+                capabilities.add("layout.stack/1")
             if node.clip_content or (node.type in ("image", "svg") and any(node.style.radius)):
                 capabilities.add("render.clipping/1")
             if node.type == "group" and node.opacity != 1:

@@ -35,6 +35,7 @@ from ltechdesign.rendering.fonts import FontResolver
 from ltechdesign.rendering.hit_testing import eligible, paint_order
 from ltechdesign.rendering.media import MediaSource, prepare_sources
 from ltechdesign.rendering.text import display_notes as text_diagnostics
+from ltechdesign.rendering.text import measured as text_measured
 from ltechdesign.rendering.text import reflow as text_reflow
 from ltechdesign.ui.artboard import ArtboardDialog
 from ltechdesign.ui.canvas import EditorCanvas
@@ -232,12 +233,19 @@ class StudioWindow(QMainWindow):
                     before, planned, self.font_resolver.resolve(planned, pinned.blobs, media={})
                 )
 
+        def measure_node(planned: Any, node: Any) -> Any:
+            with store.pin(planned.assets.assets) as pinned:
+                return text_measured(
+                    node, self.font_resolver.resolve(planned, pinned.blobs, media={})
+                )
+
         dispatcher = Dispatcher(
             handle.admission,
             initially_saved=handle.path is not None,
             assets=store.retention(),
             read_only=handle.read_only,
             text_layout=measure_text,
+            text_measure=measure_node,
         )
         lease.release()
         widget = QWidget()

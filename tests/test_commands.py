@@ -469,11 +469,11 @@ def test_layout_failure_rolls_back_and_layout_output_is_same_history_entry() -> 
     before = failing.snapshot
     error(run(failing, Create(node=node(failing, "a"))), "validation_error")
     assert failing.snapshot is before and not failing.undo_history
-    unsupported = engine()
-    error(
-        run(unsupported, Create(node=node(unsupported, "f", "frame", layout=Layout()))),
-        "unsupported_capability",
-    )
+    supported = engine()
+    frame = node(supported, "f", "frame", layout=Layout(sizing_x="hug"))
+    ok(supported, Create(node=frame))
+    assert supported.snapshot.project.document.nodes[frame.id].width == 0.01
+    assert "layout.stack/1" in supported.snapshot.project.manifest.required_capabilities
 
 
 @pytest.mark.parametrize("operation", ["save", "export", "selection", "viewport"])

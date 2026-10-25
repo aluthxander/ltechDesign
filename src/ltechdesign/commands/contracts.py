@@ -9,7 +9,9 @@ from ltechdesign.domain.inspector import Property
 from ltechdesign.domain.models import (
     Asset,
     AssetId,
+    Constraints,
     Font,
+    Layout,
     MediaData,
     Node,
     NodeId,
@@ -48,6 +50,18 @@ class SetMedia(Record):
 
     node_id: NodeId
     data: MediaData
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class SetLayout(Record):
+    node_id: NodeId
+    layout: Layout | None
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class SetConstraints(Record):
+    node_id: NodeId
+    constraints: Constraints | None
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
@@ -242,6 +256,8 @@ Operation = (
     Create
     | Update
     | SetMedia
+    | SetLayout
+    | SetConstraints
     | Delete
     | Move
     | Reparent

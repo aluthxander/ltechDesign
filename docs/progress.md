@@ -1,10 +1,50 @@
 # Progress ltechDesign Studio
 
-Tanggal: 25 Oktober 2026 (Asia/Jakarta). Baseline historis `54162c5`; HEAD saat mulai11 `f1918d2` (09/10A/10B sudah committed oleh pengguna). Working tree awal11 bersih; tidak ada commit otomatis. PRD 1.2. Indeks ini dibaca dahulu; lanjutkan hanya source/keputusan terkait segmen aktif.
+Tanggal pembaruan: 26 Oktober 2026 (Asia/Jakarta). Baseline historis `54162c5`; HEAD saat mulai13 `db9fe72`. Working tree awal13 bersih; tidak ada commit otomatis. PRD 1.2. Indeks ini dibaca dahulu; lanjutkan hanya source/keputusan terkait segmen aktif.
 
 ## Status singkat dan langkah berikutnya
 
-**Segmen aktif12: verified.** PNG/JPEG/WebP/static SVG via dialog/local drop,
+**Segmen aktif13: verified (26 Oktober 2026).** Pure-domain horizontal/vertical
+stack, padding/gap/alignment, fixed/hug/fill, basic parent constraints, cycle/
+overflow policy dan Inspector Apply terhubung transaksi/text/native/shared export.
+Final459core+167desktop,46targeted/22native, Ruff107/mypy103, docs/fixtures/package/
+installed-wheel/executable spike lulus. Native Inspector/PNG/PDF raster diperiksa;
+PNG wheel byte-identik. [Baseline13](baseline-segment13.md),
+[evidence13](evidence/segment13-verification.json), ADR0025. Base HEAD `db9fe72`,
+tanpa commit otomatis. 08.layout dan induk08 kini verified. Tidak ada blocker13.
+Berikutnya14 `not_started`; tidak dikerjakan otomatis. Advanced28 tetap backlog.
+
+### Handoff segmen13
+
+- `13.engine`, `13.commands`, `13.inspector`, `13.integration`, `13.handoff`
+  `verified`. Graph dimensi tanpa Qt/scene menolak siklus; nested fill width ->
+  shared text wrap -> hug height sebelum publish sekali. Resize parent tidak
+  menskalakan anak. Invalid layout/metrics/token binding rollback seluruh batch.
+- SetLayout/SetConstraints, ResizeNode/SetProperties, text/typography/font edits,
+  child create/delete/reorder memakai dispatcher/history yang sama. Native1.0
+  menyimpan konfigurasi dan geometry editable; stable IDs/asset references tetap.
+  Shared canvas/PNG/PDF membaca geometry final; tidak ada renderer layout kedua.
+- Aktual46targeted=39core+7desktop,22native termasuk pointer resize/inline text
+  serta regresi transform/Inspector. Full `scripts/check.ps1 all` offline exit0:
+  459core+167desktop, Ruff107/mypy103, docs/fixtures/build/isolated-wheel lulus.
+  Incremental UI root-constraint validation: native22 lalu targeted46, mypy103,
+  lint/format dan `check.ps1 package` ulang lulus; source terakhir masuk bundle.
+- Python3.12.12/PySide6Qt6.10.2/Pillow12.3.0 tidak berubah; PyInstaller6.22.3
+  build/executable offscreen spike exit0. Demo native actualDPR1.25 dan installed
+  wheel (-I) menghasilkan PNG SHA256 sama; screenshot Inspector/PNG/PDF raster
+  benar-benar diperiksa. Batas dan resolusi di ADR0025; tanpa toleransi tes lama
+  yang dilonggarkan. Regresi fixed-text metrics guard yang ditemukan full gate
+  diperbaiki dan tes asli lulus kembali.
+- 08.layout kini verified dengan evaluator13 dan tes pointer/command parent resize,
+  constraints/nested stack/text reflow/undo/native/export serta existing08 regression.
+  Semua checkpoint08 lain sudah verified; induk08 verified untuk lingkup MVP.
+  Bukti benchmark08 historis dan target100ms yang belum tercapai tetap pending23.
+- Manual fisik keyboard/mouse/screen reader/OS DPI/monitor switching, viewer PDF
+  lain dan mesin Windows rilis bersih belum diuji (22/24). Performance23,
+  recovery14, public export jobs15–17, MCP18–19 dan advanced28 tetap pemilik.
+  Aman melanjutkan14 sesuai prasyaratnya, bukan klaim seluruh acceptance/rilis.
+
+**Segmen12 (historis): verified.** PNG/JPEG/WebP/static SVG via dialog/local drop,
 embedded thumbnails, fit/fill/stretch/source crop/rounded clip/opacity/rotation dan
 replace tanpa mengubah container tersedia. Final420core+160desktop,38targeted/
 53native, lint102/mypy98, docs/fixtures/package/wheel/executable codec spike lulus.
@@ -14,7 +54,7 @@ Base HEAD `3f7a785`, working tree awal bersih, tanpa commit otomatis. Segmen13 t
 dikerjakan; clipboard image eksternal tetap38A. Performance1000selection/GUI100ms
 masih pending23, physical release machine pending24; bukan klaim semua NFR verified.
 
-Catatan01–11 di bawah bersifat historis; status aktif sesi ini adalah12.
+Catatan01–12 di bawah bersifat historis; status aktif sesi ini adalah13.
 
 **Segmen aktif11: verified.** Text tool/inline multiline, validated Mixed typography Inspector, local/embedded font resolver dan shared layout/outline terhubung command/native/PNG/PDF. Final418core+124desktop,27targeted/28native, lint96/mypy92, fixtures/docs/package/wheel/executable spike lulus. Native DPR aktual1.25/1.875/2.5, PNG/PDF dan screenshot Inspector diperiksa. [Baseline11](baseline-segment11.md), [evidence11](evidence/segment11-verification.json), ADR0023. Base HEAD `f1918d2d28f2139f31fe4d2f5cc1a65ff533cc95`; tanpa commit otomatis. Segmen12 tidak dikerjakan.
 
@@ -234,14 +274,14 @@ Urutan berasal dari indeks roadmap, bukan instruksi otomatis. Checkpoint08 pada 
 | 06 | Shared renderer dasar dan pan/zoom | verified | Baseline 06 + ADR 0016; 7 renderer tests; 324 core/16 desktop + full gate/spike/demo; 06A next |
 | 06A | Canvas/PNG/PDF/offscreen fixture shared drawing | verified | Baseline 06A + ADR 0017; actual fixture/PDF fallback/text outline proof; 324 core/19 desktop, full gate + executable spike |
 | 07 | Artboard presets/drawing/selection | verified | Baseline07 + ADR0018; 344 core/46 desktop full gate, 27 GUI native, visual canvas/dialog dan executable offscreen spike |
-| 08 | Transform/clipboard/group/undo/nudge/z-order, AT-24 | blocked | Baseline08 + ADR0019; checkpoint independen verified,352core/53desktop+7native+spike;08.layout menunggu evaluator13; dua baseline10detik disimpan, GUI heartbeat110,69–111,07ms pending23 |
+| 08 | Transform/clipboard/group/undo/nudge/z-order, AT-24 | verified | Baseline08 + ADR0019 historis;08.layout ditutup13 dengan atomic parent layout/constraints, pointer resize/text/undo/native/shared drawing. Baseline13/full gate/native regression lulus; target GUI100ms tetap pending23 |
 | 09 | Pages/layers/search/reorder/reparent | verified | Baseline09+ADR0020;18targeted/10native,360core+63desktop full gate, visual native dan executable spike; tidak menutup08.layout |
 | 10 | Inspector/style dan snapping/alignment | verified | 10A verified +10B verified; baseline10A/10B, ADR0021/0022 dan full gate/spike |
 | 10A | Inspector/style/color/basic shadow | verified | Baseline10A+ADR0021;34targeted/18native,376core+81desktop full gate; screenshot native, wheel shadow probe dan executable spike lulus |
 | 10B | Rulers/grid/snap/smart guides/alignment/distribution | verified | Baseline10B+ADR0022;58targeted/47native,405core+110desktop full gate; DPR1/1.5/2/visual/wheel/executable spike |
 | 11 | Text inline, fonts/shared layout/fallback warning | verified | Baseline11+ADR0023;27targeted/28native,418core+124desktop full gate, local/embedded restore dan shared PNG/PDF; packaging/wheel spike lulus |
 | 12 | Raster/SVG/import/crop/replace/asset retention | verified | Baseline12/ADR0024;38targeted/53native,420core+160desktop full gate/wheel/executable codecs; portable embedded media, shared vector drawing/undo/GC,36MP cancellation dan baseline shapes/mixed diulang; performance1000 pending23 |
-| 13 | Stack/constraints fixed/hug/fill dasar atomik | not_started | 12 |
+| 13 | Stack/constraints fixed/hug/fill dasar atomik | verified | Baseline13/ADR0025;459core+167desktop,46targeted/22native, native Inspector/PNG/PDF visual dan wheel/executable spike; batas advanced28 eksplisit |
 | 14 | Recent/duplicate/autosave/recovery/checkpoint/thumbnail/font metadata | not_started | 13 |
 | 15 | PNG/JPG/WebP job/service/dialog/codec fallback | not_started | 14 |
 | 16 | PDF single/multipage ukuran berbeda P0 | not_started | 15 |

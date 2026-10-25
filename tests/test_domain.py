@@ -488,7 +488,7 @@ def test_generated_fixture_schema_and_docs_do_not_drift() -> None:
             assert set(definition["required"]) == set(definition["properties"])
 
 
-def test_layout_is_typed_but_not_admitted_without_solver(project: Project) -> None:
+def test_layout_configuration_is_validated_at_project_admission(project: Project) -> None:
     nodes = dict(project.document.nodes)
     key = NodeId("artboard-web")
     nodes[key] = replace(nodes[key], layout=Layout())
@@ -498,10 +498,12 @@ def test_layout_is_typed_but_not_admitted_without_solver(project: Project) -> No
         project.manifest,
         required_capabilities=(*project.manifest.required_capabilities, "layout.stack/1"),
     )
-    with pytest.raises(ModelError, match="unsupported_capability"):
+    # Fixture contains transformed children: preserve the typed wire payload, but
+    # reject this unsupported MVP layout rather than silently changing appearance.
+    with pytest.raises(ModelError, match="layout_child_transform_unsupported"):
         replace(project, document=doc, manifest=manifest)
     nodes[key] = replace(nodes[key], layout=None, constraints=Constraints())
-    with pytest.raises(ModelError, match="layout_evaluator_unavailable"):
+    with pytest.raises(ModelError, match="layout_constraints_require_frame"):
         replace(project, document=replace(doc, nodes=nodes))
 
 

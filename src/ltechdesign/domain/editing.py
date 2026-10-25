@@ -43,8 +43,6 @@ def resized(node: Node, width: float, height: float, anchor: Point) -> Node:
     """Geometry resize in local axes; fixed world anchor, no implicit child scaling."""
     if node.type == "group":
         fail("group_resize_requires_uniform_scale")
-    if node.layout is not None or node.constraints is not None:
-        fail("layout_evaluator_unavailable", code="unsupported_capability")
     if not 0 <= anchor.x <= 1 or not 0 <= anchor.y <= 1:
         fail("invalid_anchor")
     width, height = max(MIN_SIZE, width), max(MIN_SIZE, height)

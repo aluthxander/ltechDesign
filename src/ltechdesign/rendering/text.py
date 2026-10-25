@@ -298,28 +298,33 @@ def display_notes(project: Project, resources: Resources) -> tuple[str, ...]:
 def reflow(before: Project, after: Project, resources: Resources) -> Project:
     """Runs on the owner Qt thread inside dispatch preparation, before publication."""
     from ltechdesign.commands.planning import Draft
-    from ltechdesign.domain.editing import resized
-    from ltechdesign.domain.models import Point
 
     draft = Draft(after)
     changed = False
     for node in after.document.nodes.values():
         if not isinstance(node.data, TextData) or not needs_reflow(before, after, node):
             continue
-        _, metrics = layouts(node, resources, measure=True)
-        t = node.data.typography
-        if t.sizing == "fixed":
-            continue
-        advance = t.line_height.value * (t.font_size if t.line_height.unit == "multiplier" else 1)
-        height = max([advance] + [m["y"] + max(advance, m["height"]) for m in metrics])
-        width = (
-            max([1.0] + [m["width"] for m in metrics]) if t.sizing == "auto_width" else node.width
-        )
-        width, height = math.ceil(width * 64) / 64, math.ceil(height * 64) / 64
-        adjusted = resized(node, width, height, Point())
-        draft.nodes[node.id] = replace(adjusted, data=node.data)
+        draft.nodes[node.id] = measured(node, resources)
         changed = True
     return draft.finish() if changed else after
+
+
+def measured(node: Node, resources: Resources) -> Node:
+    """Intrinsic text geometry port, shared by text edits and layout allocation."""
+    from ltechdesign.domain.editing import resized
+    from ltechdesign.domain.models import Point
+
+    if not isinstance(node.data, TextData):
+        return node
+    _, metrics = layouts(node, resources, measure=True)
+    t = node.data.typography
+    if t.sizing == "fixed":
+        return node
+    advance = t.line_height.value * (t.font_size if t.line_height.unit == "multiplier" else 1)
+    height = max([advance] + [m["y"] + max(advance, m["height"]) for m in metrics])
+    width = max([1.0] + [m["width"] for m in metrics]) if t.sizing == "auto_width" else node.width
+    width, height = math.ceil(width * 64) / 64, math.ceil(height * 64) / 64
+    return replace(resized(node, width, height, Point()), data=node.data)
 
 
 def visual_rows(node: Node, resources: Resources) -> list[tuple[int, QTextLayout, QTextLine]]:

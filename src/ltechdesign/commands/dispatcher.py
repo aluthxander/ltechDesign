@@ -14,11 +14,13 @@ from typing import Any
 
 from ltechdesign.domain.codec import MAX_JSON_BYTES, semantic_content
 from ltechdesign.domain.errors import ModelError, fail
+from ltechdesign.domain.layout import recalculate
 from ltechdesign.domain.models import (
     MAX_REVISION,
     Asset,
     AssetId,
     DocumentSession,
+    Node,
     NodeId,
     Project,
     SessionId,
@@ -137,6 +139,7 @@ class Dispatcher:
         assets: AssetRetention | None = None,
         layout: Callable[[Project], Project] | None = None,
         text_layout: Callable[[Project, Project], Project] | None = None,
+        text_measure: Callable[[Project, Node], Node] | None = None,
         read_only: bool = False,
     ) -> None:
         if (
@@ -159,6 +162,7 @@ class Dispatcher:
         self._assets = assets if assets is not None else MetadataOnlyRetention()
         self._layout = layout if layout is not None else lambda project: project
         self._text_layout = text_layout if text_layout is not None else require_metrics
+        self._text_measure = text_measure
         self._read_only = read_only
         self._closed = False
         self._busy = False
@@ -397,7 +401,19 @@ class Dispatcher:
                     draft.apply(op)
                 planned = draft.finish()
                 reflowed = self._text_layout(before, planned)
-                after = self._layout(reflowed)
+                evaluated_project = reflowed
+                if any(n.layout or n.constraints for n in reflowed.document.nodes.values()):
+                    evaluated = Draft(reflowed)
+                    measure = self._text_measure
+                    evaluated.nodes = dict(
+                        recalculate(
+                            before,
+                            reflowed,
+                            (lambda node: measure(reflowed, node)) if measure is not None else None,
+                        )
+                    )
+                    evaluated_project = evaluated.finish()
+                after = self._layout(evaluated_project)
                 if (
                     type(after) is not Project
                     or after.document.document_id != before.document.document_id

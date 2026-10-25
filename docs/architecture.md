@@ -4,6 +4,13 @@ Tanggal keputusan: 21 Oktober 2026 (Asia/Jakarta). Acuan: PRD 1.2, khususnya bag
 
 ## 1. Baseline repository dan batas segmen 00
 
+Update13 (26 Oktober2026): pure-domain dimension dependency graph mengevaluasi
+stack/parent constraints sebelum commit, memakai port metrics teks shared setelah
+alokasi width. Dispatcher menormalisasi group ancestor dan memvalidasi sebelum
+publish sekali. Inspector SetLayout/SetConstraints memakai dispatcher yang sama;
+native1.0/renderer tidak berubah. Batas/cycle/overflow dan advanced28 di
+[ADR0025](adr/0025-deterministic-stack-layout.md), bukti [baseline13](baseline-segment13.md).
+
 Update12 (25 Oktober2026): raster/SVG sumber embedded dirender melalui shared
 media drawing. SetMedia mempertahankan container ketika crop/fit/replace; import
 worker bounded menyiapkan QImage/QPicture/thumbnail sebelum command publication.

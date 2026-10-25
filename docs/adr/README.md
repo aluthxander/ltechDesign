@@ -40,3 +40,5 @@ Versi dependency dan packager yang diuji dicatat pada ADR 0011 serta baseline 01
 - [0023 — Inline text dan shared layout](0023-inline-text-and-layout.md): accepted,11; typography units, atomic auto-size metrics port, Unicode/IME input, local/embedded fallback dan shared outline diagnostics.
 
 - [0024 — Portable media dan staged import](0024-portable-media-import.md): accepted,12; bounded worker staging/cancel, vector drawing/DPI, source crop mapping dan retained embedded bytes.
+
+- [0025 — Deterministic stack dan parent constraints](0025-deterministic-stack-layout.md): accepted,13; dependency graph, atomic layout/text sizing, fixed/hug/fill/overflow, supported MVP combinations dan parent resize.

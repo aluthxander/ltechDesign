@@ -21,6 +21,7 @@ SUPPORTED_CAPABILITIES = CORE_CAPABILITIES | {
     "tokens.bindings/1",
     "assets.svg/1",
     "fonts.embedded/1",
+    "layout.stack/1",
 }
 OPTIONAL_CAPABILITIES = frozenset({"workspace.view/1", "preview.thumbnail/1"})
 DATA_TYPES: dict[str, type[m.Record]] = {
@@ -249,7 +250,10 @@ def required_capabilities(project: m.Project) -> frozenset[str]:
 
 
 def validate_project(project: m.Project) -> None:
+    from .layout import validate_configuration
+
     manifest, document = project.manifest, project.document
+    validate_configuration(document.nodes)
     required = set(manifest.required_capabilities)
     unsupported = required - SUPPORTED_CAPABILITIES
     if unsupported:
@@ -276,8 +280,6 @@ def validate_project(project: m.Project) -> None:
                 fail("asset_media_mismatch", f"$.fonts[{font.id}].asset_id")
     for node in document.nodes.values():
         path = f"$.document.nodes[{node.id}]"
-        if node.layout is not None or node.constraints is not None:
-            fail("layout_evaluator_unavailable", path, code="unsupported_capability")
         if isinstance(node.data, m.TextData) and node.data.typography.font_id not in fonts:
             fail("missing_font", path + ".data.typography.font_id")
         if isinstance(node.data, m.MediaData):

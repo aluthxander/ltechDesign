@@ -22,11 +22,13 @@ from PySide6.QtWidgets import (
 from ltechdesign.commands import SetProperties
 from ltechdesign.domain.errors import ModelError
 from ltechdesign.domain.inspector import Property, supported, value
+from ltechdesign.domain.layout import fills, mode
 from ltechdesign.domain.models import NodeId
 from ltechdesign.rendering.drawing import color
 
 from .arrangement import ArrangementControls
 from .images import ImagePanel
+from .layout import LayoutPanel
 from .typography import TypographyPanel
 
 if TYPE_CHECKING:
@@ -97,6 +99,8 @@ class InspectorPanel(QScrollArea):
         form.addRow(self.typography)
         self.images = ImagePanel(window)
         form.addRow(self.images)
+        self.layout_panel = LayoutPanel(window)
+        form.addRow(self.layout_panel)
         self.fields: dict[str, Field] = {}
         self.pickers: dict[str, QPushButton] = {}
         self.edits: dict[str, Edit] = {}
@@ -303,6 +307,7 @@ class InspectorPanel(QScrollArea):
         self.arrangement.sync()
         self.typography.sync()
         self.images.sync()
+        self.layout_panel.sync()
         tab = self.studio.current
         context = (tab, tab.selection, tab.dispatcher.snapshot.revision) if tab else None
         if context != self.context and not self.publishing:
@@ -317,6 +322,12 @@ class InspectorPanel(QScrollArea):
         self.summary.setText(f"{len(nodes)} selected" if nodes else "Pilih objek untuk mengedit.")
         for key, field in self.fields.items():
             enabled = writable and all(supported(n, key) for n in nodes)
+            if key in ("width", "height") and tab:
+                axis = 0 if key == "width" else 1
+                registry = tab.dispatcher.snapshot.project.document.nodes
+                enabled = enabled and all(
+                    mode(n, axis) == "fixed" and not fills(registry, n, axis) for n in nodes
+                )
             field.setEnabled(enabled)
             if key in self.pickers:
                 self.pickers[key].setEnabled(enabled)

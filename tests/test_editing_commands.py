@@ -178,7 +178,8 @@ def test_selection_reorder_preserves_relative_order_and_minimums() -> None:
     assert n.width == n.height == 0.01 and n.scale > 0
 
 
-def test_invalid_affine_and_layout_frame_resize_fail_atomically() -> None:
+def test_invalid_affine_is_atomic_and_layout_frame_resize_preserves_contract() -> None:
+    from ltechdesign.domain.geometry import local_matrix
     from ltechdesign.domain.models import Layout
 
     d = engine()
@@ -189,10 +190,11 @@ def test_invalid_affine_and_layout_frame_resize_fail_atomically() -> None:
         d, TransformNodes(node_ids=(frame.id,), matrix=Matrix(2, 0, 0, 1)), request_id="affine"
     )
     assert not result.ok and d.snapshot is before
-    # The evaluator prerequisite is absent; never pretend to apply constraints.
     constrained = replace(frame, layout=Layout())
-    with pytest.raises(ModelError, match="layout_evaluator_unavailable"):
-        resized(constrained, 200, 200, Point())
+    changed = resized(constrained, 200, 200, Point())
+    assert changed.layout == constrained.layout
+    assert changed.width == changed.height == 200
+    assert local_matrix(changed).point(Point()) == local_matrix(constrained).point(Point())
 
 
 def test_resize_member_normalizes_nested_groups_without_moving_sibling() -> None:

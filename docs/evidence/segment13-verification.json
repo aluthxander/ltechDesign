@@ -1,0 +1,139 @@
+{
+  "segment": "13",
+  "status": "verified",
+  "client_date": "2026-10-26",
+  "timezone": "Asia/Jakarta",
+  "base_head": "db9fe72a53f82e5454e628841485d636d936fcf3",
+  "commit_created": false,
+  "checkpoints": {
+    "13.engine": "verified",
+    "13.commands": "verified",
+    "13.inspector": "verified",
+    "13.integration": "verified",
+    "13.handoff": "verified",
+    "08.layout": "verified"
+  },
+  "versions": {
+    "python": "3.12.12",
+    "pyside6": "6.10.2",
+    "qt": "6.10.2",
+    "pillow": "12.3.0",
+    "pyinstaller": "6.22.3"
+  },
+  "commands": [
+    {
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/check.ps1 all",
+      "environment": "UV_OFFLINE=1",
+      "exit_code": 0,
+      "core": {
+        "tests": 459,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "desktop_offscreen": {
+        "tests": 167,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "command": "pytest tests/test_layout_commands.py tests/test_layout_panel.py -q",
+      "platform": "windows",
+      "exit_code": 0,
+      "result": {
+        "tests": 46,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "command": "pytest tests/test_layout_panel.py tests/test_editor_transforms.py tests/test_inspector_panel.py -q",
+      "platform": "windows",
+      "exit_code": 0,
+      "result": {
+        "tests": 22,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "command": "ruff check .; ruff format --check .; mypy",
+      "result": "passed: 107 formatted files / 103 mypy files"
+    },
+    {
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/check.ps1 package",
+      "exit_code": 0,
+      "scope": "rebuilt final UI guard"
+    },
+    {
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/smoke-build.ps1 -SmokeMode offscreen",
+      "exit_code": 0
+    },
+    {
+      "command": ".cache/package-smoke/Scripts/python.exe -I scripts/demo_layout.py --capture --output artifacts/layout13-wheel",
+      "exit_code": 0
+    }
+  ],
+  "visual": {
+    "native_inspector_and_shared_png_and_pdf_raster_inspected": true,
+    "native_dpr": 1.25,
+    "pdf_interior_channel_tolerance": 2,
+    "native_and_installed_wheel_png_exact": true,
+    "physical_manual_input_tested": false
+  },
+  "initial_failure": "Fixed-text font size limit guard was skipped during metrics extraction; restored without modifying its test or threshold. Final full suite passed.",
+  "pending": [
+    "advanced28",
+    "public export jobs15-17",
+    "MCP18-19",
+    "recovery14",
+    "performance23",
+    "physical acceptance22/clean release24"
+  ],
+  "source_sha256": {
+    "docs/adr/0025-deterministic-stack-layout.md": "eb99f2cc3a4e9944e9bdee4ca202ef5f0cbba56d9173b339e4f87c7eef7332be",
+    "docs/adr/README.md": "4dc5eb9b08cb11e1f69c37948c6de1d22acbf308f42d3c26086a3419440458d5",
+    "docs/architecture.md": "fa362a9fa5ce7c2b60f7e9727d6ed7922aeabdcd5fb3542ac19bfaa64b4d25ee",
+    "docs/baseline-segment08.md": "c699e43b7c8876bb46f0ee48cb6533b4db4e0eeebee93e1c8ab3029c2f303a16",
+    "docs/baseline-segment13.md": "744931bbad9c028eb3b460a918365b126036f2d0e08300d3937ca64b4ba1388d",
+    "docs/ltechdesign-file-format.md": "bfb9d9da9ead7423844d4434a2cf5b550578a19d73133b7929e607f45c00b6cd",
+    "docs/progress.md": "cc1ca0eb2cf25864be940a3bb747dc415ed8a72e08e8bd1fed595930671ef3ff",
+    "docs/requirements-matrix.md": "8e7e8f36f0243ad429a4e10e6754cbc281e442ec08dbea9a189819577e779dfd",
+    "pyproject.toml": "0c7035eb9f1e2936699ed4f8dc08abd55e922b4546a54eacd64bb0d405087ebc",
+    "scripts/demo_layout.py": "7f9b84deea8b1ca650db44ee625a032395d3d7392098e72e9a009efcb48dcc7e",
+    "src/ltechdesign/commands/__init__.py": "c62df7f6e099faa4128e62da948c3c9b619347f18012106537338451ce21e935",
+    "src/ltechdesign/commands/contracts.py": "e6510b78784f093c9a5a6e48f4d853f963cb921a1c0bba10caed2d8c82986deb",
+    "src/ltechdesign/commands/dispatcher.py": "4d99e44d54d4a9183abb3d91e7735390e8d8c01769325fef32ac62ecbcab4b61",
+    "src/ltechdesign/commands/planning.py": "28639519065d224d0e0a1f64c313478908710bae58a049b95c46f2d9c855b37a",
+    "src/ltechdesign/domain/editing.py": "d0ff69af2c92436deb2cf8290e9996e141394322d325d80efd8f7803c7f9b0e1",
+    "src/ltechdesign/domain/layout.py": "002de5b3466f28d9f38d181827b857a9d2fc7ba12eb4e2ac310b77985fd5ac15",
+    "src/ltechdesign/domain/validation.py": "be76825195ba9bb80364c96b933c8184ad899c84b69bbba2447b8f3f4efe978a",
+    "src/ltechdesign/rendering/text.py": "dd52f35440b8d7d0c0e257f7177630e95b362694d1502a0eb433eb1e46f724a7",
+    "src/ltechdesign/ui/inspector.py": "ddea21587dffc154b73203a63d87e1490f7e1e845482988a284ff69a806f2058",
+    "src/ltechdesign/ui/layout.py": "22b1944f6660be21ace5f2a460d0470f5a9603e2a4e208a772b6c0bc88ce635d",
+    "src/ltechdesign/ui/window.py": "b8075b6389242f582358de530204e17ed2ab77ea996acea780a47986c8495913",
+    "tests/test_commands.py": "084a6de08bf3135df1ee16bd8b25a6ed220faf6aa09864535e746406d10749be",
+    "tests/test_domain.py": "b3e5aba06665784ba7670c6a3acae23976c5497bb20841e513392a854c1a881f",
+    "tests/test_editing_commands.py": "531cbbf8271d25021a1ed70e50fd582ad80f6b7b9f55e6fceb1fb919093a5bc0",
+    "tests/test_layout_commands.py": "48bcd99a1b75d639949fc4aed0459051d27c9cddb8bb9f5bd75f5a0abee487bb",
+    "tests/test_layout_panel.py": "4ac43a1d6a1db956d45a4e8c9bb9b44f94e277c31bf58dbcc06ed9f2943d414e"
+  },
+  "artifact_sha256": {
+    "artifacts/segment13-check.log": "778c071590e0bcc86d526002a9e2408abf0f2e7a23e0f85960d20de160478b61",
+    "artifacts/segment13-package.log": "b1c80e2305c2a890f97dc9cb0534fa09b6ee96c4dbb814131e28a85a501faac8",
+    "artifacts/segment13-native.xml": "22f2f0bde8c05e87e04cb9d32e4fccfc8b74ce16f1a7f99b892d075c0d340128",
+    "artifacts/segment13-targeted.xml": "a30509f4c8319d6419b274bb358c9568faf5e313f2e99250b33357b69a95eadb",
+    "artifacts/segment13-spike.log": "401256da5e1e8bb0980afde1a2891cab6eb7c05fd19aeec0da337ab45e8f30c0",
+    "artifacts/segment01a-offscreen.json": "2cd2d97d404b9fd0b1ca4287db98dea8f637f5b93ee4031dbf2e4ae2ab96ce7d",
+    "artifacts/layout13/inspector.png": "8edf5956e07d62ff88192717dcd4e1e1a3181bdb5f8e96e5af2e4959dff13937",
+    "artifacts/layout13/shared.png": "f0ecdb62f1aac695485022d0c1db3cc75fc7bf65121d07339c714fd1dbd18364",
+    "artifacts/layout13/shared.pdf": "59f1217d5e862db7a466f31c732a74e6cad863768daea38444632ab17d654e22",
+    "artifacts/layout13/pdf.png": "0181149151b0805244be5cfa0084ca1b015cff7ff9feb2e0af281a21975d75a3",
+    "artifacts/layout13/demo.ltechdesign": "f196833421b8a1fe406bbad0273a5183176c02e4e82d2a2ef2a4393f1a8d6396",
+    "artifacts/layout13-wheel/shared.png": "f0ecdb62f1aac695485022d0c1db3cc75fc7bf65121d07339c714fd1dbd18364"
+  }
+}

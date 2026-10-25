@@ -1,5 +1,13 @@
 # Bukti segmen08 — Transform, clipboard dan grouping
 
+Update26 Oktober2026: `08.layout` dan induk08 kini `verified` pada segmen13.
+Evaluator domain/commands/Inspector, actual pointer parent resize, nested stacks,
+text reflow, native serialization/shared export dan undo diuji; existing08 native
+regression lulus bersama22tes. [Baseline13](baseline-segment13.md) mencatat
+459core+167desktop/full gate dan spike. Catatan blocked di bawah adalah baseline
+historis24Oktober, tidak lagi blocker aktif. Target100ms/performance23 dan physical
+release22/24 tetap pending; angka benchmark historis tidak diubah.
+
 Tanggal24 Oktober2026, Asia/Jakarta. Base Git23515f33714519cf732ded30e818ef9fc0ff0c28.
 Working tree07 sudah berisi perubahan sebelum08; tidak ditimpa, PRD tidak diubah,
 tidak ada commit otomatis. Status induk `blocked`; pekerjaan independen terverifikasi, checkpoint
