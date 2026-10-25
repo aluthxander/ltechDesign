@@ -4,6 +4,14 @@ Tanggal keputusan: 21 Oktober 2026 (Asia/Jakarta). Acuan: PRD 1.2, khususnya bag
 
 ## 1. Baseline repository dan batas segmen 00
 
+Update12 (25 Oktober2026): raster/SVG sumber embedded dirender melalui shared
+media drawing. SetMedia mempertahankan container ketika crop/fit/replace; import
+worker bounded menyiapkan QImage/QPicture/thumbnail sebelum command publication.
+GUI tidak melakukan decode pada refresh/paint. Cache prepared live/history256MiB,
+asset50MiB/decode40MP dan staging/cancel semantics di [ADR0024](adr/0024-portable-media-import.md),
+subset SVG di [image-import.md](image-import.md). Disk recovery14, export jobs15–17
+dan public MCP18C tetap integrasi berikutnya; clipboard image eksternal tetap38A.
+
 Baseline Git `54162c5` (`first commit`) hanya melacak `prd.md` dan `promt_managemnet.md`. Tidak ada AGENTS.md yang berlaku pada direktori workspace/ancestor yang diperiksa, source, pyproject, dependency lock, suite tes, atau scripts/check.ps1. Roadmap dibaca sebagai indeks pemilik pekerjaan; contoh prompt/desain bukan instruksi implementasi.
 
 **B-001 selesai pada lingkup dokumentasi 00B:** atas permintaan pengguna, [spesifikasi format 1.0](ltechdesign-file-format.md) baru disusun dari PRD dan keputusan ini, bukan dipulihkan dari artefak historis. [ADR 0010](adr/0010-native-format-baseline.md) mencatat baseline dan contoh JSON yang diaudit. Native fixture `examples/proyek-contoh.ltechdesign` dan generator `scripts/New-LtechDesignExample.ps1` belum ada; pemiliknya 02/04, tidak lagi menjadi prasyarat dokumen 00. Segmen 00 tidak membangun aplikasi, schema validator produksi atau codec ZIP. Kesesuaian implementasi terhadap spesifikasi tetap harus dibuktikan 02/04/22.

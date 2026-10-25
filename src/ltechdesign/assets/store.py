@@ -30,14 +30,20 @@ class BlobStore:
 
     def _put(self, asset: Asset, payload: bytes) -> None:
         validate_asset(asset, payload)
+        self._put_validated(asset, payload)
+
+    def _put_validated(self, asset: Asset, payload: bytes) -> None:
         if asset.path not in self._blobs:
             if sum(map(len, self._blobs.values())) + len(payload) > self._budget:
                 fail("blob_store_bytes", code="limit_exceeded")
             self._blobs[asset.path] = payload
 
     def stage(self, asset: Asset, payload: bytes) -> str:
+        # Decode/hash outside the shared store lock. GUI snapshot pins/GC must
+        # not wait for a heavy decoder running on the import worker.
+        validate_asset(asset, payload)
         with self._lock:
-            self._put(asset, payload)
+            self._put_validated(asset, payload)
             key = str(uuid4())
             self._staged[key] = asset
             return key

@@ -8,8 +8,9 @@ from pathlib import Path
 from PySide6.QtCore import QByteArray
 from PySide6.QtGui import QFontDatabase, QGuiApplication
 
-from ltechdesign.domain.models import FontId, Project, TextData
+from ltechdesign.domain.models import AssetId, FontId, Project, TextData
 
+from .media import MediaSource, prepare_sources
 from .text import Resources, clear_cache
 
 
@@ -90,7 +91,13 @@ class FontResolver:
                 self._system_registered.append(handle)
                 clear_cache()
 
-    def resolve(self, project: Project, blobs: Mapping[str, bytes] | None = None) -> Resources:
+    def resolve(
+        self,
+        project: Project,
+        blobs: Mapping[str, bytes] | None = None,
+        *,
+        media: Mapping[AssetId, MediaSource] | None = None,
+    ) -> Resources:
         used = {
             n.data.typography.font_id
             for n in project.document.nodes.values()
@@ -158,7 +165,15 @@ class FontResolver:
                 notes.append(f"font_missing:{font.id}:{font.family} -> {primary}")
             families[font.id] = primary
             fallback[font.id] = tuple(dict.fromkeys([*candidates, default]))
-        return Resources(families, fallback, tuple(notes), strict=False)
+        return Resources(
+            families,
+            fallback,
+            tuple(notes),
+            strict=False,
+            media=media
+            if media is not None
+            else prepare_sources(project.assets.assets, blobs or {}),
+        )
 
     def close(self) -> None:
         if self._registered or self._system_registered:

@@ -56,6 +56,9 @@ try {
     $bundleRoot = Split-Path -Parent $exePath
     $required = @('_internal/python312.dll', '_internal/PySide6/Qt6Core.dll',
         '_internal/PySide6/Qt6Gui.dll', '_internal/PySide6/Qt6Widgets.dll',
+        '_internal/PySide6/Qt6Svg.dll',
+        '_internal/PySide6/plugins/imageformats/qjpeg.dll',
+        '_internal/PySide6/plugins/imageformats/qwebp.dll',
         '_internal/PySide6/plugins/platforms/qwindows.dll')
     $report.executable = $exePath
     $report.lock_sha256 = (Get-FileHash -LiteralPath 'uv.lock' -Algorithm SHA256).Hash.ToLowerInvariant()
@@ -82,7 +85,10 @@ try {
     }
     $start.EnvironmentVariables['PATH'] = "$env:SystemRoot\System32;$env:SystemRoot"
     $start.EnvironmentVariables['QT_QPA_PLATFORM'] = if ($SmokeMode -eq 'native') { 'windows' } else { 'offscreen' }
-    if ($SmokeMode -eq 'offscreen') { $start.Arguments = '--smoke' }
+    if ($SmokeMode -eq 'offscreen') {
+        $start.Arguments = '--smoke'
+        $start.EnvironmentVariables['LTECHDESIGN_MEDIA_SMOKE_REPORT'] = Join-Path $artifactRoot 'segment12-executable-codecs.json'
+    }
     $process = New-Object System.Diagnostics.Process
     $process.StartInfo = $start
     $watch = [Diagnostics.Stopwatch]::StartNew()
@@ -129,6 +135,9 @@ try {
     $report.exit_code = $process.ExitCode
     $report.total_elapsed_ms = $watch.ElapsedMilliseconds
     if ($process.ExitCode -ne 0) { throw "Artifact exit code: $($process.ExitCode)" }
+    if ($SmokeMode -eq 'offscreen') {
+        $report.codec_smoke = Get-Content -Raw -LiteralPath (Join-Path $artifactRoot 'segment12-executable-codecs.json') | ConvertFrom-Json
+    }
     $report.status = 'passed'
     $exitCode = 0
 } catch {

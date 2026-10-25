@@ -4,6 +4,18 @@ Tanggal: 25 Oktober 2026 (Asia/Jakarta). Baseline historis `54162c5`; HEAD saat 
 
 ## Status singkat dan langkah berikutnya
 
+**Segmen aktif12: verified.** PNG/JPEG/WebP/static SVG via dialog/local drop,
+embedded thumbnails, fit/fill/stretch/source crop/rounded clip/opacity/rotation dan
+replace tanpa mengubah container tersedia. Final420core+160desktop,38targeted/
+53native, lint102/mypy98, docs/fixtures/package/wheel/executable codec spike lulus.
+Actual36MP cancel/staging/GUI heartbeat serta baseline10detik shapes/mixed diulang.
+[Baseline12](baseline-segment12.md), [evidence12](evidence/segment12-verification.json), ADR0024.
+Base HEAD `3f7a785`, working tree awal bersih, tanpa commit otomatis. Segmen13 tidak
+dikerjakan; clipboard image eksternal tetap38A. Performance1000selection/GUI100ms
+masih pending23, physical release machine pending24; bukan klaim semua NFR verified.
+
+Catatan01–11 di bawah bersifat historis; status aktif sesi ini adalah12.
+
 **Segmen aktif11: verified.** Text tool/inline multiline, validated Mixed typography Inspector, local/embedded font resolver dan shared layout/outline terhubung command/native/PNG/PDF. Final418core+124desktop,27targeted/28native, lint96/mypy92, fixtures/docs/package/wheel/executable spike lulus. Native DPR aktual1.25/1.875/2.5, PNG/PDF dan screenshot Inspector diperiksa. [Baseline11](baseline-segment11.md), [evidence11](evidence/segment11-verification.json), ADR0023. Base HEAD `f1918d2d28f2139f31fe4d2f5cc1a65ff533cc95`; tanpa commit otomatis. Segmen12 tidak dikerjakan.
 
 **Segmen aktif10B: verified; induk10 verified.** Rulers/grid, world grid/object snapping, smart guides, master snap toggle dan Inspector align/equal-gap distribution tersedia. Final405core+110desktop,58targeted/47native, lint/type/fixtures/docs/package/wheel/executable spike lulus; native DPR1/1.5/2 dan PNG/PDF diperiksa. [Baseline10B](baseline-segment10b.md), [evidence](evidence/segment10b-verification.json), ADR0022. Tidak mengerjakan11 atau manual guides38B otomatis.
@@ -26,9 +38,48 @@ Tanggal: 25 Oktober 2026 (Asia/Jakarta). Baseline historis `54162c5`; HEAD saat 
 - [audit segmen 00](../scripts/check-segment00.ps1): pemeriksaan struktur/cakupan dokumen dan gate prasyarat terpisah.
 - [Spesifikasi .ltechdesign 1.0](ltechdesign-file-format.md), [contoh JSON kontrak](examples/ltechdesign-v1-contract.json), [native ZIP](../examples/proyek-contoh.ltechdesign), dan [audit contoh](../scripts/check-file-format-spec.ps1): typed validator 02 + codec produksi 04; GUI masih menunggu 05/22.
 
-Segmen09/10A/10B/induk10 dan11 verified pada scope yang diminta, independen dari blocker08.layout/13. Berikutnya12 tetap not_started; image lengkap dan production export tetap12/15–17. Manual guides P1 tetap38B.
+Segmen09/10A/10B/induk10 dan11 verified, independen dari blocker08.layout/13.
+12 verified; berikutnya13 tetap not_started. Production export
+tetap15–17 dan manual guides P1 tetap38B; clipboard image eksternal tetap38A.
 
-### Handoff segmen11
+### Handoff segmen12
+
+- 12.import/render/editor/retention/baseline/handoff `verified`; tidak ada blocker
+  lingkup12. Command SetMedia (tanpa Qt) dan RegisterAsset+Create/SetMedia atomik
+  memakai dispatcher/revision/undo yang sama; Save/Open/native1.0 mempertahankan
+  semua byte/reference, crop/fit dan container. Runtime thumbnails bukan restore.
+- Source utama assets/importing/store/validation, rendering/media/shared drawing,
+  ui/images/canvas/window/Inspector, commands contracts/planning. Clipboard node
+  internal existing disambungkan ke prepared media; clipboard image eksternal38A
+  belum dikerjakan. Subset SVG/rejection policy di image-import.md dan ADR0024.
+- Base HEAD `3f7a785dee15c9d5b61eaa6f207f9dd07412bb1a`; tanpa commit otomatis/ubah
+  PRD. Python3.12.12/PySide6Qt6.10.2/Pillow12.3.0 tetap; PyInstaller6.22.3 diuji.
+- Aktual38targeted=2core+36desktop,53native=36image+17style/transforms,36image
+  masing-masing faktor1.5/2. Probe actualDPR1.25/1.875/2.5, native/offscreen/wheel
+  shared PNG exact. Finalcheck.ps1 exit0:420core+160desktop, Ruff102/mypy98,
+  docs/fixtures/build/installed-wheel lulus. Executable offscreen spike exit0
+  benar-benar encode/decode PNG/JPEG/WebP dan record/replay SVG vector dalam bundle.
+- Canvas/PNG exact; PDF opaque interiors≤2/255 dan SVG opaque no image XObject.
+  Source move/reopen, editable crop+replace native roundtrip, actual drop Copy,
+  malformed/unsafe/animation/EXIF/limits, atomic multi-file rollback, stale/closed
+  source dan GUI-thread publication diuji. AT-25 real GC/undo/redo/independent lease
+  menahan bytes; persisted recovery14 tetap pemiliknya.
+- Actual36MP cancel selesai180.64ms,29heartbeat, gap38.60ms, nodes/staging/blobs0.
+  Decode native tunggal tidak preemptible, cancel dicek sebelum publication.
+  Import satu active worker/32file, byte50MiB/decode40MP, prepared cache256MiB;
+  SVG bounds/complexity dan rejection semantics terdokumentasi.
+- Baseline final10detik/phase, shapes dan20%media pada sourcehash sama:100object
+  pan/drag p95≈16.72–16.79ms. 1000selection max164.84/120.14ms dan batch heartbeat
+  123.50/117.98ms masih melampaui100ms, pending23; tidak mengubah target. RSS
+  repeated open/close≈103.8–107.8MB tanpa raster besar; development host32GiB,
+  bukan mesin rilis acuan. Bukti lengkap di baseline12/evidence12.
+- Screenshot aplikasi native dan actual PDF raster diperiksa. Explorer/mouse/
+  keyboard/screen reader/OS DPI fisik, viewer PDF lain dan mesin rilis bersih
+  belum diuji, pending22/24. Production export jobs15–17/MCP18/19/recovery14 tetap
+  integrasi pemilik. Existing08.layout masih blocked13. Berikutnya13 `not_started`,
+  aman dilanjutkan sesuai scope/prasyarat; tidak dijalankan otomatis.
+
+### Handoff segmen11 (historis)
 
 - 11.commands,11.layout,11.editor,11.handoff `verified`; tidak ada blocker lingkup11. Text tool klik auto_width/drag fixed; inline multiline/F2/double click, Unicode/IME/clipboard/Delete dan grouped undo melalui dispatcher yang sama. Typography fields/Mixed/validation, color/opacity10A, auto_height/resize, missing-font warning dan explicit replacement/undo tersedia.
 - Shared QTextLayout96dpi/design advances, outline/fallback/emoji diagnostics dan UTF16 caret dipakai canvas/PNG/PDF; serialization native1.0 mempertahankan data/font IDs/embedded bytes dan ukuran. Font registry fallback diselesaikan setelah seluruh embedded font dimuat; reopen tidak mengandalkan path font sumber. IME preedit/session selection tidak ikut PNG/scene.render/PDF/history/native.
@@ -189,7 +240,7 @@ Urutan berasal dari indeks roadmap, bukan instruksi otomatis. Checkpoint08 pada 
 | 10A | Inspector/style/color/basic shadow | verified | Baseline10A+ADR0021;34targeted/18native,376core+81desktop full gate; screenshot native, wheel shadow probe dan executable spike lulus |
 | 10B | Rulers/grid/snap/smart guides/alignment/distribution | verified | Baseline10B+ADR0022;58targeted/47native,405core+110desktop full gate; DPR1/1.5/2/visual/wheel/executable spike |
 | 11 | Text inline, fonts/shared layout/fallback warning | verified | Baseline11+ADR0023;27targeted/28native,418core+124desktop full gate, local/embedded restore dan shared PNG/PDF; packaging/wheel spike lulus |
-| 12 | Raster/SVG/import/crop/replace/asset retention | not_started | 11; ulang baseline ringan dan shared artifacts |
+| 12 | Raster/SVG/import/crop/replace/asset retention | verified | Baseline12/ADR0024;38targeted/53native,420core+160desktop full gate/wheel/executable codecs; portable embedded media, shared vector drawing/undo/GC,36MP cancellation dan baseline shapes/mixed diulang; performance1000 pending23 |
 | 13 | Stack/constraints fixed/hug/fill dasar atomik | not_started | 12 |
 | 14 | Recent/duplicate/autosave/recovery/checkpoint/thumbnail/font metadata | not_started | 13 |
 | 15 | PNG/JPG/WebP job/service/dialog/codec fallback | not_started | 14 |

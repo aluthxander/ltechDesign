@@ -22,6 +22,7 @@ from ltechdesign.domain.models import (
     Document,
     Fonts,
     InventoryEntry,
+    MediaData,
     Node,
     NodeId,
     PageId,
@@ -56,6 +57,7 @@ from .contracts import (
     ScaleNodes,
     SetFont,
     SetLayerState,
+    SetMedia,
     SetProperties,
     SetStyle,
     SetText,
@@ -325,6 +327,18 @@ class Draft:
             self.siblings(op.node.page_id, op.node.parent_id)
             self.nodes[op.node.id] = op.node
             self.insert(op.node, op.index)
+        elif isinstance(op, SetMedia):
+            node = self.node(op.node_id)
+            if not isinstance(node.data, MediaData):
+                fail("media_node_required")
+            media_asset = self.assets.get(op.data.asset_id)
+            if media_asset is None or not media_asset.media_type.startswith("image/"):
+                fail("missing_image_asset")
+            self.nodes[node.id] = replace(
+                node,
+                type="svg" if media_asset.media_type == "image/svg+xml" else "image",
+                data=op.data,
+            )
         elif isinstance(op, Update):
             old = self.node(op.node.id)
             for field in ("type", "page_id", "parent_id", "children"):

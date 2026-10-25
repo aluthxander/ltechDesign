@@ -7,6 +7,9 @@ from PySide6.QtCore import QPoint, QPointF, QRect, QRectF, Qt, Signal
 from PySide6.QtGui import (
     QColor,
     QContextMenuEvent,
+    QDragEnterEvent,
+    QDragMoveEvent,
+    QDropEvent,
     QFocusEvent,
     QHideEvent,
     QInputMethodEvent,
@@ -58,6 +61,7 @@ class EditorCanvas(CanvasView):
     message = Signal(str)
     action_requested = Signal(str)
     context_requested = Signal(object)
+    images_dropped = Signal(object, object)
 
     def __init__(self, dispatcher: Dispatcher, submit: Callable[[Node, int], bool]) -> None:
         super().__init__()
@@ -77,9 +81,33 @@ class EditorCanvas(CanvasView):
         self.transforms = TransformController(self)
         self.text = InlineTextController(self)
         self.setMouseTracking(True)
+        self.setAcceptDrops(True)
         self.setAccessibleName(
             "Canvas — drawing drag; Shift/Ctrl multiselect; Esc cancel; Ctrl+A select all"
         )
+
+    def dragEnterEvent(self, event: QDragEnterEvent | QDragMoveEvent) -> None:
+        urls = event.mimeData().urls()
+        if self.writable and 1 <= len(urls) <= 32 and all(u.isLocalFile() for u in urls):
+            event.acceptProposedAction()
+        else:
+            event.ignore()
+
+    def dragMoveEvent(self, event: QDragMoveEvent) -> None:
+        self.dragEnterEvent(event)
+
+    def dropEvent(self, event: QDropEvent) -> None:
+        urls = event.mimeData().urls()
+        if self.writable and 1 <= len(urls) <= 32 and all(u.isLocalFile() for u in urls):
+            self.cancel_gesture()
+            self.text.finish()
+            event.setDropAction(Qt.DropAction.CopyAction)
+            event.accept()
+            self.images_dropped.emit(
+                [u.toLocalFile() for u in urls], self.mapToScene(event.position().toPoint())
+            )
+        else:
+            event.ignore()
 
     def sync(self, page: int, *, writable: bool) -> None:
         revision = self.dispatcher.snapshot.revision

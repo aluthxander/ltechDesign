@@ -28,11 +28,12 @@ from ltechdesign.assets import BlobStore
 from ltechdesign.commands import Create, Dispatcher, Request, Update
 from ltechdesign.domain import create_project
 from ltechdesign.domain.errors import ModelError
-from ltechdesign.domain.models import Node, NodeId, NodeType, PageId, Point
+from ltechdesign.domain.models import AssetId, Node, NodeId, NodeType, PageId, Point
 from ltechdesign.persistence import FileHandle, PersistenceService, SaveResult
 from ltechdesign.rendering.drawing import warnings as render_warnings
 from ltechdesign.rendering.fonts import FontResolver
 from ltechdesign.rendering.hit_testing import eligible, paint_order
+from ltechdesign.rendering.media import MediaSource, prepare_sources
 from ltechdesign.rendering.text import display_notes as text_diagnostics
 from ltechdesign.rendering.text import reflow as text_reflow
 from ltechdesign.ui.artboard import ArtboardDialog
@@ -40,6 +41,7 @@ from ltechdesign.ui.canvas import EditorCanvas
 from ltechdesign.ui.canvas_aids import CanvasAidControls
 from ltechdesign.ui.editing import EditingActions
 from ltechdesign.ui.hierarchy import HierarchyPanel, HierarchyState
+from ltechdesign.ui.images import ImageImports
 from ltechdesign.ui.inspector import InspectorPanel
 
 
@@ -60,6 +62,7 @@ class Tab:
     hierarchy_state: HierarchyState = field(default_factory=HierarchyState)
     status: str = "Belum disimpan"
     warning_label: QLabel | None = None
+    media: dict[AssetId, MediaSource] = field(default_factory=dict)
 
 
 class StudioWindow(QMainWindow):
@@ -93,6 +96,7 @@ class StudioWindow(QMainWindow):
         )
         self._dock("Pages / Layers", self.hierarchy, Qt.DockWidgetArea.LeftDockWidgetArea)
         self.inspector = InspectorPanel(self)
+        self.images = ImageImports(self)
         self.project_name = self.inspector.project_name
         self.object_name = self.inspector.object_name
         self._dock("Inspector", self.inspector, Qt.DockWidgetArea.RightDockWidgetArea)
@@ -104,6 +108,7 @@ class StudioWindow(QMainWindow):
             ("new", "&New…", "Ctrl+N", self.new_document),
             ("open", "&Open…", "Ctrl+O", self.choose_open),
             ("import", "&Import Project…", "", self.choose_open),
+            ("import_images", "Import images…", "Ctrl+Shift+I", lambda: self.images.choose()),
             ("save", "&Save", "Ctrl+S", self.save_document),
             ("save_as", "Save &As…", "Ctrl+Shift+S", lambda: self.save_document(as_new=True)),
             ("reload", "&Reload…", "", self.reload_document),
@@ -198,13 +203,23 @@ class StudioWindow(QMainWindow):
             "Dokumen tetap tersedia. Untuk konflik file, pilih Reload atau Save As.",
         )
 
-    def prepare_admission(self, handle: FileHandle) -> tuple[FileHandle, BlobStore, Any]:
+    def prepare_admission(
+        self, handle: FileHandle
+    ) -> tuple[FileHandle, BlobStore, Any, dict[AssetId, MediaSource]]:
         store = BlobStore()
         lease = store.admit(handle.loaded.project.assets.assets, handle.loaded.blobs)
-        return handle, store, lease
+        try:
+            media = prepare_sources(handle.loaded.project.assets.assets, handle.loaded.blobs)
+        except Exception:
+            lease.release()
+            self.service.close(handle)
+            raise
+        return handle, store, lease, media
 
-    def admit(self, prepared: tuple[FileHandle, BlobStore, Any]) -> None:
-        handle, store, lease = prepared
+    def admit(
+        self, prepared: tuple[FileHandle, BlobStore, Any, dict[AssetId, MediaSource]]
+    ) -> None:
+        handle, store, lease, media = prepared
         for index, tab in enumerate(self.documents):
             if tab.handle is handle:
                 lease.release()
@@ -214,7 +229,7 @@ class StudioWindow(QMainWindow):
         def measure_text(before: Any, planned: Any) -> Any:
             with store.pin(planned.assets.assets) as pinned:
                 return text_reflow(
-                    before, planned, self.font_resolver.resolve(planned, pinned.blobs)
+                    before, planned, self.font_resolver.resolve(planned, pinned.blobs, media={})
                 )
 
         dispatcher = Dispatcher(
@@ -277,6 +292,7 @@ class StudioWindow(QMainWindow):
             widget,
             view=view,
             warning_label=label,
+            media=media,
             status="Read-only"
             if handle.read_only
             else "Tersimpan"
@@ -286,6 +302,7 @@ class StudioWindow(QMainWindow):
         self.documents.append(tab)
         self.editing.bind(tab, view)
         view.selection_changed.connect(lambda keys: self.canvas_selection(tab, keys))
+        view.images_dropped.connect(lambda paths, point: self.images.start(tab, paths, point))
         view.message.connect(
             lambda message: self.statusBar().showMessage(message, 5000),
             Qt.ConnectionType.QueuedConnection,
@@ -486,7 +503,9 @@ class StudioWindow(QMainWindow):
 
         self.unsaved(tab, reload)
 
-    def replace_tab(self, old: Tab, prepared: tuple[FileHandle, BlobStore, Any]) -> None:
+    def replace_tab(
+        self, old: Tab, prepared: tuple[FileHandle, BlobStore, Any, dict[AssetId, MediaSource]]
+    ) -> None:
         index = self.documents.index(old)
         old.dispatcher.close()
         self.documents.pop(index)
@@ -632,6 +651,9 @@ class StudioWindow(QMainWindow):
         )
         writable = bool(tab and not tab.handle.read_only)
         self.menu_actions["artboard"].setEnabled(writable and not self.busy)
+        self.menu_actions["import_images"].setEnabled(
+            writable and not self.busy and self.images.active is None
+        )
         for tool, action in self.tool_actions.items():
             action.setEnabled(bool(tab) and (tool is None or writable))
             action.setChecked(bool(tab and tab.view and tab.view.tool == tool))
@@ -642,13 +664,27 @@ class StudioWindow(QMainWindow):
             self.polygon_sides.blockSignals(False)
         if tab:
             project = tab.dispatcher.snapshot.project
+            media_roots = {a.id for a in project.assets.assets}
+            for entry in (*tab.dispatcher.undo_history, *tab.dispatcher.redo_history):
+                media_roots.update(a.id for a in entry.before.assets.assets)
+                media_roots.update(a.id for a in entry.after.assets.assets)
+            if tab.media.keys() - media_roots:
+                tab.media = {k: v for k, v in tab.media.items() if k in media_roots}
             allowed = set(paint_order(project.document, tab.active_page))
             tab.selection = tuple(
                 k for k in tab.selection if k in allowed and eligible(project.document, k)
             )
             if tab.view:
                 with tab.store.pin(project.assets.assets) as pinned:
-                    resources = self.font_resolver.resolve(project, pinned.blobs)
+                    resources = self.font_resolver.resolve(
+                        project,
+                        pinned.blobs,
+                        media={
+                            a.id: tab.media[a.id]
+                            for a in project.assets.assets
+                            if a.id in tab.media
+                        },
+                    )
                 # Reuse an unchanged resources object so scene invalidation stays incremental.
                 if resources != tab.view.adapter.resources:
                     tab.view.adapter.resources = resources
@@ -686,7 +722,11 @@ class StudioWindow(QMainWindow):
         )
 
     def closeEvent(self, event: QCloseEvent) -> None:
-        if self.busy:
+        if self.images.active:
+            self._exit_requested = True
+            self.images.cancel(self.images.active.id)
+            event.ignore()
+        elif self.busy:
             event.ignore()
         elif self.documents:
             event.ignore()
@@ -694,5 +734,6 @@ class StudioWindow(QMainWindow):
             self.close_tab(self.tabs.currentIndex())
         else:
             self.executor.shutdown(wait=False)
+            self.images.executor.shutdown(wait=False)
             self.font_resolver.close()
             event.accept()

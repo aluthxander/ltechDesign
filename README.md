@@ -1,5 +1,12 @@
 # ltechDesign Studio
 
+Segmen12 menyediakan **File → Import images** (`Ctrl+Shift+I`) dan local file
+drag-and-drop untuk PNG/JPEG/WebP/static SVG. Crop/fit/replace/radius/opacity/
+rotation di Inspector, thumbnails embedded, undo/redo dan portable Save/Open
+tersedia. Jalankan `scripts/run.ps1`; lihat [panduan/subset SVG](docs/image-import.md)
+dan [hasil verifikasi12](docs/baseline-segment12.md). Clipboard image lintas aplikasi
+tetap38A, production export jobs15–17 belum dikerjakan.
+
 Segmen 02: model domain immutable tanpa Qt, schema/validator 1.0, JSON round-trip,
 fixture final dan migration registry. Fondasi CLI/window minimal 01/01A tetap tersedia.
 Canvas/editor, ZIP/disk persistence, renderer, export dan MCP menunggu segmen berikutnya.

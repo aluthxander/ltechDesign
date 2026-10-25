@@ -14,13 +14,25 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
-from PySide6.QtCore import QEvent, QPointF, Qt, QTimer, qVersion
-from PySide6.QtGui import QGuiApplication, QMouseEvent
+from PySide6.QtCore import QBuffer, QEvent, QIODevice, QPointF, Qt, QTimer, qVersion
+from PySide6.QtGui import QGuiApplication, QImage, QMouseEvent
 from PySide6.QtWidgets import QApplication
 
 from ltechdesign.commands import Dispatcher, Request, Update
 from ltechdesign.domain import create_node, create_project
-from ltechdesign.domain.models import Document, DocumentSession, Fill, NodeId, Project, Style
+from ltechdesign.domain.models import (
+    Asset,
+    AssetId,
+    AssetsIndex,
+    Document,
+    DocumentSession,
+    Fill,
+    InventoryEntry,
+    MediaData,
+    NodeId,
+    Project,
+    Style,
+)
 from ltechdesign.ui.window import StudioWindow, Tab
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -132,6 +144,11 @@ def resident_bytes() -> int | None:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--seconds", type=float, default=10)
+    parser.add_argument(
+        "--images",
+        action="store_true",
+        help="Replace 20 percent of shapes with shared raster/SVG assets",
+    )
     parser.add_argument("--output", type=Path, default=ROOT / "artifacts/segment08-benchmark.json")
     args = parser.parse_args()
     if args.seconds < 1:
@@ -181,6 +198,61 @@ def main() -> int:
     except OSError:
         report["cpu_model"] = "unavailable"
     fixtures = {n: fixture(n) for n in (100, 1000)}
+    blobs: dict[str, bytes] = {}
+    if args.images:
+        image = QImage(96, 96, QImage.Format.Format_ARGB32)
+        image.fill(0xFF2288CC)
+        buffer = QBuffer()
+        buffer.open(QIODevice.OpenModeFlag.WriteOnly)
+        assert image.save(buffer, "PNG")  # type: ignore[call-overload]
+        payloads = (
+            bytes(buffer.data().data()),
+            b'<svg width="96" height="96"><circle cx="48" cy="48" r="42" fill="#22bbcc"/></svg>',
+        )
+        assets = tuple(
+            Asset(
+                id=AssetId(f"benchmark-image-{i}"),
+                path="assets/data/" + hashlib.sha256(payload).hexdigest(),
+                sha256=hashlib.sha256(payload).hexdigest(),
+                byte_length=len(payload),
+                media_type="image/png" if i == 0 else "image/svg+xml",
+            )
+            for i, payload in enumerate(payloads)
+        )
+        blobs = {a.path: p for a, p in zip(assets, payloads, strict=True)}
+        for count, project in fixtures.items():
+            nodes = dict(project.document.nodes)
+            for i in range(0, count, 5):
+                image_key = NodeId(f"shape-{i:04d}")
+                nodes[image_key] = replace(
+                    nodes[image_key],
+                    type="image" if i % 2 == 0 else "svg",
+                    data=MediaData(asset_id=assets[i % 2].id),
+                    style=Style(),
+                )
+            fixtures[count] = replace(
+                project,
+                document=replace(project.document, nodes=nodes),
+                assets=AssetsIndex(assets=assets),
+                manifest=replace(
+                    project.manifest,
+                    required_capabilities=project.manifest.required_capabilities
+                    + ("assets.svg/1",),
+                    files=project.manifest.files
+                    + tuple(
+                        InventoryEntry(
+                            path=a.path,
+                            media_type=a.media_type,
+                            byte_length=a.byte_length,
+                            sha256=a.sha256,
+                        )
+                        for a in assets
+                    ),
+                ),
+            )
+    report["fixture_kind"] = (
+        "80 percent shapes, 10 percent raster, 10 percent SVG" if args.images else "simple shapes"
+    )
     phases = [(100, "pan"), (100, "drag"), (1000, "pan_selection")]
     timer = QTimer(window)
     timer.setTimerType(Qt.TimerType.PreciseTimer)
@@ -217,7 +289,7 @@ def main() -> int:
         dispose()
         count, kind = phases[state["index"]]
         started = time.perf_counter()
-        window.admit(window.prepare_admission(window.service.new(fixtures[count], {})))
+        window.admit(window.prepare_admission(window.service.new(fixtures[count], blobs)))
         tab = window.current
         assert tab and tab.view
         state.update(
@@ -308,7 +380,7 @@ def main() -> int:
             assert result.ok, result.error
         report["batch100_commit_only"] = stats(commits)
         dispatcher.close()
-        window.admit(window.prepare_admission(window.service.new(project, {})))
+        window.admit(window.prepare_admission(window.service.new(project, blobs)))
         tab = window.current
         assert tab and tab.view
         changes = tuple(
@@ -325,7 +397,7 @@ def main() -> int:
         report["batch100_gui_heartbeat_gap_ms"] = heartbeat[0] if heartbeat else None
         dispose()
         for _ in range(3):
-            window.admit(window.prepare_admission(window.service.new(project, {})))
+            window.admit(window.prepare_admission(window.service.new(project, blobs)))
             assert window.current and window.current.view
             window.current.view.viewport().repaint()
             dispose()

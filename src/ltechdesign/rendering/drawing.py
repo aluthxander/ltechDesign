@@ -16,8 +16,17 @@ from PySide6.QtGui import (
 
 from ltechdesign.domain.errors import fail
 from ltechdesign.domain.geometry import Matrix, local_matrix
-from ltechdesign.domain.models import Document, FrameData, LineData, Node, NodeId, PolygonData
+from ltechdesign.domain.models import (
+    Document,
+    FrameData,
+    LineData,
+    MediaData,
+    Node,
+    NodeId,
+    PolygonData,
+)
 
+from .media import draw_media
 from .shadow import composite
 from .text import Resources, draw_text
 
@@ -104,10 +113,14 @@ def local_visual(document: Document, key: NodeId) -> QRectF:
 def warnings(document: Document, resources: Resources | None = None) -> tuple[str, ...]:
     result = set()
     if any(
-        n.type in ("image", "svg") or (n.type == "text" and resources is None)
+        (
+            isinstance(n.data, MediaData)
+            and (resources is None or n.data.asset_id not in resources.media)
+        )
+        or (n.type == "text" and resources is None)
         for n in document.nodes.values()
     ):
-        result.add("Text/image/SVG belum dirender; canvas menampilkan placeholder.")
+        result.add("Resource text/image/SVG tidak tersedia; canvas menampilkan placeholder.")
     return tuple(sorted(result))
 
 
@@ -197,6 +210,11 @@ def draw_body(
             painter.fillPath(shape, color(node.data.background))
         if node.style.fill:
             painter.fillPath(shape, color(node.style.fill.color))
+        if isinstance(node.data, MediaData) and resources is not None:
+            source = resources.media.get(node.data.asset_id)
+            if source is None:
+                fail("missing_image_resource")
+            draw_media(painter, node, source)
         if node.style.stroke:
             pen = QPen(color(node.style.stroke.color), node.style.stroke.width)
             pen.setJoinStyle(Qt.PenJoinStyle.MiterJoin)
@@ -205,7 +223,7 @@ def draw_body(
             painter.setPen(pen)
             painter.setBrush(Qt.BrushStyle.NoBrush)
             painter.drawPath(shape)
-        if node.type in ("text", "image", "svg"):
+        if node.type == "text" or (node.type in ("image", "svg") and resources is None):
             painter.setPen(QPen(QColor("#666666"), 1))
             painter.drawRect(QRectF(0, 0, node.width, node.height))
             painter.drawLine(QPointF(0, 0), QPointF(node.width, node.height))

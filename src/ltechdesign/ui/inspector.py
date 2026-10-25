@@ -26,6 +26,7 @@ from ltechdesign.domain.models import NodeId
 from ltechdesign.rendering.drawing import color
 
 from .arrangement import ArrangementControls
+from .images import ImagePanel
 from .typography import TypographyPanel
 
 if TYPE_CHECKING:
@@ -94,6 +95,8 @@ class InspectorPanel(QScrollArea):
         form.addRow(self.arrangement)
         self.typography = TypographyPanel(window)
         form.addRow(self.typography)
+        self.images = ImagePanel(window)
+        form.addRow(self.images)
         self.fields: dict[str, Field] = {}
         self.pickers: dict[str, QPushButton] = {}
         self.edits: dict[str, Edit] = {}
@@ -299,6 +302,7 @@ class InspectorPanel(QScrollArea):
     def sync(self) -> None:
         self.arrangement.sync()
         self.typography.sync()
+        self.images.sync()
         tab = self.studio.current
         context = (tab, tab.selection, tab.dispatcher.snapshot.revision) if tab else None
         if context != self.context and not self.publishing:

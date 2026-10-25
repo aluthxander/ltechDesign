@@ -10,6 +10,7 @@ from ltechdesign.domain.models import (
     Asset,
     AssetId,
     Font,
+    MediaData,
     Node,
     NodeId,
     Nonempty,
@@ -39,6 +40,14 @@ class Update(Record):
     """Replace authoring properties; identity/type/hierarchy cannot be changed here."""
 
     node: Node
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class SetMedia(Record):
+    """Crop/fit/replace image source, preserving identity and container geometry/style."""
+
+    node_id: NodeId
+    data: MediaData
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
@@ -232,6 +241,7 @@ class RelocateNodes(Record):
 Operation = (
     Create
     | Update
+    | SetMedia
     | Delete
     | Move
     | Reparent

@@ -24,9 +24,10 @@ from ltechdesign.commands import (
 from ltechdesign.commands.contracts import Operation
 from ltechdesign.domain.editing import roots
 from ltechdesign.domain.geometry import translation
-from ltechdesign.domain.models import NodeId, new_id
+from ltechdesign.domain.models import AssetId, NodeId, new_id
 from ltechdesign.persistence.clipboard import LIMITS, MIME, decode_selection, encode_selection
 from ltechdesign.rendering.hit_testing import eligible
+from ltechdesign.rendering.media import MAX_PREPARED_BYTES, MediaSource, prepare_sources
 
 from .transforms import edit_shortcut
 
@@ -195,17 +196,23 @@ class EditingActions(QObject):
         payload = bytes(data.data())
         snapshot = tab.dispatcher.snapshot
         page = snapshot.project.document.pages[tab.active_page].id
+        media_budget = MAX_PREPARED_BYTES - sum(s.cost for s in tab.media.values())
         parent = None
         if len(tab.selection) == 1:
             node = snapshot.project.document.nodes[tab.selection[0]]
             if node.type in ("frame", "artboard"):
                 parent = node.id
 
-        def work() -> tuple[tuple[Operation, ...], tuple[NodeId, ...], tuple[str, ...]]:
+        def work() -> tuple[
+            tuple[Operation, ...], tuple[NodeId, ...], tuple[str, ...], dict[AssetId, MediaSource]
+        ]:
             staged: list[str] = []
             try:
                 loaded = decode_selection(payload)
                 project = loaded.project
+                media = prepare_sources(
+                    project.assets.assets, loaded.blobs, byte_budget=media_budget
+                )
                 ops: list[Operation] = []
                 for asset in project.assets.assets:
                     key = tab.store.stage(asset, loaded.blobs[asset.path])
@@ -217,22 +224,33 @@ class EditingActions(QObject):
                     else parent
                 )
                 ops.append(PasteNodes(project=project, page_id=page, parent_id=target))
-                return tuple(ops), project.document.pages[0].root_ids, tuple(staged)
+                return tuple(ops), project.document.pages[0].root_ids, tuple(staged), media
             except Exception:
                 tab.store.discard_staging(tuple(staged))
                 raise
 
         def success(
-            prepared: tuple[tuple[Operation, ...], tuple[NodeId, ...], tuple[str, ...]],
+            prepared: tuple[
+                tuple[Operation, ...],
+                tuple[NodeId, ...],
+                tuple[str, ...],
+                dict[AssetId, MediaSource],
+            ],
         ) -> None:
-            operations, keys, staged = prepared
+            operations, keys, staged, media = prepared
+            old_media = tab.media
+            published = False
             try:
+                tab.media = old_media | media
                 if self.window.execute(
                     tab, operations, expected_revision=snapshot.revision, action_name="Paste"
                 ):
+                    published = True
                     tab.selection = keys
                     self.window.refresh()
             finally:
+                if not published:
+                    tab.media = old_media
                 tab.store.discard_staging(staged)
 
         self.window.job(work, success)

@@ -1,8 +1,14 @@
 """Admission checks; never install fonts, execute SVG, or re-encode original bytes."""
 
 import hashlib
+import math
+import re
 import struct
 import xml.etree.ElementTree as ET
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from PySide6.QtGui import QImage
 
 from ltechdesign.domain.errors import fail
 from ltechdesign.domain.models import Asset
@@ -20,23 +26,39 @@ def validate_asset(asset: Asset, payload: bytes, *, max_pixels: int = MAX_PIXELS
 
 
 def validate_media(payload: bytes, media: str, *, max_pixels: int = MAX_PIXELS) -> None:
+    if len(payload) > MAX_ASSET_BYTES:
+        fail("asset_bytes", code="limit_exceeded", maximum=MAX_ASSET_BYTES)
     if media == "image/svg+xml":
         _svg(payload)
     elif media in ("font/ttf", "font/otf"):
         _font(payload, media)
     else:
-        _raster(payload, media, max_pixels)
+        decode_raster(payload, media, max_pixels)
 
 
-def _raster(payload: bytes, media: str, max_pixels: int) -> None:
+def decode_raster(payload: bytes, media: str, max_pixels: int = MAX_PIXELS) -> "QImage":
     # QImage is reentrant and needs no widget, scene, QPixmap or font database.
     from PySide6.QtCore import QBuffer, QByteArray, QIODevice
     from PySide6.QtGui import QImageReader
 
+    if len(payload) > MAX_ASSET_BYTES:
+        fail("asset_bytes", code="limit_exceeded", maximum=MAX_ASSET_BYTES)
+
+    if media == "image/png":
+        offset = 8
+        while offset + 12 <= len(payload):
+            length = int.from_bytes(payload[offset : offset + 4], "big")
+            if payload[offset + 4 : offset + 8] == b"acTL":
+                # Qt can report static PNG capability while ignoring APNG frames.
+                fail("animated_image_unsupported", code="unsupported_capability")
+            offset += length + 12
     buffer = QBuffer()
     buffer.setData(QByteArray(payload))
     buffer.open(QIODevice.OpenModeFlag.ReadOnly)
     reader = QImageReader(buffer)
+    reader.setAutoTransform(True)
+    # 40 MP RGBA needs 160 MB. Still enforce our own header AND actual limits.
+    QImageReader.setAllocationLimit(256)
     reader.setDecideFormatFromContent(True)
     actual = bytes(reader.format().data()).decode("ascii", errors="replace")
     expected = {"image/png": "png", "image/jpeg": "jpeg", "image/webp": "webp"}.get(media)
@@ -50,8 +72,11 @@ def _raster(payload: bytes, media: str, max_pixels: int) -> None:
     if reader.supportsAnimation() and reader.imageCount() != 1:
         fail("animated_image_unsupported", code="unsupported_capability")
     decoded = reader.read()
-    if decoded.isNull() or decoded.size() != size:
+    if decoded.isNull() or decoded.size() not in (size, size.transposed()):
         fail("invalid_image")
+    if decoded.width() * decoded.height() > max_pixels or decoded.sizeInBytes() > max_pixels * 4:
+        fail("raster_pixels", code="limit_exceeded", maximum=max_pixels)
+    return decoded
 
 
 def _svg(payload: bytes) -> None:
@@ -60,8 +85,15 @@ def _svg(payload: bytes) -> None:
     if len(payload) > 4 * 1024 * 1024:
         fail("svg_bytes", code="limit_exceeded")
     try:
-        text = payload.decode("utf-8")
-        if "<!" in text or "<?" in text:
+        text = payload.decode("utf-8-sig")
+        text_without_declaration = re.sub(
+            r"^\s*<\?xml\s+version=[\'\"]1\.0[\'\"](?:\s+encoding=[\'\"]UTF-8[\'\"])?(?:\s+standalone=[\'\"](?:yes|no)[\'\"])?\s*\?>",
+            "",
+            text,
+            count=1,
+            flags=re.IGNORECASE,
+        )
+        if "<!" in text_without_declaration or "<?" in text_without_declaration:
             fail("unsafe_svg")
         root = ET.fromstring(text)
     except (UnicodeError, ET.ParseError, RecursionError):
@@ -115,6 +147,7 @@ def _svg(payload: bytes) -> None:
         fail("invalid_svg")
     stack = [(root, 1)]
     count = 0
+    numeric_count = 0
     while stack:
         node, depth = stack.pop()
         count += 1
@@ -122,9 +155,51 @@ def _svg(payload: bytes) -> None:
             fail("svg_complexity", code="limit_exceeded")
         if node.tag.removeprefix(namespace) not in tags:
             fail("svg_subset", code="unsupported_capability")
+        if node is not root and node.tag.removeprefix(namespace) == "svg":
+            fail("nested_svg_unsupported", code="unsupported_capability")
         for key, value in node.attrib.items():
             if key not in attrs or any(s in value.lower() for s in ("url", "href", "\\")):
                 fail("unsafe_svg")
+            if re.search(r"(?:nan|inf(?:inity)?)", value, re.IGNORECASE) and key not in (
+                "id",
+                "fill",
+                "stroke",
+            ):
+                fail("invalid_svg_number")
+            if key in ("d", "points", "viewBox"):
+                allowed = r"[MmZzLlHhVvCcSsQqTtAa0-9eE.,+\s-]*" if key == "d" else r"[0-9eE.,+\s-]*"
+                if not re.fullmatch(allowed, value):
+                    fail("invalid_svg_geometry")
+            numbers = re.findall(r"[-+]?(?:\d*\.\d+|\d+\.?\d*)(?:[eE][-+]?\d+)?", value)
+            if key not in ("id", "fill", "stroke"):
+                numeric_count += len(numbers)
+                if numeric_count > 100_000:
+                    fail("svg_geometry_complexity", code="limit_exceeded")
+            if key not in ("id", "fill", "stroke") and any(
+                not math.isfinite(float(v)) or abs(float(v)) > 10_000_000 for v in numbers
+            ):
+                fail("svg_numeric_limit", code="limit_exceeded")
+            if key in ("width", "height") and not re.fullmatch(
+                r"\s*\+?(?:\d*\.\d+|\d+\.?\d*)(?:[eE][-+]?\d+)?(?:px)?\s*", value
+            ):
+                fail("svg_units_unsupported", code="unsupported_capability")
+            if key == "preserveAspectRatio" and value not in ("none", "xMidYMid meet", "xMidYMid"):
+                fail("svg_aspect_unsupported", code="unsupported_capability")
+            if key in ("opacity", "fill-opacity", "stroke-opacity"):
+                try:
+                    alpha = float(value)
+                except ValueError:
+                    fail("invalid_svg_opacity")
+                if not math.isfinite(alpha) or not 0 <= alpha <= 1:
+                    fail("invalid_svg_opacity")
+                if (
+                    key == "opacity"
+                    and node.tag.removeprefix(namespace) in ("svg", "g")
+                    and alpha != 1
+                ):
+                    # Qt6.10 root alpha composites per primitive; group alpha
+                    # can introduce hidden raster buffers. Keep this subset vector.
+                    fail("svg_group_opacity_unsupported", code="unsupported_capability")
         stack.extend((child, depth + 1) for child in node)
 
 

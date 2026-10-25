@@ -20,8 +20,10 @@ from PySide6.QtGui import (
 )
 
 from ltechdesign.domain.errors import ModelError, fail
-from ltechdesign.domain.models import FontId, Node, NodeId, Project, TextData
+from ltechdesign.domain.models import AssetId, FontId, Node, NodeId, Project, TextData
 from ltechdesign.domain.typography import needs_reflow
+
+from .media import MediaSource
 
 MAX_TEXT_CHARACTERS = 100_000
 
@@ -37,11 +39,13 @@ class Resources:
     notes: tuple[str, ...] = ()
     strict: bool = True
     previews: Mapping[NodeId, Node] = field(default_factory=dict)
+    media: Mapping[AssetId, MediaSource] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "families", MappingProxyType(dict(self.families)))
         object.__setattr__(self, "fallbacks", MappingProxyType(dict(self.fallbacks)))
         object.__setattr__(self, "previews", MappingProxyType(dict(self.previews)))
+        object.__setattr__(self, "media", MappingProxyType(dict(self.media)))
 
 
 def normalized_text(text: str) -> str:

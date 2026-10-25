@@ -1,0 +1,495 @@
+{
+  "segment": "12",
+  "status": "verified",
+  "date_local": "2026-10-25",
+  "timezone": "Asia/Jakarta",
+  "checkpoints": {
+    "12.import": "verified",
+    "12.render": "verified",
+    "12.editor": "verified",
+    "12.retention": "verified",
+    "12.baseline": "verified",
+    "12.handoff": "verified"
+  },
+  "base_commit": "3f7a785dee15c9d5b61eaa6f207f9dd07412bb1a",
+  "commit_created": false,
+  "source_sha256": "ca5feacaa731cbffc6105db7c20f941cb2c8346049e2568fbc168ed8948c91fd",
+  "versions": {
+    "python": "3.12.12 (main, Feb 12 2026, 00:40:26) [MSC v.1944 64 bit (AMD64)]",
+    "PySide6": "6.10.2",
+    "Pillow": "12.3.0",
+    "PyInstaller": "6.22.3",
+    "pytest": "8.4.2",
+    "ruff": "0.14.0",
+    "mypy": "1.18.2"
+  },
+  "commands": [
+    {
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/check.ps1",
+      "env": {
+        "UV_OFFLINE": "true"
+      },
+      "exit_code": 0
+    },
+    {
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/smoke-build.ps1 -SmokeMode offscreen",
+      "env": {
+        "UV_OFFLINE": "true"
+      },
+      "exit_code": 0
+    },
+    {
+      "command": ".cache/package-smoke/Scripts/python.exe -I scripts/check_image_conformance.py --verify artifacts/images12-final/portable.ltechdesign --output artifacts/images12-wheel",
+      "env": {
+        "QT_QPA_PLATFORM": "offscreen"
+      },
+      "exit_code": 0
+    }
+  ],
+  "automated": {
+    "core": {
+      "path": "artifacts/core.xml",
+      "tests": 420,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "desktop": {
+      "path": "artifacts/desktop.xml",
+      "tests": 160,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "targeted": {
+      "path": "artifacts/segment12-targeted.xml",
+      "tests": 38,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "native": {
+      "path": "artifacts/segment12-native-final.xml",
+      "tests": 53,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "native_scale15": {
+      "path": "artifacts/segment12-native-scale15-final.xml",
+      "tests": 36,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "native_scale2": {
+      "path": "artifacts/segment12-native-scale2-final.xml",
+      "tests": 36,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "full_gate": {
+    "lint": "102 files passed",
+    "types": "98 files passed",
+    "fixtures": "passed",
+    "docs": "passed",
+    "build": "passed",
+    "installed_wheel": "passed"
+  },
+  "actual_dpr": [
+    1.25,
+    1.875,
+    2.5
+  ],
+  "portable_restore": {
+    "assets": 4,
+    "nodes": 5,
+    "png_sha256": "0456b7ef1cc18b7608b0934993ad4dabd5480fd8b76cc96e78ea3426086c7707",
+    "rasterized": [
+      "ae4b5a4f-f966-4fe2-bec7-b2ea11add8b4"
+    ],
+    "media": [
+      "image/png",
+      "image/jpeg",
+      "image/webp",
+      "image/svg+xml"
+    ],
+    "svg_vector_sources": 1,
+    "qt": "6.10.2",
+    "platform": "offscreen",
+    "dpr": 1.0
+  },
+  "heavy_cancel": {
+    "job": {
+      "id": "754af8f8-64b3-4bec-aa62-b43fa4f32aec",
+      "session_id": "0f5a2ae1-81c0-4321-b51d-e4720ae8b7ad",
+      "document_id": "54532324-8330-458b-a069-d9cbf48d9fda",
+      "source_revision": 0,
+      "state": "cancelled",
+      "progress": 0,
+      "error": {
+        "code": "cancelled",
+        "message": "cancelled: Import cancelled at $",
+        "details": {},
+        "retryable": false
+      },
+      "result": []
+    },
+    "elapsed_ms": 180.63779996009544,
+    "heartbeat_max_ms": 38.60430000349879,
+    "heartbeats": 29,
+    "nodes": 0,
+    "staged": 0,
+    "blobs": 0,
+    "qt": "6.10.2",
+    "platform": "windows",
+    "dpr": 1.25
+  },
+  "benchmark": [
+    {
+      "scope": "warm local development host, not segment23/reference release hardware",
+      "python": "3.12.12 (main, Feb 12 2026, 00:40:26) [MSC v.1944 64 bit (AMD64)]",
+      "os": "Windows-11-10.0.26300-SP0",
+      "cpu": "Intel64 Family 6 Model 191 Stepping 2, GenuineIntel",
+      "logical_processors": 16,
+      "ram_bytes": 34053414912,
+      "disk_type": "not verified; no clean reference-machine claim",
+      "run_kind": "warm run; cold launch and comprehensive release benchmark remain segment23",
+      "qt": "6.10.2",
+      "platform": "windows",
+      "screens": [
+        {
+          "name": "\\\\.\\DISPLAY1",
+          "dpr": 1.25,
+          "logical_dpi": 96.0
+        }
+      ],
+      "seconds_per_phase": 10.0,
+      "source_sha256": "ca5feacaa731cbffc6105db7c20f941cb2c8346049e2568fbc168ed8948c91fd",
+      "phases": [
+        {
+          "nodes": 100,
+          "kind": "pan",
+          "intervals": {
+            "samples": 625,
+            "p95_ms": 16.73800003482029,
+            "p99_ms": 17.02809997368604,
+            "max_ms": 23.87899998575449
+          },
+          "callback_and_repaint": {
+            "samples": 624,
+            "p95_ms": 5.584999977145344,
+            "p99_ms": 7.071900006849319,
+            "max_ms": 9.724700008518994
+          },
+          "admission_ms": 16.655800049193203,
+          "resident_bytes": 96829440,
+          "longest_event_gap_ms": 23.87899998575449,
+          "freeze_over_16ms_ms": 7.87899998575449,
+          "release_commit_gui_ms": 0.0,
+          "history_entries": 0
+        },
+        {
+          "nodes": 100,
+          "kind": "drag",
+          "intervals": {
+            "samples": 625,
+            "p95_ms": 16.72439998947084,
+            "p99_ms": 17.13049999671057,
+            "max_ms": 28.387100028339773
+          },
+          "callback_and_repaint": {
+            "samples": 624,
+            "p95_ms": 5.003999976906925,
+            "p99_ms": 6.361500010825694,
+            "max_ms": 9.012399998027831
+          },
+          "admission_ms": 11.155700020026416,
+          "resident_bytes": 97886208,
+          "longest_event_gap_ms": 28.387100028339773,
+          "freeze_over_16ms_ms": 12.387100028339773,
+          "release_commit_gui_ms": 14.408299990464002,
+          "history_entries": 1
+        },
+        {
+          "nodes": 1000,
+          "kind": "pan_selection",
+          "intervals": {
+            "samples": 542,
+            "p95_ms": 23.647699970752,
+            "p99_ms": 133.9402999728918,
+            "max_ms": 164.83580000931397
+          },
+          "callback_and_repaint": {
+            "samples": 541,
+            "p95_ms": 23.478000017348677,
+            "p99_ms": 133.78979999106377,
+            "max_ms": 164.66820001369342
+          },
+          "admission_ms": 82.76540000224486,
+          "resident_bytes": 101306368,
+          "longest_event_gap_ms": 164.83580000931397,
+          "freeze_over_16ms_ms": 148.83580000931397,
+          "release_commit_gui_ms": 0.0,
+          "history_entries": 0
+        }
+      ],
+      "memory_rounds": [
+        103813120,
+        105185280,
+        104161280
+      ],
+      "errors": [],
+      "cpu_model": "13th Gen Intel(R) Core(TM) i5-13450HX",
+      "fixture_kind": "simple shapes",
+      "batch100_commit_only": {
+        "samples": 3,
+        "p95_ms": 47.18360002152622,
+        "p99_ms": 47.18360002152622,
+        "max_ms": 47.18360002152622
+      },
+      "batch100_gui_command_ms": 101.15840000798926,
+      "batch100_gui_heartbeat_gap_ms": 123.50479996530339
+    },
+    {
+      "scope": "warm local development host, not segment23/reference release hardware",
+      "python": "3.12.12 (main, Feb 12 2026, 00:40:26) [MSC v.1944 64 bit (AMD64)]",
+      "os": "Windows-11-10.0.26300-SP0",
+      "cpu": "Intel64 Family 6 Model 191 Stepping 2, GenuineIntel",
+      "logical_processors": 16,
+      "ram_bytes": 34053414912,
+      "disk_type": "not verified; no clean reference-machine claim",
+      "run_kind": "warm run; cold launch and comprehensive release benchmark remain segment23",
+      "qt": "6.10.2",
+      "platform": "windows",
+      "screens": [
+        {
+          "name": "\\\\.\\DISPLAY1",
+          "dpr": 1.25,
+          "logical_dpi": 96.0
+        }
+      ],
+      "seconds_per_phase": 10.0,
+      "source_sha256": "ca5feacaa731cbffc6105db7c20f941cb2c8346049e2568fbc168ed8948c91fd",
+      "phases": [
+        {
+          "nodes": 100,
+          "kind": "pan",
+          "intervals": {
+            "samples": 626,
+            "p95_ms": 16.776000033132732,
+            "p99_ms": 16.995800018776208,
+            "max_ms": 17.203399969730526
+          },
+          "callback_and_repaint": {
+            "samples": 625,
+            "p95_ms": 5.354599968995899,
+            "p99_ms": 7.220599974971265,
+            "max_ms": 9.243899956345558
+          },
+          "admission_ms": 28.112199972383678,
+          "resident_bytes": 98951168,
+          "longest_event_gap_ms": 17.203399969730526,
+          "freeze_over_16ms_ms": 1.2033999697305262,
+          "release_commit_gui_ms": 0.0,
+          "history_entries": 0
+        },
+        {
+          "nodes": 100,
+          "kind": "drag",
+          "intervals": {
+            "samples": 625,
+            "p95_ms": 16.794499999377877,
+            "p99_ms": 17.16129999840632,
+            "max_ms": 26.71210002154112
+          },
+          "callback_and_repaint": {
+            "samples": 624,
+            "p95_ms": 6.254799955058843,
+            "p99_ms": 8.097699959762394,
+            "max_ms": 11.156700027640909
+          },
+          "admission_ms": 11.866999964695424,
+          "resident_bytes": 100122624,
+          "longest_event_gap_ms": 26.71210002154112,
+          "freeze_over_16ms_ms": 10.712100021541119,
+          "release_commit_gui_ms": 13.007099973037839,
+          "history_entries": 1
+        },
+        {
+          "nodes": 1000,
+          "kind": "pan_selection",
+          "intervals": {
+            "samples": 541,
+            "p95_ms": 21.779899951070547,
+            "p99_ms": 110.40440003853291,
+            "max_ms": 120.13559998013079
+          },
+          "callback_and_repaint": {
+            "samples": 540,
+            "p95_ms": 21.180000039748847,
+            "p99_ms": 110.25349999545142,
+            "max_ms": 120.04629999864846
+          },
+          "admission_ms": 68.59199999598786,
+          "resident_bytes": 103796736,
+          "longest_event_gap_ms": 120.13559998013079,
+          "freeze_over_16ms_ms": 104.13559998013079,
+          "release_commit_gui_ms": 0.0,
+          "history_entries": 0
+        }
+      ],
+      "memory_rounds": [
+        106835968,
+        107327488,
+        107806720
+      ],
+      "errors": [],
+      "cpu_model": "13th Gen Intel(R) Core(TM) i5-13450HX",
+      "fixture_kind": "80 percent shapes, 10 percent raster, 10 percent SVG",
+      "batch100_commit_only": {
+        "samples": 3,
+        "p95_ms": 54.44189999252558,
+        "p99_ms": 54.44189999252558,
+        "max_ms": 54.44189999252558
+      },
+      "batch100_gui_command_ms": 88.88619998469949,
+      "batch100_gui_heartbeat_gap_ms": 117.97600000863895
+    }
+  ],
+  "executable": {
+    "status": "passed",
+    "mode": "offscreen",
+    "started_at_utc": "2026-10-25T07:34:40.0447412Z",
+    "machine_scope": "development-or-ci-host; not a clean Windows release test",
+    "manual_visual_inspection": false,
+    "expected_title": "ltechDesign Studio",
+    "environment": "Python/Qt paths cleared; PATH restricted to Windows directories",
+    "build_command": "uv run --locked --group packaging python -m PyInstaller --noconfirm --clean --onedir --windowed --noupx --name ltechDesign-Studio --distpath dist/windows --workpath build/pyinstaller --specpath build/pyinstaller scripts/freeze_desktop.py",
+    "executable": "Z:\\project\\ltechDesign\\dist\\windows\\ltechDesign-Studio\\ltechDesign-Studio.exe",
+    "lock_sha256": "42a9cb1ed2ee762ce56da6999cf9700f2db6e55907886bee703445a95e89e170",
+    "executable_sha256": "f9ea64d3673fa522363456334ff9676e57cde04b062e7352601117b354c91578",
+    "required_bundled_files": [
+      {
+        "sha256": "e3d09dc4129ab93f57bf9a30d7e16cdcb87e73cd27fbbc9377dd58275640e7e8",
+        "path": "_internal/python312.dll"
+      },
+      {
+        "sha256": "d8c54af3d84b16c17a086451ee8ef6e821e478603ffb9b91c000a7e50d6a7f6c",
+        "path": "_internal/PySide6/Qt6Core.dll"
+      },
+      {
+        "sha256": "34bc69bb2e21c11a6f318c60430852eddac856848842cf0c5a19d22f7733992b",
+        "path": "_internal/PySide6/Qt6Gui.dll"
+      },
+      {
+        "sha256": "77dff21c7f28072da5d05288822f1e750d37e3827b2e051acad01af18d8d4130",
+        "path": "_internal/PySide6/Qt6Widgets.dll"
+      },
+      {
+        "sha256": "0cac0f1399ff6f4614ebcab05f00ec82d32fba0d5782ac56b58f12432ee8502f",
+        "path": "_internal/PySide6/Qt6Svg.dll"
+      },
+      {
+        "sha256": "464bfd542ad6dc017080e23f645cccd4a0a78ebf719500eb9012a3fdd9437830",
+        "path": "_internal/PySide6/plugins/imageformats/qjpeg.dll"
+      },
+      {
+        "sha256": "feee775a7fa75e9ba6a4fd8cc2ea4ef63e6c0d950f3c0b5c85c07b0414ff6c91",
+        "path": "_internal/PySide6/plugins/imageformats/qwebp.dll"
+      },
+      {
+        "sha256": "ed2944e4f06239996e27bff7783abc828d76d9497d5a26c339fa916b00ea3f74",
+        "path": "_internal/PySide6/plugins/platforms/qwindows.dll"
+      }
+    ],
+    "bundle_file_count": 178,
+    "bundle_bytes": 132772767,
+    "pid": 2552,
+    "close_method": "--smoke: QTimer closes window through the Qt event loop",
+    "native_window_observed": false,
+    "exit_code": 0,
+    "total_elapsed_ms": 3814,
+    "codec_smoke": {
+      "PNG": "encoded/decoded",
+      "JPEG": "encoded/decoded",
+      "WEBP": "encoded/decoded",
+      "SVG": "vector recorded/replayed"
+    },
+    "finished_at_utc": "2026-10-25T07:35:18.1254729Z"
+  },
+  "manual_visual": {
+    "performed": true,
+    "artifacts": [
+      "artifacts/images12-final/window.png",
+      "artifacts/images12-final/pdf-raster.png"
+    ],
+    "scope": "Programmatically captured native app and actual PDF raster inspected; physical input/release host not claimed"
+  },
+  "blockers": [],
+  "pending": [
+    "1000-node selection gaps and batch GUI heartbeat still exceed100ms; owner23, targets unchanged",
+    "Physical Explorer/mouse/keyboard/screen reader/OS DPI/monitor switching and independent PDF viewer;22/24",
+    "Clean Windows release machine24 unavailable; not tested",
+    "Persisted disk recovery14; production export jobs15-17; public MCP18/19",
+    "Cross-application image clipboard38A not included in12; internal node clipboard regression only",
+    "Existing08.layout remains blocked on13"
+  ],
+  "next_segment": {
+    "id": "13",
+    "status": "not_started",
+    "safe_to_continue_with_documented_limits": true
+  },
+  "changed_file_hashes": {
+    "README.md": "df6559a909a7c9c8325ad8cbdbd1fa0eb187c351abe98654f0750e548d174feb",
+    "docs/adr/0024-portable-media-import.md": "0c6e946910be79587177c40fc551276f9766255bb6271c989d94179fc8cec39f",
+    "docs/adr/README.md": "303fb767132cd5fb9d052e254445a5caf9a34c20a89e3afc61eb6b5fd29fcc73",
+    "docs/architecture.md": "7c9464645281689be82a5df985f759c1e6ebbd98c64c44363e661cfcd7c31a30",
+    "docs/baseline-segment12.md": "b3c03007b3d055061a05071436028f99ea5d783b0e2518c1699f00257e43ef82",
+    "docs/image-import.md": "a0549424171e5499e019cdb586f85d68bdd42c0331b14b119423739d7ad6c702",
+    "docs/progress.md": "4783b64c3216642d55bc93bffd1e54299f3af5b80492bd5e690ca38b6343082c",
+    "docs/requirements-matrix.md": "16eba9862fb23eaf0e31cad20bfc2d1b3c5ac7bc29df0db53c220736e5854f45",
+    "pyproject.toml": "969bb4749b840dc74d303405c2eb8bc8260ed2556a196bee0f22be1c48de3ca0",
+    "scripts/benchmark_editor.py": "183b8af2a821084bc3da93313f8ae48194dc695f63477b5236973148f62e9bb9",
+    "scripts/check_image_conformance.py": "3733dbd20fd56e217953675f49d711aa88ab72ab88e7b3853c1d4750fca90f95",
+    "scripts/smoke-build.ps1": "5cb47f6b927c6ea7e8d6d61d950d040c80dead3462cac1ae9183cf471a7465b4",
+    "src/ltechdesign/assets/importing.py": "cb4128acc79a2e4dd5006a48976d9c99da023a027621b28f90f064446090fb97",
+    "src/ltechdesign/assets/store.py": "b9cf6960743a227805c10da6fa1b3823f08a8f29b5aeba1b525070b14c7af939",
+    "src/ltechdesign/assets/validation.py": "ce8b96f2f869e21a8c2209557c35f910c2d7beef51f58cbe4878869d4e4d1640",
+    "src/ltechdesign/commands/__init__.py": "73266ea3f7aa84ba6f2e31899400587c6ebe33bb966bc50db79a597c8d42e721",
+    "src/ltechdesign/commands/contracts.py": "4268b7e296034e18f1dd73b19bfde303c7ba313c9037b71f1eef490678b91579",
+    "src/ltechdesign/commands/planning.py": "d956f197bfa2f0e1ca029775ea28354308fd8e97394d4c5852462bbccfd2f480",
+    "src/ltechdesign/main.py": "0ec654cf2ee2a2059a597d11d5d2ce9d10d58f7d0e0ecd837192edfc536dd92d",
+    "src/ltechdesign/rendering/drawing.py": "a0f66d764291f7194923fd0266ce98369b7d07d1879562cdbb282023ffd616a1",
+    "src/ltechdesign/rendering/fonts.py": "95ed4062211f42b35252b2c29966579358712546475e011abcd985967928c6a8",
+    "src/ltechdesign/rendering/media.py": "7e73da878579ba124babdc918e079e95a293d85ee0fa702f841000432693b6a3",
+    "src/ltechdesign/rendering/text.py": "0b6dac1a262ec958ef515015e0567f122a933d3bcc989a74072df7dde9de2383",
+    "src/ltechdesign/ui/canvas.py": "6f7a243b965eb436f657940b853626c140ae7cc8b55fdd87f3edfcd8bfe4bd7d",
+    "src/ltechdesign/ui/editing.py": "6662b4ac1bee7f3e22e3acf3e1ee141a4ebd897cece35cb827ddeeb27127126e",
+    "src/ltechdesign/ui/images.py": "a4c69bb8747dc447a09ea99e8d76e745ec64db19d168ea746d69bfb1d7c1f1a0",
+    "src/ltechdesign/ui/inspector.py": "77ecf6ee1bbc86ec084b914df61a25b56c59c835cd786e02164d240cc938263d",
+    "src/ltechdesign/ui/window.py": "fb7688e3b4a21413e8207b5381a6bfa8c5f036182651537d6db306ee857d1575",
+    "tests/test_images.py": "298339fe7640ae63b3c81443f052a31c8a027020f59d0ddfcb18b89db64fa7d5",
+    "tests/test_media_commands.py": "a977c693f5089525fbddb25d5be81c250502c3bfb512974a1b0cf11f50b11832"
+  },
+  "artifact_hashes": {
+    "artifacts/segment12-check-final.log": "52354efa57059f9cd158f71de31348620987f34e94d5c894ac5ace3b9ecf4a44",
+    "artifacts/segment12-build-final.log": "0b88d5c1f19514ea7a22c328f117fa1cc035fe4f07f33d3a3eda342ba36e9446",
+    "artifacts/segment12-targeted.xml": "ee67415f55b0ddb6f0b64030ba1abdefba48059e92f7da3ef1fe64eca70bd1c9",
+    "artifacts/segment12-native-final.xml": "2a45f8966c10ee850b91527bd490492b945311d0b0b06b168a2f716ccf7e5e54",
+    "artifacts/segment12-native-scale15-final.xml": "48aa62692fbfa433b586c125192eece04c89a6badd9b3c13259080d4176518ee",
+    "artifacts/segment12-native-scale2-final.xml": "78d943c5014383295f1944f52c2c9765107ceb4a2ac0c1c49170458ee1e3af4e",
+    "artifacts/segment12-benchmark-shapes-final.json": "56a1a317c6e9d6f8d78d14d2c94f76d798a85a82110423a466aaca29646c534d",
+    "artifacts/segment12-benchmark-images-final.json": "e7c473537f45fff560e70c8b2fbd0e98fdf3c00705c455e16ef8863b5a3dcdfc",
+    "artifacts/images12-final/portable.ltechdesign": "270a47a194baea0ff820a40ac7e9c6bc5e08bf8e23a94d17537aef987a136512",
+    "artifacts/images12-final/window.png": "51108572808a358021b81b2f7e4ee5d5345706ca8bd4572bf74156eaeb33a696",
+    "artifacts/images12-final/shared.png": "0456b7ef1cc18b7608b0934993ad4dabd5480fd8b76cc96e78ea3426086c7707",
+    "artifacts/images12-final/shared.pdf": "9d74ee15667ad31977cd8fe00cfc07b3473212497250c811ce32496aa03e21fe",
+    "artifacts/images12-final/pdf-raster.png": "f78429e9c6084c829fde72bc250b0514baf3beb3374bd7af9f0cd1b6735a3c18",
+    "artifacts/images12-heavy-final/report.json": "c9ccfe87b2730635d082ca027249ee4f03642c82239f019733f5536866849954",
+    "artifacts/images12-wheel/report.json": "6c811a97c0933aaad94146a24ff2b3e145f1a9daffd36754c3a9d125e30fed28",
+    "artifacts/segment12-executable-codecs.json": "d79dbcdfa01f86e432af7c016d382adefe50a9ab33e5bc65b5a849dd31a73f56"
+  }
+}
