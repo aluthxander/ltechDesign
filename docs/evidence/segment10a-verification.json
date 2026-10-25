@@ -1,0 +1,168 @@
+{
+  "segment": "10A",
+  "status": "verified",
+  "date_local": "2026-10-25",
+  "timezone": "Asia/Jakarta",
+  "base_revision": "d05a7e171d070987eddf091cd7b21a4f1ad5c06f",
+  "working_tree_note": "Segment09 changes were present and preserved; no automatic commit.",
+  "checkpoints": {
+    "10A.properties": "verified",
+    "10A.history": "verified",
+    "10A.shadow": "verified",
+    "10A.handoff": "verified"
+  },
+  "versions": {
+    "Python": "3.12.12",
+    "PySide6": "6.10.2",
+    "Qt": "6.10.2",
+    "Pillow": "12.3.0",
+    "PyInstaller": "6.22.3"
+  },
+  "suites": {
+    "core": {
+      "tests": 376,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "desktop_offscreen": {
+      "tests": 81,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "targeted_offscreen": {
+      "tests": 34,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "targeted_windows": {
+      "tests": 18,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "check_ps1_exit": 0,
+  "lint_format_files": 79,
+  "mypy_files": 75,
+  "render_report": {
+    "scene_png_equal": true,
+    "pdf": {
+      "changed": 11794,
+      "max_error": 18,
+      "interior_max": 1,
+      "edge_changed": 1804
+    },
+    "pdf_rasterized": [
+      "child"
+    ]
+  },
+  "isolated_wheel_render": {
+    "exit_code": 0,
+    "native_roundtrip": true,
+    "png_byte_equal": true,
+    "pdf_shadow_fallback": true,
+    "probe": "artifacts/segment10a-wheel-probe.py"
+  },
+  "executable": {
+    "status": "passed",
+    "mode": "offscreen",
+    "started_at_utc": "2026-10-25T01:51:52.7665020Z",
+    "machine_scope": "development-or-ci-host; not a clean Windows release test",
+    "manual_visual_inspection": false,
+    "expected_title": "ltechDesign Studio",
+    "environment": "Python/Qt paths cleared; PATH restricted to Windows directories",
+    "build_command": "uv run --locked --group packaging python -m PyInstaller --noconfirm --clean --onedir --windowed --noupx --name ltechDesign-Studio --distpath dist/windows --workpath build/pyinstaller --specpath build/pyinstaller scripts/freeze_desktop.py",
+    "executable": "Z:\\project\\ltechDesign\\dist\\windows\\ltechDesign-Studio\\ltechDesign-Studio.exe",
+    "lock_sha256": "42a9cb1ed2ee762ce56da6999cf9700f2db6e55907886bee703445a95e89e170",
+    "executable_sha256": "47666e415b0834f8a02c29c84ab66b71d2e729c8b2f0aa4c1f81e60e4a646802",
+    "required_bundled_files": [
+      {
+        "sha256": "e3d09dc4129ab93f57bf9a30d7e16cdcb87e73cd27fbbc9377dd58275640e7e8",
+        "path": "_internal/python312.dll"
+      },
+      {
+        "sha256": "d8c54af3d84b16c17a086451ee8ef6e821e478603ffb9b91c000a7e50d6a7f6c",
+        "path": "_internal/PySide6/Qt6Core.dll"
+      },
+      {
+        "sha256": "34bc69bb2e21c11a6f318c60430852eddac856848842cf0c5a19d22f7733992b",
+        "path": "_internal/PySide6/Qt6Gui.dll"
+      },
+      {
+        "sha256": "77dff21c7f28072da5d05288822f1e750d37e3827b2e051acad01af18d8d4130",
+        "path": "_internal/PySide6/Qt6Widgets.dll"
+      },
+      {
+        "sha256": "ed2944e4f06239996e27bff7783abc828d76d9497d5a26c339fa916b00ea3f74",
+        "path": "_internal/PySide6/plugins/platforms/qwindows.dll"
+      }
+    ],
+    "bundle_file_count": 177,
+    "bundle_bytes": 132562601,
+    "pid": 30580,
+    "close_method": "--smoke: QTimer closes window through the Qt event loop",
+    "native_window_observed": false,
+    "exit_code": 0,
+    "total_elapsed_ms": 2406,
+    "finished_at_utc": "2026-10-25T01:52:33.4448442Z"
+  },
+  "visual_review": {
+    "performed": true,
+    "source": "QTest QApplication windows screenshots and shared PNG/PDF raster",
+    "reviewed": [
+      "Inspector geometry and style",
+      "Mixed values",
+      "RGBA color dialog",
+      "nested shadow PNG/PDF"
+    ]
+  },
+  "manual_pending": [
+    "physical mouse and keyboard",
+    "screen reader",
+    "monitor/DPI switching",
+    "other PDF viewers",
+    "clean Windows release machine"
+  ],
+  "scope_blockers": [],
+  "deferred": {
+    "08.layout": "requires evaluator13",
+    "10B": "not_started, no snapping",
+    "full constraints/export inspector": "13/15-17",
+    "text/image": "11/12",
+    "public MCP": "18/19",
+    "full acceptance/performance/release": "22/23/24"
+  },
+  "artifact_sha256": {
+    "artifacts/segment10a-native/test_palette_defaults_and_styl0/inspector-native.png": "34ed48576890bf029f70b096c488222454bf39e7e007b3cffd40222a47c97e00",
+    "artifacts/segment10a-native/test_palette_defaults_and_styl0/editable-style.ltechdesign": "898ae4f705c4888536cd900c0299190b22d79d25584992e8784960bf9726529d",
+    "artifacts/segment10a-native/test_real_alpha_color_dialog_a0/inspector-mixed-native.png": "bdbf99490a41f5c46e3244d9b6c3a347e8611d4019c4b9b922090295b71ecd50",
+    "artifacts/segment10a-native/test_real_alpha_color_dialog_a0/color-picker-native.png": "76e7dc3b756804f4c2e19a55579e60da34b4e71387a2fd57b2aed5aaa748262c",
+    "artifacts/segment10a-native/test_shadow_shared_scene_png_p0/shadow-shared.png": "c387bebdcc1802fe94e4f934c89a15b3078ec3d1af374c63ee397f668974ebfe",
+    "artifacts/segment10a-native/test_shadow_shared_scene_png_p0/shadow-shared.pdf": "a92ca3f0c349c6ec36b213e898edb28ec111ac06714fb67794b0c61eeaad4726",
+    "artifacts/segment10a-native/test_shadow_shared_scene_png_p0/shadow-pdf-raster.png": "d63311932cbd7637139cc331233fa2a59cb78c008f2b57904866ff648342acae",
+    "artifacts/segment10a-check.log": "c33f561bdad74fef53ad1b6dcc40d6bc26d74e7d440f31f51544700bab0601da",
+    "artifacts/segment10a-build.log": "083a66c43ead63d36c99a616aee12d2afa9237f11097d655311257585ba1ec5a",
+    "artifacts/segment10a-wheel-render.png": "75db139bd8038fd1227e727994570ed9d85b76eb2b5fcf1c8fc5d4319c9a9bac",
+    "artifacts/segment10a-wheel-render.pdf": "fdb50a107bbc5e26be5ae1830f1a6f4345f6f50f87f5b5e9bd063858826a6226",
+    "artifacts/segment10a-wheel-render.log": "dc31cde3d5f6c9a07b89846755fa50a4397aa22940e6c2ab692efaf3941394da"
+  },
+  "source_sha256": {
+    "pyproject.toml": "1b8a6c481a64003ec373854459ab35aabd47f725cc88b093d167e351c21002cb",
+    "uv.lock": "42a9cb1ed2ee762ce56da6999cf9700f2db6e55907886bee703445a95e89e170",
+    "src/ltechdesign/domain/inspector.py": "8fc59fc9e0ecd2c29020cb06b71055bf7ea949c821f5e0c366786edd02e8b7d9",
+    "src/ltechdesign/domain/geometry.py": "a0f0be20e799e10f63c9b7e9195dae1aa5be9120517de8359cd28f081f4256e5",
+    "src/ltechdesign/commands/contracts.py": "8b9624f9e412155b2d16ec547d8c4ffb0ae35ed0f02721ed424c1d06e503e949",
+    "src/ltechdesign/commands/planning.py": "2e86b77711193b3f9dc25951ad6780699a292b7a3dabf0524460994a5f7c96f6",
+    "src/ltechdesign/commands/dispatcher.py": "1a76b7a4fb737e63a2b3728e70065a87ee7279de1dbc3541ceea692e281004a9",
+    "src/ltechdesign/ui/inspector.py": "eaab7947e5acfbea7859a48365025ac26c0e38f826c2a6b23c444581197ee1e2",
+    "src/ltechdesign/ui/window.py": "50fd24a1d2dc705fd29ba18cb70887fed5e62ff3a6f7aba771367dbf949f3cf2",
+    "src/ltechdesign/ui/canvas.py": "2f9de2a0e3e026f5bed01bae2c0a44a24a3d7479a3fdd7c800fe0cbca209d0de",
+    "src/ltechdesign/rendering/shadow.py": "dba34cdb7618db348a43f2f69bf4b8e242121f5772526ec9386c8a3e1b7404c1",
+    "src/ltechdesign/rendering/drawing.py": "f02434abb93b9c79ca3cef1f4ea4aba749b0e2a2f0feb4de2f6bad7546013a1d",
+    "src/ltechdesign/rendering/pdf.py": "0d672e1b08117fd2d732df1db5b09b4c5d341f3fd177cadd03f1b54355a5caf6",
+    "src/ltechdesign/rendering/hit_testing.py": "f6a512121da37c34945e7efb8b64ddc69d7899cd92e3f4ebcd30647708f8defd"
+  }
+}

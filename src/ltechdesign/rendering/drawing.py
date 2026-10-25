@@ -3,12 +3,21 @@
 import math
 
 from PySide6.QtCore import QPointF, QRectF, Qt
-from PySide6.QtGui import QColor, QImage, QPainter, QPainterPath, QPen, QTransform
+from PySide6.QtGui import (
+    QColor,
+    QImage,
+    QPainter,
+    QPainterPath,
+    QPainterPathStroker,
+    QPen,
+    QTransform,
+)
 
 from ltechdesign.domain.errors import fail
 from ltechdesign.domain.geometry import Matrix, local_matrix
 from ltechdesign.domain.models import Document, FrameData, LineData, Node, NodeId, PolygonData
 
+from .shadow import composite
 from .text import Resources, draw_text
 
 
@@ -66,9 +75,13 @@ def local_visual(document: Document, key: NodeId) -> QRectF:
     if not node.visible or node.opacity == 0:
         return QRectF()
     result = path(node).boundingRect() if node.type != "group" else QRectF()
-    if node.style.stroke:
-        pad = node.style.stroke.width / 2
-        result = result.adjusted(-pad, -pad, pad, pad)
+    if node.style.stroke and node.type != "group":
+        stroker = QPainterPathStroker()
+        stroker.setWidth(node.style.stroke.width)
+        stroker.setCapStyle(Qt.PenCapStyle.SquareCap)
+        stroker.setJoinStyle(Qt.PenJoinStyle.MiterJoin)
+        stroker.setMiterLimit(2)
+        result = result.united(stroker.createStroke(path(node)).boundingRect())
     for child in node.children:
         bounds = transform(local_matrix(document.nodes[child])).mapRect(
             local_visual(document, child)
@@ -76,10 +89,13 @@ def local_visual(document: Document, key: NodeId) -> QRectF:
         if node.clip_content:
             bounds = bounds.intersected(path(node).boundingRect())
         result = result.united(bounds)
+    if result.isEmpty():
+        return result
+    source = result
     for shadow in node.style.shadows:
         pad = shadow.spread + 3 * shadow.blur
         result = result.united(
-            result.adjusted(-pad, -pad, pad, pad).translated(shadow.offset_x, shadow.offset_y)
+            source.adjusted(-pad, -pad, pad, pad).translated(shadow.offset_x, shadow.offset_y)
         )
     return result
 
@@ -91,8 +107,6 @@ def warnings(document: Document, resources: Resources | None = None) -> tuple[st
         for n in document.nodes.values()
     ):
         result.add("Text/image/SVG belum dirender; canvas menampilkan placeholder.")
-    if any(n.style.shadows for n in document.nodes.values()):
-        result.add("Shadow belum dirender pada renderer dasar.")
     return tuple(sorted(result))
 
 
@@ -113,16 +127,25 @@ def draw_node(
     try:
         if not local:
             painter.setWorldTransform(transform(local_matrix(node)), True)
-        if node.opacity != 1:
+        if node.opacity != 1 or node.style.shadows:
             # Composite ONCE. Never use inherited QGraphicsItem opacity on children.
             matrix = painter.deviceTransform()
-            rect = (
-                matrix.mapRect(local_visual(document, key)).adjusted(-1, -1, 1, 1).toAlignedRect()
-            )
+            device_bounds = matrix.mapRect(local_visual(document, key)).adjusted(-1, -1, 1, 1)
+            if any(
+                not math.isfinite(v) or abs(v) > 1_000_000_000
+                for v in (
+                    device_bounds.x(),
+                    device_bounds.y(),
+                    device_bounds.width(),
+                    device_bounds.height(),
+                )
+            ):
+                fail("isolation_bounds", code="limit_exceeded")
+            rect = device_bounds.toAlignedRect()
             width, height = rect.width(), rect.height()
             if width <= 0 or height <= 0:
                 return
-            pixels = width * height
+            pixels = width * height * (6 if node.style.shadows else 1)
             if budget[0] + pixels > 64_000_000:
                 fail("isolation_pixels", code="limit_exceeded")
             image = QImage(width, height, QImage.Format.Format_ARGB32_Premultiplied)
@@ -139,6 +162,8 @@ def draw_node(
             finally:
                 layer.end()
                 budget[0] -= pixels
+            if node.style.shadows:
+                image = composite(image, node, matrix)
             painter.setOpacity(painter.opacity() * node.opacity)
             # Composite a device-aligned buffer, so PDF never resamples a rotated
             # image/soft-mask pair differently from canvas and PNG.
@@ -174,6 +199,7 @@ def draw_body(
         if node.style.stroke:
             pen = QPen(color(node.style.stroke.color), node.style.stroke.width)
             pen.setJoinStyle(Qt.PenJoinStyle.MiterJoin)
+            pen.setMiterLimit(2)
             pen.setCapStyle(Qt.PenCapStyle.SquareCap)
             painter.setPen(pen)
             painter.setBrush(Qt.BrushStyle.NoBrush)

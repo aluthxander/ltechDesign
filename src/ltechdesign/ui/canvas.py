@@ -1,7 +1,7 @@
 """Editor gestures are session state; only a successful release creates content."""
 
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from PySide6.QtCore import QPoint, QPointF, QRect, QRectF, Qt, Signal
 from PySide6.QtGui import (
@@ -14,6 +14,7 @@ from PySide6.QtGui import (
     QMouseEvent,
     QPainter,
     QPen,
+    QResizeEvent,
 )
 
 from ltechdesign.commands import Dispatcher
@@ -21,7 +22,7 @@ from ltechdesign.commands.contracts import Operation
 from ltechdesign.domain.authoring import drawn_node
 from ltechdesign.domain.errors import ModelError
 from ltechdesign.domain.geometry import Matrix, world_matrix
-from ltechdesign.domain.models import Node, NodeId, NodeType, Point, new_id
+from ltechdesign.domain.models import Fill, FrameData, Node, NodeId, NodeType, Point, Stroke, new_id
 from ltechdesign.rendering.canvas import CanvasView
 from ltechdesign.rendering.drawing import path, transform
 from ltechdesign.rendering.hit_testing import (
@@ -32,6 +33,7 @@ from ltechdesign.rendering.hit_testing import (
     paint_order,
 )
 
+from .canvas_aids import CanvasAids
 from .transforms import TransformController, edit_shortcut
 
 
@@ -61,10 +63,14 @@ class EditorCanvas(CanvasView):
         self.submit = submit
         self.tool: NodeType | None = None  # None = select; text/image have no placeholder tools.
         self.sides = 5
+        self.foreground = "#80B8E8FF"
+        self.background = "#FFFFFFFF"
         self.writable = True
         self.gesture: Gesture | None = None
         self.preview: Node | None = None
         self.apply_operations: Callable[[tuple[Operation, ...], int, str], bool] | None = None
+        self.aids = CanvasAids(self)
+        self.aids.layout_rulers()
         self.transforms = TransformController(self)
         self.setMouseTracking(True)
         self.setAccessibleName(
@@ -99,6 +105,7 @@ class EditorCanvas(CanvasView):
             dict.fromkeys(k for k in keys if doc and k in allowed and eligible(doc, k))
         )
         if selected != self.selection:
+            self.cancel_gesture()
             self.selection = selected
             self.selection_changed.emit(selected)
         self.viewport().update()
@@ -112,18 +119,27 @@ class EditorCanvas(CanvasView):
         self.transforms.cancel()
         self.gesture = None
         self.preview = None
+        self.aids.clear()
         self.viewport().update()
 
     def _preview(self, position: QPoint) -> None:
         gesture = self.gesture
         if gesture is None:
             return
-        gesture.end = self.mapToScene(position)
+        cursor = self.mapToScene(position)
+        snapped = (
+            self.aids.point(Point(x=cursor.x(), y=cursor.y()))
+            if self.tool
+            else Point(x=cursor.x(), y=cursor.y())
+        )
+        gesture.end = QPointF(snapped.x, snapped.y)
         self.preview = None
         if self.tool:
             start = gesture.inverse.point(Point(x=gesture.start.x(), y=gesture.start.y()))
             end = gesture.inverse.point(Point(x=gesture.end.x(), y=gesture.end.y()))
-            if (position - gesture.screen_start).manhattanLength() >= 3:
+            if (
+                position - gesture.screen_start
+            ).manhattanLength() * self.viewport().devicePixelRatioF() >= 3:
                 try:
                     self.preview = drawn_node(
                         self.tool,
@@ -134,6 +150,18 @@ class EditorCanvas(CanvasView):
                         sides=self.sides,
                         node_id=gesture.key,
                     )
+                    node = self.preview
+                    style = (
+                        replace(node.style, stroke=Stroke(color=self.foreground, width=2))
+                        if node.type == "line"
+                        else replace(node.style, fill=Fill(color=self.foreground))
+                    )
+                    data = (
+                        replace(node.data, background=self.background)
+                        if isinstance(node.data, FrameData)
+                        else node.data
+                    )
+                    self.preview = replace(node, style=style, data=data)
                 except ModelError:
                     # A zero-area shape has no valid content intent; release cancels it.
                     pass
@@ -166,6 +194,10 @@ class EditorCanvas(CanvasView):
         )
         parent = drawing_parent(doc, self.adapter.page, point) if self.tool else None
         inverse = world_matrix(doc, parent).inverse() if parent else Matrix()
+        if self.tool:
+            self.aids.prepare(())
+            snapped = self.aids.point(Point(x=point.x(), y=point.y()))
+            point = QPointF(snapped.x, snapped.y)
         self.gesture = Gesture(
             point,
             point,
@@ -208,7 +240,9 @@ class EditorCanvas(CanvasView):
                 if preview is not None and self.writable and self.submit(preview, gesture.revision):
                     self.set_selection((preview.id,))
             elif self.adapter.document:
-                if (event.position().toPoint() - gesture.screen_start).manhattanLength() < 3:
+                if (
+                    event.position().toPoint() - gesture.screen_start
+                ).manhattanLength() * self.viewport().devicePixelRatioF() < 3:
                     hit = gesture.hit
                     selected = gesture.original_selection
                     if gesture.additive:
@@ -275,6 +309,11 @@ class EditorCanvas(CanvasView):
         self.cancel_gesture()
         super().hideEvent(event)
 
+    def resizeEvent(self, event: QResizeEvent) -> None:
+        super().resizeEvent(event)
+        if hasattr(self, "aids"):
+            self.aids.layout_rulers()
+
     def drawForeground(self, painter: QPainter, rect: QRectF | QRect) -> None:
         if len(self.selection) <= 50:
             super().drawForeground(painter, rect)
@@ -309,3 +348,4 @@ class EditorCanvas(CanvasView):
             painter.drawRect(self.transforms.selection_bounds())
         painter.restore()
         self.transforms.draw(painter)
+        self.aids.draw_guides(painter)

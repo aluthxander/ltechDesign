@@ -33,14 +33,14 @@ Mesin rilis yang belum tersedia membuat bukti AT-30 pending, bukan verified dan 
 
 | ID | Prioritas/gate | Pemilik | Integrasi/verifikasi | Status | Bukti / kriteria selesai |
 | --- | --- | --- | --- | --- | --- |
-| FR-001 | P0 | 14 | 04, 05, 09, 22 | in_progress | New/Open/Save/Save As/Close, tab/recent/autosave/recovery, pages/artboards, duplicate, editable reopen |
+| FR-001 | P0 | 14 | 04, 05, 09, 22 | in_progress | 05 lifecycle/tab +09 page CRUD/duplicate/artboard list dan editable restore tersedia; recent/autosave/recovery/duplicate project UI14 serta acceptance22 tetap pemilik |
 | FR-002 | P0 | 04 | 00B, 02, 05, 14, 22 | in_progress | 04: codec ZIP/JSON + embedded bytes, inventory/schema/hash, portability dan atomic save teruji fondasi; GUI/native acceptance 05/14/22 pending |
-| FR-003 | P0 | 08 | 03, 06, 07, 09, 10B, 11, 22 | in_progress | 08: transform/handles/rotate, structured clipboard/history/context, world nudge1/10 dan sibling forward/backward, text-safe shortcuts diuji; ruler/grid/snap/guides/hide-lock UI serta frame layout tetap pemilik09/10B/13/22 |
+| FR-003 | P0 | 08 | 03, 06, 07, 09, 10B, 11, 22 | in_progress | 08 transform/history/clipboard/nudge +09 hierarchy;10B rulers/grid/world snap/smart guides dan align/distribute tersedia, 10B verified:58targeted/47native,405core+110desktop/full gate/spike, DPR1/1.5/2; overlay-free PNG/PDF/native roundtrip lulus. Frame layout13/full22 tetap pemilik |
 | FR-004 | P0 | 07 | 02, 08, 13, 16, 22 | verified | 07: 11 preset PRD/custom px/mm/cm/in, orientasi/DPI/background, data editable dan ukuran akurat; 20 tes core/27 GUI, full gate dan visual native; integrasi layout13/export16/acceptance22 tetap pemilik |
-| FR-005 | P0 | 09 | 03, 05, 08, 22 | in_progress | 05/07/08: nested selection sinkron, group/ungroup/reparent/duplicate/forward-backward undoable tersedia; page/layer management lengkap, hide/lock/search/drag reorder09 pending |
+| FR-005 | P0 | 09 | 03, 05, 08, 22 | verified | 09: nested tree/selection dua arah, name/type search, rename/duplicate/hide-lock, actual Qt drag/reorder/reparent via dispatcher dan external-command projection;18targeted+10native,360core/63desktop full gate dan visual native lulus; acceptance22 diulang |
 | FR-006 | P0 | 07 | 02, 06, 08, 11, 12, 22 | in_progress | 07: frame/rectangle/ellipse/line/polygon;08 group/ungroup dan transform/clipboards teruji. Text11/image/SVG12 pending; tanpa dummy tools |
 | FR-007 | P1 | 29 | 30, 41 | not_started | Pen/Bézier/path edit, cap/join/dash; boolean/masks/flatten di 30 |
-| FR-008 | P0 | 10A | 08, 10B, 11, 13, 15, 16, 22 | not_started | Inspector geometry/style/shadow/text/hierarchy/constraints/export sinkron model dan canvas |
+| FR-008 | P0 | 10A | 08, 10B, 11, 13, 15, 16, 22 | in_progress | 10A geometry/style/shadow/color/Mixed terhubung dispatcher/model/canvas/native/PNG/PDF proof; 10A verified;10B align/distribute dan canvas/Inspector/undo sync verified,405core+110desktop/full gate/spike lulus; text/constraints/export Inspector lengkap tetap11/13/15–17 |
 | FR-009 | P0 | 11 | 02, 04, 06A, 15, 16, 17, 22 | not_started | Font lokal, size/weight/italic, multiline/alignment/line spacing/letter spacing, text bounds/auto size, Unicode/emoji sesuai capabilities |
 | FR-010 | P1 | 31A | 11, 29, 31B | not_started | Rich spans/global styles/auto-fit; fallback/substitution metadata aman; variable font dan text-on-path 31B |
 | FR-011 | P0 | 12 | 04, 06, 15, 16, 22 | not_started | Raster/SVG subset, dialog/drop, fit/fill/stretch/crop/rounded clip, rotate/opacity, replace container tetap |
@@ -50,7 +50,7 @@ Mesin rilis yang belum tersedia membuat bukti AT-30 pending, bukan verified dan 
 | FR-015 | P0/P1 | 26 | 02, 04, 18A, 18B, 22 | not_started | P0 token minimum dimiliki TOK-P0; P1 UI token/binding/alias/themes dan komponen design system di 26/27 |
 | FR-016 | P2 | 35 | 22, 27 | not_started | Click/navigation/hover/transitions/preview tanpa menjalankan script pengguna |
 | FR-017 | P0 | 22 | 07, 08, 10A, 10B, 11, 12, 13, 15, 16 | not_started | Fixture poster/banner/social/thumbnail/infografis/brosur/sertifikat/presentasi memakai fitur editor, bukan generator contoh PRD |
-| FR-018 | P0/P1 | 32B | 10A, 10B, 12, 30, 32A, 33B, 22 | not_started | P0 color picker/solid fill/stroke/shadow/alignment 10A/10B; P1 gradient/eyedropper/blend/presets/icon 32B, masks 30/32A, template 33B |
+| FR-018 | P0/P1 | 32B | 10A, 10B, 12, 30, 32A, 33B, 22 | in_progress | P0 color picker/solid fill/stroke/shadow/alignment-distribution10A/10B verified; P1 gradient/eyedropper/blend/presets/icon 32B, masks 30/32A, template 33B |
 | FR-019 | P0/P1 | 33A | 07, 16, 22 | not_started | P0 multipage PDF 16; P1 mm/cm/inch/DPI/bleed/safe margin/raster resolution, text/vector sejauh supported; tanpa janji CMYK/ICC/PDF-X |
 | FR-020 | P0 | 15 | 16, 17, 18C, 22 | not_started | Artboard/selection/all artboards, scale/custom size/DPI, background/quality/naming/folder/progress/error |
 | FR-021 | P1 | 33C | 15, 16, 18C | not_started | Preset/batch export, collisions/cancel/partial per-output report; dasar all-artboards P0 tetap 15/16 |
@@ -62,7 +62,7 @@ Mesin rilis yang belum tersedia membuat bukti AT-30 pending, bukan verified dan 
 | FR-027 | P0 | 04A | 04, 05, 14, 19B, 20, 22 | in_progress | 04: canonical single writer/baseline/Save As/read-only dan stale metadata check; session terpisah. 04A dua proses/crash/case/.. dan hardlink verified; GUI/MCP dan audit platform luas pending |
 | FR-028 | P0 | 03 | 04, 14, 18B, 18C, 19B, 22 | in_progress | 03/04: content union/checkpoints/history/retry + real blob staging/retention undo/redo dan job/recovery leases teruji; scheduler/transport/persistent recovery pending |
 | FR-029 | P0 | 18C | 17, 18A, 19A, 20, 22 | in_progress | 04: archive/asset/decode limits dan save cancellation barrier teruji; query cursor, preview/TTL, scheduler/status/cancel/backpressure tetap 17–22 |
-| FR-030 | P0/P1 | 38A | 05, 08, 10B, 11, 38B, 42B, 22 | in_progress | 08: nudge1/10px dunia, sibling z-order dan shortcut aman pada input teks diuji. HighDPI fisik22/24, image clipboard/in-place38A dan guides/palette/preferences38B pending |
+| FR-030 | P0/P1 | 38A | 05, 08, 10B, 11, 38B, 42B, 22 | in_progress | 08: nudge1/10px dunia, sibling z-order dan shortcut aman pada input teks diuji. 10B actual Qt DPR1/1.5/2+zoom0.5/1/2/4 pada snapping/rulers/Inspector diuji; HighDPI fisik22/24, image clipboard/in-place38A dan guides/palette/preferences38B pending |
 | FR-031 | P1 | 39A | 03, 04, 14, 39B | not_started | Restore/missing dependency manager/relink; history UI/named snapshots/retention 39B |
 | FR-032 | P1 | 40A | 18B, 18C, 19A, 41 | not_started | Dry-run isolation/base revision/apply recheck; SVG handoff di 41 |
 | FR-033 | P0/P1 | 42A | 00A, 00C, 01, 01A, 06A, 17A, 25, 42B | in_progress | Fondasi docs/checks/handoff 00/01 tersedia dan diuji lokal; diagnostic bundle/redaction P1 42A dan bukti fitur berikutnya belum ada |
@@ -83,7 +83,7 @@ Mesin rilis yang belum tersedia membuat bukti AT-30 pending, bukan verified dan 
 | --- | --- | --- | --- | --- | --- |
 | AT-01 | P0 / MVP | 07 | 22 | verified | 07: dialog preset menghasilkan artboard1080×1350 tepat, drawing lima tools dan Save/close/Open editable; native dan offscreen lulus; ulang fixture acceptance penuh22 |
 | AT-02 | P0 / MVP | 11 | 06A, 07, 22 | not_started | Rectangle dan text nyata tampil canvas |
-| AT-03 | P0 / MVP | 08 | 10A, 22 | in_progress | 08: resize/rotate handles sinkron ke model, anchor/pivot/parent rotations dan undo diuji; Inspector geometry10A dan layout13/acceptance22 pending |
+| AT-03 | P0 / MVP | 08 | 10A, 22 | in_progress | 08: resize/rotate handles sinkron ke model, anchor/pivot/parent rotations dan undo diuji; Inspector geometry10A verified termasuk nested parent-space input/undo; layout13/acceptance22 pending |
 | AT-04 | P0 / MVP | 08 | 03, 09, 22 | verified | Lingkup08: GUI group/ungroup, hierarchy/undo tepat, world pose dan actual PNG tetap; preserve-appearance menolak stacking/clip/isolation yang tak representable. Full fixture22 tetap diulang |
 | AT-05 | P0 / MVP | 04 | 05, 14, 22 | not_started | Save/reopen struktur sama |
 | AT-06 | P0 / MVP | 03 | 08, 22 | in_progress | 03/08: real GUI delete group subtree+undo/redo memulihkan hierarchy/style, nested normalization, redo branch dibuang setelah command baru; acceptance22 pending |
@@ -107,7 +107,7 @@ Mesin rilis yang belum tersedia membuat bukti AT-30 pending, bukan verified dan 
 | AT-24 | P0 / MVP | 08 | 02, 03, 06A, 09, 22 | verified | 08 core+GUI native/offscreen: group/reparent rotated parents/ungroup mempertahankan world matrices dan PNG maxdelta1/255; undo project/hierarchy tepat, invalid compositing context ditolak atomik. Full acceptance22 diulang |
 | AT-25 | P0 / MVP | 19B | 04, 12, 14, 18B, 22 | in_progress | 03: retention conformance double menahan live/undo/redo/external leases saat GC; real byte store/replace image/recovery/transport pending |
 | AT-26 | P0 / MVP | 19B | 04A, 05, 22 | in_progress | 04A verified fondasi: dua copy document_id sama, session_id/lock/save/reopen independen; multi-tab routing/history GUI/MCP tetap 19B/22 |
-| AT-27 | P0 / MVP | 05 | 06, 07, 08, 22, 24 | not_started | Windows 100/150/200% dan pindah monitor; hit-test/handles/export size |
+| AT-27 | P0 / MVP | 05 | 06, 07, 08, 22, 24 | in_progress | 10B native Qt actualDPR1/1.5/2, four zooms snapping/handles/ruler/Inspector dan PNG/PDF diuji; OS Windows100/150/200% fisik/pindah monitor/clean release tetap22/24 pending |
 | AT-28 | P0 / MVP | 18A | 19A, 22 | not_started | Cursor revision lama stale_cursor, query restart |
 | AT-29 | P0 / MVP | 18C | 12, 14, 15, 16, 17, 19A, 22 | not_started | Cancel heavy job sebelum/sesudah barrier, UI responsif, staging bersih |
 | AT-30 | P0 / release | 24 | 25 | not_started | Windows bersih tanpa Python dev; startup/project/font/codecs/SVG/PDF/stdio MCP; mesin uji belum disiapkan |
@@ -123,13 +123,13 @@ Setiap baris memiliki acceptance owner; kontrak desain yang sudah ditulis tidak 
 | ID | Prioritas/gate | Pemilik | Integrasi/verifikasi | Status | Bukti / kriteria selesai |
 | --- | --- | --- | --- | --- | --- |
 | C20.1 | P0 | 04A | 04, 05, 14, 19B, 20, 22 | in_progress | 04 foundation ownership/path/baseline/identity/Save As/duplicate/stale/close teruji; 04A two-process/crash/Save As verified; GUI/recovery/MCP tetap 05/14/19B/22; ADR 0014 |
-| C20.2-UNITS | P0 | 02 | 07, 16, 22 | in_progress | Logical px, physical DPI, screen DPR terpisah, finite numbers |
+| C20.2-UNITS | P0 | 02 | 07, 16, 22 | in_progress | Logical px/physical DPI/screen DPR terpisah;10B8physical-px snap/(zoom*DPR), actualDPR1/1.5/2/four zooms dan literal Inspector/nudge teruji; physical export16/full22 pending |
 | C20.2-PIVOT | P0 | 03 | 02, 08, 22 | in_progress | 02/03/08: explicit pivot, world reparent, nested group normalization, GUI anchor resize/rotate/undo dibuktikan; full fixture22 pending |
 | C20.2-RESIZE | P0 | 08 | 02, 13, 22 | blocked | 08: positive uniform group/multiselect, frame geometry default fixed tanpa scale anak, zero-extent line/no shear/flip teruji. Evaluator constraints/layout13 belum tersedia; resize frame ber-layout ditolak, tidak dianggap selesai |
-| C20.2-BOUNDS | P0 | 06 | 02, 07, 08, 15, 17, 22 | in_progress | Geometry/visual/hit distinct; clipped effects bounds; selection export tanpa overlay |
-| C20.2-CLIP | P0 | 06A | 06, 10A, 12, 22 | in_progress | Defaults artboard/frame/group, same rounded fill/clip, centered stroke/radius clamp |
-| C20.2-OPACITY | P0 | 06A | 06, 10A, 16, 22 | in_progress | Isolated group composite, overlap alpha, shared offscreen fallback/PDF warning |
-| C20.2-HIERARCHY | P0 | 02 | 03, 08, 09, 22 | in_progress | 02/03/08: invariants, atomic hierarchy commands, GUI transforms/group/reparent/undo dan structured cross-document clone IDs/asset refs teruji; page/layer UI09 dan full22 pending |
+| C20.2-BOUNDS | P0 | 06 | 02, 07, 08, 15, 17, 22 | in_progress | Geometry/visual/hit distinct;10A thick centered stroke/square cap/miter dan multiple-shadow bounds teruji; clipped effects/selection export tanpa overlay; public export/acceptance15/17/22 pending |
+| C20.2-CLIP | P0 | 06A | 06, 10A, 12, 22 | in_progress | 06A/10A rounded fill/ancestor clip, centered stroke dan radius clamp teruji; image12/full fixture22 pending |
+| C20.2-OPACITY | P0 | 06A | 06, 10A, 16, 22 | in_progress | 06A/10A isolated group composite+shadow, Inspector opacity/undo/overlap alpha, shared fallback/PDF raster reporting teruji; production PDF16/full fixture22 pending |
+| C20.2-HIERARCHY | P0 | 02 | 03, 08, 09, 22 | in_progress | 02/03/08/09: invariants, page/subtree graph remap, atomic Qt relocation/world pose/undo, layer visibility/lock ancestry dan external-command sync teruji; full acceptance22 pending |
 | C20.2-DRAWING | P0 | 06A | 11, 12, 15, 16, 17, 22 | in_progress | One shared drawing fixture nested rotation/overlap/rounded clip/multiline/transparent image/multi-artboard |
 | C20.3-TX | P0 | 03 | 13, 18B, 22 | in_progress | 03: prepare/validate/publish atomik, satu revision/event, hook layout rollback teruji; evaluator nyata 13 dan transport 18/22 pending |
 | C20.3-STATE | P0 | 05 | 03, 19A, 22 | in_progress | 03: union menolak selection/viewport/save/export, monotonic undo/redo dan semantic checkpoint teruji; session event service 05/19 pending |
@@ -152,7 +152,7 @@ Setiap baris memiliki acceptance owner; kontrak desain yang sudah ditulis tidak 
 | C20.5-FIXTURES | P0 | 02 | 04, 06A, 11, 22 | in_progress | Old schema/migration fixtures, licensed deterministic fonts, geometry/alpha-aware diff artifacts |
 | C20.5-CHECKS | P0 | 01 | 01A, 04A, 06A, 17A, 24, 25 | in_progress | scripts/check.ps1 subsystem failure exit, run.ps1/repro fixtures, affected spikes after dependency/render/packaging change |
 | C20.5-STATUS | P0 | 22 | 00C, 01, 25 | not_started | Status vocabulary/evidence maintained each segment; separate auto/visual/manual and release |
-| C20.6 | P0/P1 | 38A | 05, 08, 10B, 38B, 42B, 22 | not_started | Base accessibility/nudge/order P0; clipboard/in-place/guides/preferences P1; guides content undoable, not export |
+| C20.6 | P0/P1 | 38A | 05, 08, 10B, 38B, 42B, 22 | in_progress | Base accessibility/nudge/order P0; clipboard/in-place/guides/preferences P1; guides content undoable, not export |
 | C20.7 | P1 | 39A | 14, 39B | not_started | Session restore respects writer, relink undoable, history source, local named snapshots/quotas/user deletion consent |
 | C20.8 | P1 | 40A | 18B, 18C, 41 | not_started | Dry-run no live/history/permanent asset mutation; apply revision recheck; SVG subset portability/report |
 | C20.9 | P0/P1 | 42A | 00A, 00C, 01, 25, 38A, 38B, 39A, 39B, 40A, 40B, 41, 42B | not_started | Development ADR/progress/checks P0; P1 redacted local diagnostics, no auto upload, feature-specific regression evidence |
@@ -164,7 +164,7 @@ Setiap baris memiliki acceptance owner; kontrak desain yang sudah ditulis tidak 
 | DOC-FORMAT | P0 / prasyarat dokumentasi | 00B | 02, 04 | verified | Spesifikasi baru docs/ltechdesign-file-format.md + ADR 0010, contoh JSON, audit cross-refs/inventory dan 13 kasus negatif; bukan conformance codec aplikasi |
 | FILE-FIXTURE | P0 | 02 | 04, 22 | in_progress | 02/04: historical JSON tetap, native ZIP valid + generator drift/round-trip teruji; PNG lama CRC rusak ditolak produksi; acceptance GUI 22 pending |
 | TOK-P0 | P0 | 02 | 03, 04, 18A, 18B, 22 | in_progress | 02–04: token IDs/typed values/JSON, SetTokens materialization dan native bindings round-trip teruji; MCP/acceptance 18/22 pending; UI/alias/themes P1 26 |
-| STYLE-P0 | P0 | 10A | 10B, 06A, 15, 16, 22 | not_started | Color picker, solid fill/stroke, opacity/radius/basic shadow, alignment/distribution dasar |
+| STYLE-P0 | P0 | 10A | 10B, 06A, 15, 16, 22 | in_progress | Editor style10A dan alignment/distribution10B verified;58targeted/47native,405core+110desktop/full gate/spike lulus. Production export15/16/acceptance22 tetap pending |
 | IMP-NATIVE | P0 | 05 | 02, 04, 14, 18A, 22 | not_started | Open/Import Project satu loader, tab editable/ownership sumber/IDs/assets; validation sebelum admission, no merge/flatten |
 | IMP-RASTER | P0 | 12 | 04, 18B, 22 | not_started | PNG/JPEG/WebP bytes embedded, decode guards, file dialog/drop |
 | IMP-SVG | P0 | 12 | 04, 06A, 20, 22 | not_started | Compatible subset vector, no script/external reference, explicit unsupported warnings |
@@ -255,3 +255,9 @@ Update 06A verified untuk fixture kecil nested rotation/rounded clip/isolated ov
 Update 07 verified (24 Oktober 2026): [baseline07](baseline-segment07.md), [ADR0018](adr/0018-drawing-and-selection.md). Canvas selection sinkron Layers, hidden/locked ancestry, real-path hit test dan clip, marquee/Select All adalah state sesi. Save/Open serta shared PNG/PDF proof mempertahankan node editable. Gate344 core/46 desktop, 27 GUI native dan packaging spike lulus; screenshot native diperiksa. Public export jobs tetap15–17, acceptance penuh22. FR-003/005/006 tetap memerlukan integrasi pemilik berikutnya.
 
 Update08: checkpoint independen transform/edit/clipboard/AT24/baseline verified pada [baseline08](baseline-segment08.md), [ADR0019](adr/0019-editor-transform-clipboard.md). Induk08 dan C20.2-RESIZE tetap blocked: evaluator Constraints/Layout13 belum ada; default fixed frame tidak dianggap pengganti evaluator. [Evidence benchmark](evidence/segment08-benchmark.json) mencatat p95/p99/freeze dan target GUI heartbeat yang belum tercapai, bukan klaim NFR-001 lengkap.
+
+Update09 verified: [baseline09](baseline-segment09.md), [ADR0020](adr/0020-pages-and-layer-projection.md). Page CRUD/clone IDs/asset refs, active-page session stability, tree/selection/search/flags dan command-based Qt reorder/reparent teruji termasuk outside-panel dispatcher changes. 360core+63desktop,10GUI native, lint/type/fixtures/docs/package/wheel/executable spike lulus; screenshot native diperiksa. Format native dan blocker08.layout tidak berubah; transport MCP serta acceptance penuh tetap18/19/22.
+
+Update10A verified: [baseline10A](baseline-segment10a.md), [ADR0021](adr/0021-inspector-and-shared-shadow.md). Nested parent-space X/Y/resize/rotation, atomic Mixed edits, finite/color validation, grouped style undo, group opacity dan shadow shared canvas/PNG/PDF/native roundtrip diuji. 34targeted offscreen/18native, full gate376core+81desktop, lint/type/fixtures/docs/package/wheel/executable spike lulus. Screenshot UI/Mixed/picker dan PNG/PDF raster diperiksa. Evidence hashes/version/JUnit di [evidence10A](evidence/segment10a-verification.json). FR008/STYLE-P0 dan AT03/C20.2 terkait belum diklaim lengkap lintas segmen;10B/11/13/15–17/22 tetap pemilik.
+
+Update10B verified dan induk10 verified: [baseline10B](baseline-segment10b.md), [ADR0022](adr/0022-canvas-aids-and-arrangement.md), [evidence10B](evidence/segment10b-verification.json).58targeted/47native,405core+110desktop, lint/type/fixtures/docs/package/wheel/executable spike lulus. Actual native DPR1/1.5/2/four zooms, nested/cross-parent move/resize/align, root multiselect, hidden/locked targets, atomic undo, Inspector sync dan session-only rulers/grid/smart guides diuji. Scene/PNG overlay-free exact, PDF aligned positions dan Save/Open editable dibuktikan. Screenshot native/PNG/PDF raster diperiksa. Manual OS DPI/monitor/clean release/reference performance tetap pending22/23/24; manual persisted guides38B tidak dikerjakan.

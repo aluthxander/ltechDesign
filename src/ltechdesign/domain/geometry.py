@@ -257,6 +257,38 @@ def normalize_group(
     return normalized, moved
 
 
+def stroke_bounds(node: Node, matrix: Matrix) -> Bounds:
+    """Conservative bounds for the P0 centered/square-cap/miter-limit-2 stroke."""
+    own = primitive_bounds(node, matrix)
+    if node.style.stroke is None:
+        return own
+    half = node.style.stroke.width / 2 * matrix.similarity_scale()
+    if isinstance(node.data, LineData):
+        start, end = matrix.point(node.data.start), matrix.point(node.data.end)
+        dx, dy = end.x - start.x, end.y - start.y
+        length = math.hypot(dx, dy)
+        if length == 0:
+            return own.inflate(half * math.sqrt(2))
+        tx, ty = dx / length * half, dy / length * half
+        points = [
+            (p.x + s * tx - n * ty, p.y + s * ty + n * tx)
+            for p, s in ((start, -1), (end, 1))
+            for n in (-1, 1)
+        ]
+        return Bounds(
+            min(x for x, _ in points),
+            min(y for _, y in points),
+            max(x for x, _ in points),
+            max(y for _, y in points),
+        )
+    if isinstance(node.data, PolygonData):
+        return own.inflate(half * 4)  # Qt miter limit is in full stroke-width units
+    if node.type == "ellipse":
+        return own.inflate(half)
+    # Rectangular primitive corners can project farther than half width after rotation.
+    return own.inflate(node.style.stroke.width / 2 * (abs(matrix.a) + abs(matrix.b)))
+
+
 def visual_bounds(document: Document, node_id: NodeId) -> Bounds | None:
     """Conservative world AABB, including effects and ancestor AABB clipping.
 
@@ -280,7 +312,7 @@ def visual_bounds(document: Document, node_id: NodeId) -> Bounds | None:
             if paints:
                 result = own
                 if node.style.stroke:
-                    result = result.inflate(node.style.stroke.width / 2 * matrix.similarity_scale())
+                    result = result.union(stroke_bounds(node, matrix))
         for child in node.children:
             child_bounds = visit(child, matrix @ local_matrix(document.nodes[child]))
             if child_bounds is not None and node.clip_content:

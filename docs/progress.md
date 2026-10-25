@@ -1,10 +1,12 @@
 # Progress ltechDesign Studio
 
-Tanggal: 24 Oktober 2026 (Asia/Jakarta). Baseline historis `54162c5`; HEAD aktual `23515f3`. Implementasi segmen 07/08 di working tree; tidak ada commit otomatis. PRD 1.2. Indeks ini dibaca dahulu; lanjutkan hanya source/keputusan terkait segmen aktif.
+Tanggal: 25 Oktober 2026 (Asia/Jakarta). Baseline historis `54162c5`; HEAD saat mulai10B `d05a7e1` (perubahan09/10A sudah ada). Implementasi09/10A/10B di working tree; tidak ada commit otomatis. PRD 1.2. Indeks ini dibaca dahulu; lanjutkan hanya source/keputusan terkait segmen aktif.
 
 ## Status singkat dan langkah berikutnya
 
-**Segmen aktif 08: blocked pada integrasi layout13.** Semua checkpoint independen08.transforms/editing/clipboard/baseline/handoff verified: 352 core+53 desktop, lint/type/fixtures/docs/package/wheel,7 GUI native dan executable spike lulus. Induk08 tidak verified: evaluator Constraints/Layout13 belum ada. Frame default fixed berfungsi; tidak mengarang evaluator atau menskalakan anak sebagai pengganti. Dua baseline10detik tersimpan, respons GUI batch110,69/111,07ms masih melampaui target100ms. Detail [baseline08](baseline-segment08.md), ADR0019.
+**Segmen aktif10B: verified; induk10 verified.** Rulers/grid, world grid/object snapping, smart guides, master snap toggle dan Inspector align/equal-gap distribution tersedia. Final405core+110desktop,58targeted/47native, lint/type/fixtures/docs/package/wheel/executable spike lulus; native DPR1/1.5/2 dan PNG/PDF diperiksa. [Baseline10B](baseline-segment10b.md), [evidence](evidence/segment10b-verification.json), ADR0022. Tidak mengerjakan11 atau manual guides38B otomatis.
+
+**Baseline08: blocked pada integrasi layout13.** Semua checkpoint independen08.transforms/editing/clipboard/baseline/handoff verified: 352 core+53 desktop, lint/type/fixtures/docs/package/wheel,7 GUI native dan executable spike lulus. Induk08 tidak verified: evaluator Constraints/Layout13 belum ada. Frame default fixed berfungsi; tidak mengarang evaluator atau menskalakan anak sebagai pengganti. Dua baseline10detik tersimpan, respons GUI batch110,69/111,07ms masih melampaui target100ms. Detail [baseline08](baseline-segment08.md), ADR0019.
 
 **Baseline 07: verified.** Preset/custom artboard, lima drawing tools, ephemeral preview, hit-testing dan session selection tersedia. Gate final 344 core + 46 desktop, lint/type/fixtures/docs/package/installed-wheel, 27 tes GUI native serta executable offscreen spike lulus. Screenshot native canvas/dialog benar-benar diperiksa. Detail [baseline 07](baseline-segment07.md), ADR 0018.
 
@@ -22,9 +24,41 @@ Tanggal: 24 Oktober 2026 (Asia/Jakarta). Baseline historis `54162c5`; HEAD aktua
 - [audit segmen 00](../scripts/check-segment00.ps1): pemeriksaan struktur/cakupan dokumen dan gate prasyarat terpisah.
 - [Spesifikasi .ltechdesign 1.0](ltechdesign-file-format.md), [contoh JSON kontrak](examples/ltechdesign-v1-contract.json), [native ZIP](../examples/proyek-contoh.ltechdesign), dan [audit contoh](../scripts/check-file-format-spec.ps1): typed validator 02 + codec produksi 04; GUI masih menunggu 05/22.
 
-Segmen08 aktif atas instruksi pengguna. Berikutnya09 tetap not_started; blocker khusus constraints/layout13 dicatat eksplisit, tidak diimplementasikan sebagai segmen tambahan. Text/image lengkap dan production export tetap11/12/15–17.
+Segmen09/10A verified dan perubahannya dipertahankan.10B/induk10 verified pada scope yang diminta, independen dari blocker08.layout/13. Berikutnya11 tetap not_started; image lengkap dan production export tetap12/15–17. Manual guides P1 tetap38B.
 
-### Handoff segmen08
+### Handoff segmen10B
+
+- 10B.snapping/arrangement/overlays/handoff `verified`; tidak ada blocker10B. Induk10 `verified` karena10A dan10B selesai. Ruler world-px pada margin viewport, fixed logical grid, grid/object edge-center snap, ephemeral smart guides dan mode/master toggle per tab tersedia; manual guides tetap38B.
+- ArrangeNodes melalui dispatcher: six-way world align/equal gaps, per-parent inverse translation, root selection, one undo/revision/event, unchanged IDs/z-order. Pointer move/drawing/resize menjaga anchor/uniform scale dan physical-pixel tolerance8/(zoom*DPR). Inspector/nudge tetap literal logical px, publication menyinkronkan canvas/Inspector.
+- Source utama domain/snapping.py/arrangement.py, commands contracts/planning, ui/canvas_aids.py/arrangement.py/canvas.py/transforms.py/Inspector/window serta view grid renderer. Native1.0/dependency tidak berubah. ADR0022 mencatat kebijakan candidate geometry/clip AABB konservatif dan state view yang tidak ikut serialization/history/export.
+- Base HEAD `d05a7e171d070987eddf091cd7b21a4f1ad5c06f`; perubahan09/10A dipertahankan, tanpa commit otomatis/ubah PRD. Versi diuji Python3.12.12, PySide6/Qt6.10.2, Pillow12.3.0.
+- Aktual58targeted offscreen (29core+29GUI),47native (29GUI10B+18regresi09/10A). Full check.ps1 offline exit0:405core+110desktop, Ruff87/mypy83 files, fixtures/docs/package/installed-wheel lulus. Build/executable offscreen exit0, PyInstaller6.22.3; isolated-wheel aids spike empat zoom lulus.
+- Native actual DPR1/1.5/2 pada zoom0.5/1/2/4:7.9physical px snap,8.1 tidak; actual QTest gesture dan one-undo/Inspector sync terbukti. Nested parent move/resize, cross-parent multiselect, hidden/locked exclusion, stable order/equal/negative gaps, stale/selection/toggle cancellation, master snap off, overlay-free exact scene/PNG, aligned PDF pixels dan Save/Open editable diuji. Screenshot ruler/grid/guides/DPR serta PNG/PDF raster benar-benar diperiksa.
+- Ruler tidak menutupi konten: viewport margin terpisah mempertahankan regresi drawing10A native. Programmatic Layers selection membatalkan preview tanpa perlu focus-out. Timer ruler dimiliki view, tidak membuat content command atau callback pada view yang sudah dihapus.
+- Mouse fisik, screen reader, monitor switching/OS DPI fisik, mesin rilis bersih dan benchmark besar pending. Existing08.layout masih blocked pada13; manual guides38B, text11, constraints13, public export/jobs15-17, MCP18/19, acceptance22/performance23/release24 tetap pemilik.
+- Berikutnya11 `not_started`; aman melanjutkan sesuai prasyaratnya, tidak dijalankan otomatis. Bukti/log/hash di baseline10B/evidence10B.
+
+### Handoff segmen10A (historis)
+
+- 10A.properties,10A.history,10A.shadow,10A.handoff `verified`. Tidak ada blocker lingkup. Parent-space X/Y, anchor/pivot resize, uniform group width/height, rotation/opacity/fill/centered stroke/radius/shadow, RGBA picker, foreground/background defaults dan validated Mixed values terhubung dispatcher yang sama.
+- Source utama domain/inspector.py, commands contracts/planning/dispatcher, ui/inspector.py/window.py/canvas.py, rendering/shadow.py/drawing.py/pdf.py. Native codec1.0 tidak berubah; warna/aset desain tetap portable/editable. Pillow12.3.0 dikunci setelah install/tes bersama Python3.12.12 dan PySide6/Qt6.10.2. ADR0021 mencatat history_group/save boundary dan shared alpha-shadow semantics.
+- Base HEAD `d05a7e171d070987eddf091cd7b21a4f1ad5c06f`; perubahan09 yang sudah ada dipertahankan. Tidak mengubah PRD atau membuat commit otomatis. Source/artifact hashes di evidence10A.
+- Aktual:34targeted offscreen (16core+18GUI),18Windows native; full check.ps1 offline exit0,376core+81desktop, Ruff79/mypy75 files, fixtures/docs/package/wheel/isolated-wheel lulus. smoke-build.ps1 offscreen exit0, PyInstaller6.22.3; wheel probe native ZIP->PNG byte-identik/PDF shadow lulus. Perintah/log di baseline10A.
+- Canvas/PNG fixture nested rotation/scale/stroke/radius/shadow exact; PDF2x max18/255/interior1/255 dan rasterization report benar. Group overlap alpha/undo, thick rotated stroke bounds, large/empty shadow limits, atomic invalid multiselect, stale external focus/picker, keyboard/slider merge, Save/Open editable roundtrip diuji. Screenshot Inspector/Mixed/actual RGBA picker serta PNG/PDF raster benar-benar diperiksa.
+- Mouse fisik, screen reader, multi-monitor/DPI, PDF viewer lain dan mesin rilis bersih pending, tidak menghentikan pekerjaan independen. Existing08.layout menunggu13; text/image11/12, constraints/export Inspector13/15-17, MCP18/19, acceptance22/performance23/release24 tetap pemilik.
+- Berikutnya10B `not_started`; aman melanjutkan pekerjaan independen yang memakai10A, tetapi tidak dikerjakan otomatis. Induk10 `in_progress` sampai10B verified; tidak membuat snapping.
+
+### Handoff segmen09
+
+- 09.commands,09.panel,09.drag,09.handoff `verified`; tidak ada blocker09. Typed page CRUD/duplicate, graph/token ID remap dengan asset/font immutable refs, page-active stable ID, tree/search/own visibility-lock/selection, Qt DnD→RelocateNodes atomik tersedia. Qt item bukan sumber model dan tidak melakukan default drop mutation.
+- Source utama commands/contracts.py/planning.py, workspace guard dispatcher.py, ui/hierarchy.py, integrasi window.py dan safe editing guard di ui/editing.py. Tidak mengubah native schema/version/dependency atau validator layout13. ADR0020 mencatat kontrak reverse-z drop, world preservation/context mode dan workspace sanitization.
+- Base revision saat mulai09 `d05a7e171d070987eddf091cd7b21a4f1ad5c06f`; working tree awal bersih, tidak membuat commit otomatis, PRD tidak diubah. Fixture contoh dipulihkan byte-identik setelah kesalahan Save pada harness awal; tes final memakai source copy tmp_path dan Save As, fixture repo final tidak berubah.
+- Verifikasi aktual: targeted18=8core+10GUI lulus;10GUI native lulus. `scripts/check.ps1` offline exit0, **360core+63desktop**, Ruff73/mypy69 files, fixtures/docs/build/wheel/isolated-wheel smoke lulus. `scripts/smoke-build.ps1 -SmokeMode offscreen` exit0, PyInstaller6.22.3. Python3.12.12/PySide6Qt6.10.2 tanpa dependency baru. Perintah dan log di baseline09.
+- Bukti mencakup actual Qt drag events, nested world matrices, PNG pixel/z-order, cycles/stale/reparent clip context, hidden/locked ancestors, search/reveal/collapse, selection signal count tanpa loop, external dispatcher pada active/inactive tab serta external revision ketika rename inline terbuka. Page duplicate/delete/undo dan ZIP save/reload mempertahankan graph/aset/bindings; optional workspace page refs tetap sah.
+- Screenshot native Pages/Artboards/Layers benar-benar diperiksa. Input fisik, screen reader, multi-monitor dan mesin rilis bersih belum manual; skenario ada di baseline09. Caller eksternal memakai dispatcher lokal, bukan klaim transport MCP18/19.
+- Berikutnya10A not_started, aman untuk scope Inspector/style yang memakai09; tidak dijalankan otomatis. 08.layout/13 tetap blocked, public export/jobs15–17, SDK/MCP18/19, acceptance22/performance23/clean release24 masih pemilik.
+
+### Handoff segmen08 (historis)
 
 - Status induk `blocked` hanya untuk08.layout: `Layout`/`Constraints` masih ditolak oleh Project validator dan Draft; perlu evaluator13 nyata, admission dan tes resize-frame+layout+undo atomik. Checkpoint08.transforms/editing/clipboard/baseline/handoff `verified` pada lingkup independen. Tidak ada prasyarat lain yang diarang atau P0 ditandai not_included.
 - Implementasi: domain/editing.py, semantic selection commands di commands, wireframe gesture/handles di ui/transforms.py, action/clipboard/context/focus routing di ui/editing.py, portable embedded clipboard di persistence/clipboard.py; integrasi canvas/window, bounded staging cleanup dan cache proyeksi/fingerprint. ADR0019 mencatat modifier, parent/world, aspect/anchor, frame-vs-group dan clipboard limits.
@@ -138,10 +172,10 @@ Urutan berasal dari indeks roadmap, bukan instruksi otomatis. Checkpoint08 pada 
 | 06A | Canvas/PNG/PDF/offscreen fixture shared drawing | verified | Baseline 06A + ADR 0017; actual fixture/PDF fallback/text outline proof; 324 core/19 desktop, full gate + executable spike |
 | 07 | Artboard presets/drawing/selection | verified | Baseline07 + ADR0018; 344 core/46 desktop full gate, 27 GUI native, visual canvas/dialog dan executable offscreen spike |
 | 08 | Transform/clipboard/group/undo/nudge/z-order, AT-24 | blocked | Baseline08 + ADR0019; checkpoint independen verified,352core/53desktop+7native+spike;08.layout menunggu evaluator13; dua baseline10detik disimpan, GUI heartbeat110,69–111,07ms pending23 |
-| 09 | Pages/layers/search/reorder/reparent | not_started | 08 |
-| 10 | Inspector/style dan snapping/alignment | not_started | 10A, 10B |
-| 10A | Inspector/style/color/basic shadow | not_started | 09, 06A |
-| 10B | Rulers/grid/snap/smart guides/alignment/distribution | not_started | 10A |
+| 09 | Pages/layers/search/reorder/reparent | verified | Baseline09+ADR0020;18targeted/10native,360core+63desktop full gate, visual native dan executable spike; tidak menutup08.layout |
+| 10 | Inspector/style dan snapping/alignment | verified | 10A verified +10B verified; baseline10A/10B, ADR0021/0022 dan full gate/spike |
+| 10A | Inspector/style/color/basic shadow | verified | Baseline10A+ADR0021;34targeted/18native,376core+81desktop full gate; screenshot native, wheel shadow probe dan executable spike lulus |
+| 10B | Rulers/grid/snap/smart guides/alignment/distribution | verified | Baseline10B+ADR0022;58targeted/47native,405core+110desktop full gate; DPR1/1.5/2/visual/wheel/executable spike |
 | 11 | Text inline, fonts/shared layout/fallback warning | not_started | 10B |
 | 12 | Raster/SVG/import/crop/replace/asset retention | not_started | 11; ulang baseline ringan dan shared artifacts |
 | 13 | Stack/constraints fixed/hug/fill dasar atomik | not_started | 12 |

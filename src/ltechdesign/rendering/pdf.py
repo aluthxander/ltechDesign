@@ -43,7 +43,7 @@ def render_pdf(
         node = document.nodes[key]
         if not node.visible or node.opacity == 0:
             return
-        if node.opacity != 1:
+        if node.opacity != 1 or node.style.shadows:
             rasterized.append(key)
         for child in node.children:
             visit(child)

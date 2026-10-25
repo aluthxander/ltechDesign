@@ -124,6 +124,7 @@ class CanvasView(QGraphicsView):
         self.adapter = SceneAdapter(self.scene())
         self.selection: tuple[NodeId, ...] = ()
         self.grid = False
+        self.grid_spacing = 20.0
         self._pan: QPoint | None = None
         self.setRenderHint(QPainter.RenderHint.Antialiasing)
         self.setTransformationAnchor(QGraphicsView.ViewportAnchor.NoAnchor)
@@ -238,7 +239,10 @@ class CanvasView(QGraphicsView):
         super().drawBackground(painter, rect)
         if not self.grid:
             return
-        spacing = max(20, 10 / self.zoom)
+        # Rendering may skip minor lines, but the logical grid never changes with zoom.
+        spacing = self.grid_spacing
+        while spacing * self.zoom * self.viewport().devicePixelRatioF() < 12:
+            spacing *= 2
         pen = QPen(QColor("#CCCCCC"), 1)
         pen.setCosmetic(True)
         painter.setPen(pen)

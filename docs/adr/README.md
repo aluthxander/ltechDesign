@@ -30,3 +30,9 @@ Versi dependency dan packager yang diuji dicatat pada ADR 0011 serta baseline 01
 - [0018 — Drawing dan selection](0018-drawing-and-selection.md): accepted, 07; artboard preset/unit/DPI, ephemeral gestures, parent space, hit paths dan session selection.
 
 - [0019 — Transform dan clipboard editor](0019-editor-transform-clipboard.md): accepted, 08; semantic selection commands, anchor/scale/frame semantics, validated portable clipboard, safe focus routing dan baseline. Evaluator constraints/layout tetap13.
+
+- [0020 — Pages dan layer projection](0020-pages-and-layer-projection.md): accepted,09; page CRUD/clone graph, own layer flags, revision-bound Qt drag, stable page/session selection dan optional workspace reference sanitization.
+
+- [0021 — Inspector dan shared shadow](0021-inspector-and-shared-shadow.md): accepted,10A; parent translation, validated Mixed input, client-scoped history grouping, local palette dan shared alpha shadow/PDF fallback.
+
+- [0022 — Canvas aids dan arrangement](0022-canvas-aids-and-arrangement.md): accepted,10B; physical-pixel snap tolerance, per-view ruler/grid/guides, constrained handles dan atomic world align/equal-gap distribution.

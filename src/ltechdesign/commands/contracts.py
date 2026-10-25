@@ -3,7 +3,9 @@
 from dataclasses import dataclass
 from typing import Literal
 
+from ltechdesign.domain.arrangement import ArrangeMode
 from ltechdesign.domain.geometry import Matrix
+from ltechdesign.domain.inspector import Property
 from ltechdesign.domain.models import (
     Asset,
     AssetId,
@@ -12,6 +14,7 @@ from ltechdesign.domain.models import (
     NodeId,
     Nonempty,
     Number,
+    Page,
     PageId,
     Point,
     Project,
@@ -92,6 +95,15 @@ class SetStyle(Record):
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
+class SetProperties(Record):
+    """One Inspector field across explicit targets, validated and published atomically."""
+
+    node_ids: tuple[NodeId, ...]
+    property: Property
+    value: Number | str | None
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
 class SetText(Record):
     node_id: NodeId
     data: TextData
@@ -124,6 +136,12 @@ class RemoveAsset(Record):
 class TransformNodes(Record):
     node_ids: tuple[NodeId, ...]
     matrix: Matrix  # world-space positive similarity
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class ArrangeNodes(Record):
+    node_ids: tuple[NodeId, ...]
+    mode: ArrangeMode
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
@@ -162,6 +180,47 @@ class PasteNodes(Record):
     offset: Point = Point(x=10, y=10)
 
 
+@dataclass(frozen=True, slots=True, kw_only=True)
+class CreatePage(Record):
+    page: Page
+    index: int | None = None
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class UpdatePage(Record):
+    page_id: PageId
+    name: str
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class DuplicatePage(Record):
+    page_id: PageId
+    new_page_id: PageId
+    name: str | None = None
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class DeletePage(Record):
+    page_id: PageId
+    delete_contents: bool = False
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class SetLayerState(Record):
+    node_ids: tuple[NodeId, ...]
+    visible: bool | None = None
+    locked: bool | None = None
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class RelocateNodes(Record):
+    node_ids: tuple[NodeId, ...]
+    page_id: PageId
+    parent_id: NodeId | None = None
+    index: int | None = None  # destination index after removing all selected roots
+    preserve_appearance: bool = True
+
+
 Operation = (
     Create
     | Update
@@ -173,17 +232,25 @@ Operation = (
     | Ungroup
     | Duplicate
     | SetStyle
+    | SetProperties
     | SetText
     | SetTokens
     | SetFont
     | RegisterAsset
     | RemoveAsset
     | TransformNodes
+    | ArrangeNodes
     | ResizeNode
     | ScaleNodes
     | EditNodes
     | ReparentNodes
     | PasteNodes
+    | CreatePage
+    | UpdatePage
+    | DuplicatePage
+    | DeletePage
+    | SetLayerState
+    | RelocateNodes
 )
 
 
@@ -196,6 +263,7 @@ class Request(Record):
     source: Literal["GUI", "AI"]
     operations: tuple[Operation, ...] = ()
     action: Literal["execute", "undo", "redo"] = "execute"
+    history_group: Nonempty | None = None
 
 
 @dataclass(frozen=True, slots=True)

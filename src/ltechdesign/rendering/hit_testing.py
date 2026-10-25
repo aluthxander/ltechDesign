@@ -42,6 +42,7 @@ def clipped_path(document: Document, key: NodeId, tolerance: float = 0) -> QPain
         stroker.setWidth(max(1e-6, width + 2 * tolerance))
         stroker.setCapStyle(Qt.PenCapStyle.SquareCap)
         stroker.setJoinStyle(Qt.PenJoinStyle.MiterJoin)
+        stroker.setMiterLimit(2)
         shape = shape.united(stroker.createStroke(shape))
     parent = node.parent_id
     while parent is not None:

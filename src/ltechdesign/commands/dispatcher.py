@@ -161,6 +161,7 @@ class Dispatcher:
         self._busy = False
         self._receipts: dict[tuple[str, str], _Receipt] = {}
         self._listeners: list[Callable[[ChangeEvent], None]] = []
+        self._history_group: tuple[str, str] | None = None
         lease = self._assets.prepare(self._roots(self._state), {})
         lease.commit()
 
@@ -209,9 +210,15 @@ class Dispatcher:
 
     def capture_checkpoint(self) -> SaveCheckpoint:
         self._check_owner()
+        self._history_group = None
         return SaveCheckpoint(
             self.snapshot.session_id, self.snapshot.revision, fingerprint(self.snapshot.project)
         )
+
+    def end_history_group(self) -> None:
+        """A side-effect snapshot is an undo boundary even before its job finishes."""
+        self._check_owner()
+        self._history_group = None
 
     def mark_saved(self, checkpoint: SaveCheckpoint) -> None:
         """Called only after the save job's successful barrier, with its captured checkpoint."""
@@ -221,6 +228,7 @@ class Dispatcher:
         if not 0 <= checkpoint.revision <= self.snapshot.revision:
             raise ValueError("Invalid checkpoint revision")
         self._clean = checkpoint.digest
+        self._history_group = None  # keep the saved state reachable with Undo
 
     def _error(self, code: str, message: str, **details: str) -> Result:
         return Result(
@@ -316,7 +324,7 @@ class Dispatcher:
         self._busy = True
         event: ChangeEvent | None = None
         try:
-            result, event = self._execute(request, cancelled)
+            result, event = self._execute(request, cancelled, client_id)
         except Exception:
             LOG.exception("Unexpected transaction planning failure")
             result = self._error("internal_error", "Transaction could not be prepared")
@@ -348,7 +356,7 @@ class Dispatcher:
         return roots
 
     def _execute(
-        self, request: Request, cancelled: Callable[[], bool] | None
+        self, request: Request, cancelled: Callable[[], bool] | None, client_id: str
     ) -> tuple[Result, ChangeEvent | None]:
         staged: dict[str, Asset] = {}
         lease: PreparedAssets | None = None
@@ -375,23 +383,35 @@ class Dispatcher:
                 request.request_id,
             )
             id_map: tuple[tuple[NodeId, NodeId], ...] = ()
+            group = (
+                (client_id, request.history_group)
+                if request.action == "execute" and request.source == "GUI" and request.history_group
+                else None
+            )
             if request.action == "execute":
                 draft = Draft(before)
                 for op in request.operations:
                     draft.apply(op)
-                after = self._layout(draft.finish())
+                planned = draft.finish()
+                after = self._layout(planned)
                 if (
                     type(after) is not Project
                     or after.document.document_id != before.document.document_id
                 ):
                     fail("invalid_layout_result")
-                if after.workspace != before.workspace:
+                if after.workspace != planned.workspace:
                     fail("layout_changed_session_state")
                 # Re-run the aggregate boundary even for custom layout implementations.
                 after = replace(after)
                 id_map = tuple(draft.id_map)
+                history_before = before
+                if group is not None and group == self._history_group and undo and not redo:
+                    history_before, undo = undo[-1].before, undo[:-1]
                 entry = HistoryEntry(
-                    before, after, metadata, retained_size((before, after, metadata)) + 128
+                    history_before,
+                    after,
+                    metadata,
+                    retained_size((history_before, after, metadata)) + 128,
                 )
                 undo, redo = undo + (entry,), ()
             elif request.action == "undo":
@@ -444,6 +464,7 @@ class Dispatcher:
         # Everything fallible has completed. Adapter commit is a non-throwing root swap.
         lease.commit()
         self._state = state
+        self._history_group = group
         self._fingerprint_project, self._fingerprint_value = after, after_fingerprint
         return result, event
 
@@ -463,6 +484,7 @@ class Dispatcher:
         lease = self._assets.prepare(self._roots(state), {})
         lease.commit()
         self._state = state
+        self._history_group = None
 
     def close(self) -> None:
         """Lifecycle caller must drain jobs first; their independent store leases survive."""

@@ -4,7 +4,14 @@ from typing import TYPE_CHECKING, Literal, cast
 
 from PySide6.QtCore import QEvent, QMimeData, QObject, QPoint
 from PySide6.QtGui import QAction, QKeyEvent
-from PySide6.QtWidgets import QApplication, QMenu
+from PySide6.QtWidgets import (
+    QAbstractSpinBox,
+    QApplication,
+    QLineEdit,
+    QMenu,
+    QPlainTextEdit,
+    QTextEdit,
+)
 
 from ltechdesign.commands import (
     EditNodes,
@@ -61,6 +68,10 @@ class EditingActions(QObject):
 
     def eventFilter(self, watched: QObject, event: QEvent) -> bool:
         if watched is self.window.layers and event.type() == QEvent.Type.KeyPress:
+            if isinstance(
+                QApplication.focusWidget(), (QLineEdit, QTextEdit, QPlainTextEdit, QAbstractSpinBox)
+            ):
+                return False
             assert isinstance(event, QKeyEvent)
             if action := edit_shortcut(event):
                 self.perform(action)

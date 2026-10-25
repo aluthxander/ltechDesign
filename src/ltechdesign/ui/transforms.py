@@ -10,6 +10,7 @@ from PySide6.QtGui import QColor, QKeyEvent, QPainter, QPen
 from ltechdesign.commands.contracts import Operation, ResizeNode, ScaleNodes, TransformNodes
 from ltechdesign.domain.editing import MIN_SIZE, around, resized, roots
 from ltechdesign.domain.geometry import (
+    Bounds,
     Matrix,
     local_matrix,
     primitive_bounds,
@@ -17,6 +18,8 @@ from ltechdesign.domain.geometry import (
     world_matrix,
 )
 from ltechdesign.domain.models import Document, NodeId, Point
+from ltechdesign.domain.snapping import Axis
+from ltechdesign.domain.snapping import geometry as snap_geometry
 from ltechdesign.rendering.drawing import transform
 from ltechdesign.rendering.hit_testing import clipped_path, hit_test
 
@@ -77,6 +80,7 @@ class TransformGesture:
     screen: QPoint
     basis: Matrix
     rect: QRectF
+    bounds: Bounds
     handle: str = ""
     operations: tuple[Operation, ...] = ()
     preview: tuple[QPointF, ...] = ()
@@ -93,6 +97,7 @@ class TransformController:
 
     def cancel(self) -> None:
         self.active = None
+        self.view.aids.clear()
 
     def geometry(self) -> tuple[Matrix, QRectF, tuple[NodeId, ...]] | None:
         doc = self.view.adapter.document
@@ -183,6 +188,10 @@ class TransformController:
         geometry = self.geometry()
         assert geometry is not None
         matrix, rect, keys = geometry
+        bounds = snap_geometry(doc, keys[0])
+        for key in keys[1:]:
+            bounds = bounds.union(snap_geometry(doc, key))
+        view.aids.prepare(keys)
         self.active = TransformGesture(
             doc,
             view.dispatcher.snapshot.revision,
@@ -193,6 +202,7 @@ class TransformController:
             screen,
             matrix,
             rect,
+            bounds,
             handle or "",
         )
         return True
@@ -215,8 +225,9 @@ class TransformController:
         g, view = self.active, self.view
         if g is None:
             return
-        if (screen - g.screen).manhattanLength() < 3:
+        if (screen - g.screen).manhattanLength() * view.viewport().devicePixelRatioF() < 3:
             g.operations, g.preview = (), ()
+            view.aids.clear()
             return
         point = view.mapToScene(screen)
         shift = bool(modifiers & Qt.KeyboardModifier.ShiftModifier)
@@ -224,9 +235,12 @@ class TransformController:
         matrix = Matrix()
         if g.mode == "move":
             dx, dy = point.x() - g.start.x(), point.y() - g.start.y()
+            axis: Axis | None = None
             if shift:
+                axis = "x" if abs(dx) >= abs(dy) else "y"
                 dx, dy = (dx, 0) if abs(dx) >= abs(dy) else (0, dy)
-            matrix = translation(dx, dy)
+            snapped = view.aids.move(g.bounds, Point(x=dx, y=dy), axis)
+            matrix = translation(snapped.x, snapped.y)
         elif g.mode == "rotate":
             node = g.document.nodes[g.keys[0]]
             center = (
@@ -258,6 +272,14 @@ class TransformController:
             node = g.document.nodes[g.keys[0]]
             uniform = len(g.keys) > 1 or node.type == "group" or shift or node.type == "line"
             if uniform:
+                minimum = max(
+                    (
+                        MIN_SIZE / extent
+                        for extent in (g.rect.width(), g.rect.height())
+                        if extent > 0
+                    ),
+                    default=1,
+                )
                 denominator = vx * vx + vy * vy
                 factor = max(
                     max(
@@ -270,6 +292,9 @@ class TransformController:
                     ),
                     1 + (vx * dx + vy * dy) / denominator if denominator else 1,
                 )
+                origin = g.basis.point(Point(x=ax, y=ay))
+                vector = Point(x=g.basis.a * vx + g.basis.c * vy, y=g.basis.b * vx + g.basis.d * vy)
+                factor = view.aids.along(origin, vector, factor, minimum)
                 if len(g.keys) > 1 or node.type == "group":
                     matrix = g.basis @ around(Point(x=ax, y=ay), factor=factor) @ g.basis.inverse()
                     g.operations = (
@@ -282,6 +307,25 @@ class TransformController:
                     return
                 else:
                     rx = ry = factor
+            elif vx and vy:
+                handle = g.basis.point(Point(x=ax + vx, y=ay + vy))
+                snapped = view.aids.point(
+                    Point(
+                        x=handle.x + point.x() - g.start.x(),
+                        y=handle.y + point.y() - g.start.y(),
+                    )
+                )
+                current = inverse.point(snapped)
+                rx, ry = (current.x - ax) / vx, (current.y - ay) / vy
+                if node.width * rx < MIN_SIZE or node.height * ry < MIN_SIZE:
+                    view.aids.clear()
+            else:
+                origin = g.basis.point(Point(x=ax, y=ay))
+                vector = Point(x=g.basis.a * vx + g.basis.c * vy, y=g.basis.b * vx + g.basis.d * vy)
+                factor = view.aids.along(
+                    origin, vector, rx if vx else ry, MIN_SIZE / (node.width if vx else node.height)
+                )
+                rx, ry = (factor, ry) if vx else (rx, factor)
             if not (len(g.keys) > 1 or node.type == "group"):
                 op = ResizeNode(
                     node_id=node.id,
@@ -307,6 +351,7 @@ class TransformController:
             return
         self.update(screen, modifiers)
         self.active = None
+        self.view.aids.clear()
         if g.revision != self.view.dispatcher.snapshot.revision:
             self.view.message.emit("Transform dibatalkan: revision berubah.")
         elif g.operations and self.view.apply_operations:

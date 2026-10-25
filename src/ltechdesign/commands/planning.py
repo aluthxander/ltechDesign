@@ -2,6 +2,7 @@
 
 from dataclasses import replace
 
+from ltechdesign.domain.arrangement import translations
 from ltechdesign.domain.editing import around, resized, selection_roots
 from ltechdesign.domain.errors import fail
 from ltechdesign.domain.geometry import (
@@ -13,7 +14,9 @@ from ltechdesign.domain.geometry import (
     primitive_bounds,
     translation,
     with_matrix,
+    world_matrix,
 )
+from ltechdesign.domain.inspector import inspected
 from ltechdesign.domain.models import (
     AssetsIndex,
     Document,
@@ -30,15 +33,20 @@ from ltechdesign.domain.models import (
 from ltechdesign.domain.validation import CONTAINERS
 
 from .contracts import (
+    ArrangeNodes,
     Create,
+    CreatePage,
     Delete,
+    DeletePage,
     Duplicate,
+    DuplicatePage,
     EditNodes,
     Group,
     Move,
     Operation,
     PasteNodes,
     RegisterAsset,
+    RelocateNodes,
     RemoveAsset,
     Reorder,
     Reparent,
@@ -46,12 +54,15 @@ from .contracts import (
     ResizeNode,
     ScaleNodes,
     SetFont,
+    SetLayerState,
+    SetProperties,
     SetStyle,
     SetText,
     SetTokens,
     TransformNodes,
     Ungroup,
     Update,
+    UpdatePage,
 )
 
 
@@ -63,6 +74,7 @@ class Draft:
         self.tokens = project.tokens
         self.fonts = project.fonts
         self.assets = {a.id: a for a in project.assets.assets}
+        self.workspace = project.workspace
         self.id_map: list[tuple[NodeId, NodeId]] = []
 
     def node(self, key: NodeId) -> Node:
@@ -144,7 +156,60 @@ class Draft:
             fail("duplicate_id")
 
     def apply(self, op: Operation) -> None:
-        if isinstance(op, ScaleNodes):
+        if isinstance(op, CreatePage):
+            if op.page.id in self.pages or str(op.page.id) in self.nodes:
+                fail("duplicate_id")
+            if op.page.root_ids:
+                fail("create_page_requires_empty_roots")
+            pages = list(self.pages.items())
+            index = len(pages) if op.index is None else op.index
+            if not 0 <= index <= len(pages):
+                fail("invalid_index")
+            pages.insert(index, (op.page.id, op.page))
+            self.pages = dict(pages)
+        elif isinstance(op, UpdatePage):
+            if op.page_id not in self.pages:
+                fail("missing_page")
+            self.pages[op.page_id] = replace(self.pages[op.page_id], name=op.name)
+        elif isinstance(op, DuplicatePage):
+            self.duplicate_page(op)
+        elif isinstance(op, DeletePage):
+            if op.page_id not in self.pages:
+                fail("missing_page")
+            if len(self.pages) == 1:
+                fail("cannot_delete_last_page")
+            deleted_page = self.pages[op.page_id]
+            if deleted_page.root_ids and not op.delete_contents:
+                fail("page_contents_require_explicit_delete")
+            previous_index = list(self.pages).index(deleted_page.id)
+            for key in deleted_page.root_ids:
+                self.apply(Delete(node_id=key))
+            del self.pages[deleted_page.id]
+            if self.workspace:
+                active = self.workspace.active_page_id
+                if active == deleted_page.id:
+                    active = list(self.pages)[min(previous_index, len(self.pages) - 1)]
+                self.workspace = replace(
+                    self.workspace,
+                    active_page_id=active,
+                    views=tuple(v for v in self.workspace.views if v.page_id != deleted_page.id),
+                )
+        elif isinstance(op, SetLayerState):
+            self.selected_roots(
+                op.node_ids
+            )  # validates IDs/budget; flags apply to each explicit ID
+            if op.visible is None and op.locked is None:
+                fail("empty_layer_state")
+            for key in op.node_ids:
+                node = self.node(key)
+                self.nodes[key] = replace(
+                    node,
+                    visible=node.visible if op.visible is None else op.visible,
+                    locked=node.locked if op.locked is None else op.locked,
+                )
+        elif isinstance(op, RelocateNodes):
+            self.relocate(op)
+        elif isinstance(op, ScaleNodes):
             matrix = around(op.center, factor=op.factor)
             for key in self.selected_roots(op.node_ids):
                 node = self.node(key)
@@ -160,6 +225,19 @@ class Draft:
                         old_world.a, old_world.b, old_world.c, old_world.d, desired.tx, desired.ty
                     )
                 self.nodes[key] = with_matrix(node, self.world(node.parent_id).inverse() @ desired)
+        elif isinstance(op, ArrangeNodes):
+            self.normalize()
+            document = replace(
+                self.base.document, nodes=self.nodes, pages=tuple(self.pages.values())
+            )
+            for key, delta in translations(document, op.node_ids, op.mode):
+                node = self.node(key)
+                self.nodes[key] = with_matrix(
+                    node,
+                    self.world(node.parent_id).inverse()
+                    @ translation(delta.x, delta.y)
+                    @ world_matrix(document, key),
+                )
         elif isinstance(op, TransformNodes):
             op.matrix.similarity_scale()
             for key in self.selected_roots(op.node_ids):
@@ -296,6 +374,15 @@ class Draft:
             self.ungroup(op)
         elif isinstance(op, Duplicate):
             self.duplicate(op)
+        elif isinstance(op, SetProperties):
+            self.selected_roots(op.node_ids)  # validates explicit targets and selection budget
+            for key in op.node_ids:
+                node = self.node(key)
+                if op.property in ("width", "height") and any(
+                    self.node(k).layout or self.node(k).constraints for k in self.subtree(key)
+                ):
+                    fail("layout_evaluator_unavailable", code="unsupported_capability")
+                self.nodes[key] = inspected(node, op.property, op.value)
         elif isinstance(op, SetStyle):
             self.nodes[op.node_id] = replace(self.node(op.node_id), style=op.style)
         elif isinstance(op, SetText):
@@ -320,6 +407,79 @@ class Draft:
     def selected_roots(self, keys: tuple[NodeId, ...]) -> tuple[NodeId, ...]:
         # Use the current draft graph (also valid after prior operations in the batch).
         return selection_roots(self.nodes, keys)
+
+    def duplicate_page(self, op: DuplicatePage) -> None:
+        if op.page_id not in self.pages:
+            fail("missing_page")
+        if self.base.manifest.extensions:
+            fail("extension_remap_unavailable", code="unsupported_capability")
+        source = self.pages[op.page_id]
+        page = replace(
+            source,
+            id=op.new_page_id,
+            name=op.name if op.name is not None else source.name + " copy",
+            root_ids=(),
+        )
+        self.apply(CreatePage(page=page, index=list(self.pages).index(source.id) + 1))
+        keys = tuple(k for root in source.root_ids for k in self.subtree(root))
+        mapping = {key: NodeId(new_id()) for key in keys}
+        for key, new_key in mapping.items():
+            self.fresh(new_key)
+            original = self.node(key)
+            self.nodes[new_key] = replace(
+                original,
+                id=new_key,
+                page_id=page.id,
+                parent_id=mapping[original.parent_id] if original.parent_id is not None else None,
+                children=tuple(mapping[k] for k in original.children),
+            )
+        self.pages[page.id] = replace(page, root_ids=tuple(mapping[k] for k in source.root_ids))
+        self.tokens = replace(
+            self.tokens,
+            bindings=self.tokens.bindings
+            + tuple(
+                replace(b, node_id=mapping[b.node_id])
+                for b in self.tokens.bindings
+                if b.node_id in mapping
+            ),
+        )
+        self.id_map.extend(mapping.items())
+
+    def relocate(self, op: RelocateNodes) -> None:
+        roots = self.selected_roots(op.node_ids)
+        order = {
+            key: i
+            for i, key in enumerate(
+                k for p in self.pages.values() for root in p.root_ids for k in self.subtree(root)
+            )
+        }
+        keys = tuple(sorted(roots, key=lambda k: order[k]))
+        destination = self.siblings(op.page_id, op.parent_id)
+        remaining = tuple(k for k in destination if k not in keys)
+        index = len(remaining) if op.index is None else op.index
+        if not 0 <= index <= len(remaining):
+            fail("invalid_index")
+        matrices = {k: self.world(k) for k in keys}
+        for key in keys:
+            node = self.node(key)
+            if op.parent_id in self.subtree(key):
+                fail("hierarchy_cycle")
+            if node.type == "artboard" and op.parent_id is not None:
+                fail("nested_artboard")
+            if op.preserve_appearance and self.context(node.parent_id) != self.context(
+                op.parent_id
+            ):
+                fail("ancestor_compositing_changes", code="unsupported_visual_preservation")
+        for key in keys:
+            self.detach(self.node(key))
+        inverse = self.world(op.parent_id).inverse()
+        for offset, key in enumerate(keys):
+            node = with_matrix(self.node(key), inverse @ matrices[key])
+            for descendant in self.subtree(key):
+                self.nodes[descendant] = replace(self.node(descendant), page_id=op.page_id)
+            node = replace(node, page_id=op.page_id, parent_id=op.parent_id)
+            self.nodes[key] = node
+            self.insert(node, index + offset)
 
     def group(self, op: Group) -> None:
         self.fresh(op.group_id)
@@ -487,4 +647,5 @@ class Draft:
             fonts=self.fonts,
             assets=assets,
             manifest=manifest,
+            workspace=self.workspace,
         )

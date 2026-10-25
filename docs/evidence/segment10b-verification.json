@@ -1,0 +1,375 @@
+{
+  "segment": "10B",
+  "status": "verified",
+  "parent_segment": "10",
+  "parent_status": "verified",
+  "prerequisite_10A": "verified; docs/evidence/segment10a-verification.json",
+  "date_local": "2026-10-25",
+  "timezone": "Asia/Jakarta",
+  "base_revision": "d05a7e171d070987eddf091cd7b21a4f1ad5c06f",
+  "working_tree_note": "09 and 10A changes were present and preserved; no automatic commit.",
+  "checkpoints": {
+    "10B.snapping": "verified",
+    "10B.arrangement": "verified",
+    "10B.overlays": "verified",
+    "10B.handoff": "verified"
+  },
+  "versions": {
+    "Python": "3.12.12",
+    "PySide6": "6.10.2",
+    "Qt": "6.10.2",
+    "Pillow": "12.3.0",
+    "PyInstaller": "6.22.3"
+  },
+  "suites": {
+    "core": {
+      "tests": 405,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "desktop_offscreen": {
+      "tests": 110,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "targeted_offscreen": {
+      "tests": 58,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "native_aids_and_regressions": {
+      "tests": 47,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "native_breakdown": {
+    "10B": 29,
+    "10A_inspector_regression": 8,
+    "09_hierarchy_regression": 10
+  },
+  "checks": {
+    "check_ps1_exit": 0,
+    "lint_format_files": 87,
+    "mypy_files": 83,
+    "fixtures_docs_package_wheel": true,
+    "build_smoke_offscreen_exit": 0,
+    "isolated_wheel_aids_exit": 0
+  },
+  "qt_native_scale_runs": [
+    {
+      "dpr": 1.0,
+      "zooms": [
+        {
+          "zoom": 0.5,
+          "near_snap": true,
+          "far_snap": false,
+          "one_undo": true,
+          "source_revision": 1,
+          "session_id": "b99e8d14-b7ed-428d-a7f0-79f6897e9842",
+          "inspector_sync": true,
+          "guides_cleared": true
+        },
+        {
+          "zoom": 1,
+          "near_snap": true,
+          "far_snap": false,
+          "one_undo": true,
+          "source_revision": 3,
+          "session_id": "b99e8d14-b7ed-428d-a7f0-79f6897e9842",
+          "inspector_sync": true,
+          "guides_cleared": true
+        },
+        {
+          "zoom": 2,
+          "near_snap": true,
+          "far_snap": false,
+          "one_undo": true,
+          "source_revision": 5,
+          "session_id": "b99e8d14-b7ed-428d-a7f0-79f6897e9842",
+          "inspector_sync": true,
+          "guides_cleared": true
+        },
+        {
+          "zoom": 4,
+          "near_snap": true,
+          "far_snap": false,
+          "one_undo": true,
+          "source_revision": 7,
+          "session_id": "b99e8d14-b7ed-428d-a7f0-79f6897e9842",
+          "inspector_sync": true,
+          "guides_cleared": true
+        }
+      ],
+      "platform": "windows",
+      "package_path": "Z:\\project\\ltechDesign\\src\\ltechdesign\\__init__.py",
+      "run_id": "68dd48ed-914a-4aa3-98e2-131c8f559c6c"
+    },
+    {
+      "dpr": 1.5,
+      "zooms": [
+        {
+          "zoom": 0.5,
+          "near_snap": true,
+          "far_snap": false,
+          "one_undo": true,
+          "source_revision": 1,
+          "session_id": "fad14ba6-9dec-4a31-9fc0-b6fc78166af6",
+          "inspector_sync": true,
+          "guides_cleared": true
+        },
+        {
+          "zoom": 1,
+          "near_snap": true,
+          "far_snap": false,
+          "one_undo": true,
+          "source_revision": 3,
+          "session_id": "fad14ba6-9dec-4a31-9fc0-b6fc78166af6",
+          "inspector_sync": true,
+          "guides_cleared": true
+        },
+        {
+          "zoom": 2,
+          "near_snap": true,
+          "far_snap": false,
+          "one_undo": true,
+          "source_revision": 5,
+          "session_id": "fad14ba6-9dec-4a31-9fc0-b6fc78166af6",
+          "inspector_sync": true,
+          "guides_cleared": true
+        },
+        {
+          "zoom": 4,
+          "near_snap": true,
+          "far_snap": false,
+          "one_undo": true,
+          "source_revision": 7,
+          "session_id": "fad14ba6-9dec-4a31-9fc0-b6fc78166af6",
+          "inspector_sync": true,
+          "guides_cleared": true
+        }
+      ],
+      "platform": "windows",
+      "package_path": "Z:\\project\\ltechDesign\\src\\ltechdesign\\__init__.py",
+      "run_id": "803db1f0-abff-4311-8bf5-bc78a79afae3"
+    },
+    {
+      "dpr": 2.0,
+      "zooms": [
+        {
+          "zoom": 0.5,
+          "near_snap": true,
+          "far_snap": false,
+          "one_undo": true,
+          "source_revision": 1,
+          "session_id": "4eb3135b-0d0b-4055-9c9f-b487af397f11",
+          "inspector_sync": true,
+          "guides_cleared": true
+        },
+        {
+          "zoom": 1,
+          "near_snap": true,
+          "far_snap": false,
+          "one_undo": true,
+          "source_revision": 3,
+          "session_id": "4eb3135b-0d0b-4055-9c9f-b487af397f11",
+          "inspector_sync": true,
+          "guides_cleared": true
+        },
+        {
+          "zoom": 2,
+          "near_snap": true,
+          "far_snap": false,
+          "one_undo": true,
+          "source_revision": 5,
+          "session_id": "4eb3135b-0d0b-4055-9c9f-b487af397f11",
+          "inspector_sync": true,
+          "guides_cleared": true
+        },
+        {
+          "zoom": 4,
+          "near_snap": true,
+          "far_snap": false,
+          "one_undo": true,
+          "source_revision": 7,
+          "session_id": "4eb3135b-0d0b-4055-9c9f-b487af397f11",
+          "inspector_sync": true,
+          "guides_cleared": true
+        }
+      ],
+      "platform": "windows",
+      "package_path": "Z:\\project\\ltechDesign\\src\\ltechdesign\\__init__.py",
+      "run_id": "91b7fb3d-cf9b-4431-848f-43cc7b7725e9"
+    }
+  ],
+  "wheel_probe": {
+    "dpr": 1.0,
+    "zooms": [
+      {
+        "zoom": 0.5,
+        "near_snap": true,
+        "far_snap": false,
+        "one_undo": true,
+        "source_revision": 1,
+        "session_id": "9a30bf74-2ae1-4fd0-9658-669039863ffe",
+        "inspector_sync": true,
+        "guides_cleared": true
+      },
+      {
+        "zoom": 1,
+        "near_snap": true,
+        "far_snap": false,
+        "one_undo": true,
+        "source_revision": 3,
+        "session_id": "9a30bf74-2ae1-4fd0-9658-669039863ffe",
+        "inspector_sync": true,
+        "guides_cleared": true
+      },
+      {
+        "zoom": 2,
+        "near_snap": true,
+        "far_snap": false,
+        "one_undo": true,
+        "source_revision": 5,
+        "session_id": "9a30bf74-2ae1-4fd0-9658-669039863ffe",
+        "inspector_sync": true,
+        "guides_cleared": true
+      },
+      {
+        "zoom": 4,
+        "near_snap": true,
+        "far_snap": false,
+        "one_undo": true,
+        "source_revision": 7,
+        "session_id": "9a30bf74-2ae1-4fd0-9658-669039863ffe",
+        "inspector_sync": true,
+        "guides_cleared": true
+      }
+    ],
+    "platform": "offscreen",
+    "package_path": "Z:\\project\\ltechDesign\\.cache\\package-smoke\\Lib\\site-packages\\ltechdesign\\__init__.py",
+    "run_id": "495650fa-7795-4ea5-b0d4-a1bcbd308311"
+  },
+  "executable": {
+    "status": "passed",
+    "mode": "offscreen",
+    "started_at_utc": "2026-10-25T02:29:31.9135831Z",
+    "machine_scope": "development-or-ci-host; not a clean Windows release test",
+    "manual_visual_inspection": false,
+    "expected_title": "ltechDesign Studio",
+    "environment": "Python/Qt paths cleared; PATH restricted to Windows directories",
+    "build_command": "uv run --locked --group packaging python -m PyInstaller --noconfirm --clean --onedir --windowed --noupx --name ltechDesign-Studio --distpath dist/windows --workpath build/pyinstaller --specpath build/pyinstaller scripts/freeze_desktop.py",
+    "executable": "Z:\\project\\ltechDesign\\dist\\windows\\ltechDesign-Studio\\ltechDesign-Studio.exe",
+    "lock_sha256": "42a9cb1ed2ee762ce56da6999cf9700f2db6e55907886bee703445a95e89e170",
+    "executable_sha256": "f26c044b5934d68110566202284d68c00e90bbf76c8755544ad82de2c51b446d",
+    "required_bundled_files": [
+      {
+        "sha256": "e3d09dc4129ab93f57bf9a30d7e16cdcb87e73cd27fbbc9377dd58275640e7e8",
+        "path": "_internal/python312.dll"
+      },
+      {
+        "sha256": "d8c54af3d84b16c17a086451ee8ef6e821e478603ffb9b91c000a7e50d6a7f6c",
+        "path": "_internal/PySide6/Qt6Core.dll"
+      },
+      {
+        "sha256": "34bc69bb2e21c11a6f318c60430852eddac856848842cf0c5a19d22f7733992b",
+        "path": "_internal/PySide6/Qt6Gui.dll"
+      },
+      {
+        "sha256": "77dff21c7f28072da5d05288822f1e750d37e3827b2e051acad01af18d8d4130",
+        "path": "_internal/PySide6/Qt6Widgets.dll"
+      },
+      {
+        "sha256": "ed2944e4f06239996e27bff7783abc828d76d9497d5a26c339fa916b00ea3f74",
+        "path": "_internal/PySide6/plugins/platforms/qwindows.dll"
+      }
+    ],
+    "bundle_file_count": 177,
+    "bundle_bytes": 132586361,
+    "pid": 23408,
+    "close_method": "--smoke: QTimer closes window through the Qt event loop",
+    "native_window_observed": false,
+    "exit_code": 0,
+    "total_elapsed_ms": 2438,
+    "finished_at_utc": "2026-10-25T02:30:09.4408723Z"
+  },
+  "render_native_roundtrip": {
+    "scene_png_overlay_free_exact": true,
+    "arranged_pdf_pixel_positions_checked": true,
+    "save_close_open_document_equal": true,
+    "per_view_settings_not_restored_as_content": true,
+    "arranged_png_pdf_raster_bytes_equal": true
+  },
+  "visual_inspection": {
+    "performed": true,
+    "sources": [
+      "nested smart-guides native screenshot",
+      "DPR1/1.5/2 native screenshots",
+      "arranged PNG and PDF raster"
+    ],
+    "executable_visual_inspection": false
+  },
+  "manual_pending": [
+    "physical mouse/keyboard",
+    "Windows monitor/DPI switching",
+    "screen reader",
+    "clean Windows release machine",
+    "reference large-document performance23"
+  ],
+  "blockers_10B": [],
+  "existing_blocker": "08.layout requires evaluator13",
+  "deferred": [
+    "manual persisted guides38B",
+    "typography11",
+    "layout/constraints13",
+    "production export/jobs15-17",
+    "public MCP18/19",
+    "full acceptance22/performance23/release24"
+  ],
+  "next_segment": "11 not_started",
+  "artifact_sha256": {
+    "artifacts/segment10b-native/test_actual_qt_screen_scale_su0/canvas-aids-native.png": "be00b953e4a8a19440171635cbdba05b5dbc176b3abc9ea9890c801593cd20ab",
+    "artifacts/segment10b-native/test_actual_qt_screen_scale_su1/canvas-aids-native.png": "30af297c22c0e1f34fd8940ca34fac5c57b44064be367bc5169e218c40bd7119",
+    "artifacts/segment10b-native/test_actual_qt_screen_scale_su2/canvas-aids-native.png": "a751bf39df2b3ba989add0830f5a82b821b83f452210bc41b095ad271a89f1ca",
+    "artifacts/segment10b-native/test_object_snap_nested_rotati0/smart-guides-native.png": "7ed4696bc520a3a810e3f0a500245f9e3c282eb5343e4c8417caea4de0902d1b",
+    "artifacts/segment10b-native/test_object_snap_nested_rotati1/smart-guides-native.png": "3f356d8d6f3950872e0fbb36685119bad8ca68bc61a0758a1621fe4007947de1",
+    "artifacts/segment10b-native/test_object_snap_nested_rotati2/smart-guides-native.png": "cc3757f60c7622003185d01dc59abd67991e77854c3aaf2e491729ff42ea5e6e",
+    "artifacts/segment10b-native/test_overlay_toggle_no_history0/arranged-pdf-raster.png": "1a536730e82d4f3881dd8b5134a669129386e072dad85d6543ae0ae3cc0d3303",
+    "artifacts/segment10b-native/test_overlay_toggle_no_history0/arranged-shared.png": "1a536730e82d4f3881dd8b5134a669129386e072dad85d6543ae0ae3cc0d3303",
+    "artifacts/segment10b-native/test_overlay_toggle_no_history0/overlay-free-export.png": "903a45da4b5717e5b2fde22268122f6977eb87d00963d11b4e24173704135e7c",
+    "artifacts/segment10b-native/test_palette_defaults_and_styl0/inspector-native.png": "c565ee1aa006bdf061b2c917bc05742e34336bd9d1bf9b3ebbc34a44e2e8a858",
+    "artifacts/segment10b-native/test_palette_defaults_and_styl0/inspector-style.png": "75db139bd8038fd1227e727994570ed9d85b76eb2b5fcf1c8fc5d4319c9a9bac",
+    "artifacts/segment10b-native/test_real_alpha_color_dialog_a0/color-picker-native.png": "76e7dc3b756804f4c2e19a55579e60da34b4e71387a2fd57b2aed5aaa748262c",
+    "artifacts/segment10b-native/test_real_alpha_color_dialog_a0/inspector-mixed-native.png": "bec86b527120d903b8d7ad962c3522c00ca690326b7209dad3cf7772401fc61a",
+    "artifacts/segment10b-native/test_overlay_toggle_no_history0/arranged.pdf": "3298f4c4d8e1c21e06ba3e5a13d27e338fd083c171a11300c73ae9717865c790",
+    "artifacts/segment10b-native/test_overlay_toggle_no_history0/arranged-editable.ltechdesign": "24160cee96c5b8761f5c22ffdfd184c2e1a30f43dfa0a3b45c69000e16899985",
+    "artifacts/segment10b-check.log": "1364031a9ada23b0797dd8c8bd56d90cca356b92f252d06891de249889cd616b",
+    "artifacts/segment10b-build.log": "cc8627e67a2f2ccb0d3c1cbdc59fc3b107b864fa9eaeab5f849d661f1428dbcd",
+    "artifacts/segment10b-wheel-aids.log": "8bd9f2a1b9f5835ea8673d8108debee9b680400fea14a27a7b3d94689f440ec6",
+    "artifacts/segment10b-executable.json": "bae3f953e6dcfbb2d4a98181d5e119bd3b4721ce491581c441eead562e563c45"
+  },
+  "source_sha256": {
+    "src/ltechdesign/domain/snapping.py": "1233e3fd56df5480549d44802435b2f3b7ee5d7ead66fae56f189e3aa42be117",
+    "src/ltechdesign/domain/arrangement.py": "e1dc930320f83a726d9566d259a484382ede3cda288762b49f6d9ddd9b4939f3",
+    "src/ltechdesign/commands/contracts.py": "f48bee3688faac240f65c67248f119a70aa2fc5aaf43f706622d697b558dd975",
+    "src/ltechdesign/commands/planning.py": "f9694362e4c4c3bd5e177c65db9c7174487ebd8077c8dc8eff57839d56c2e5f0",
+    "src/ltechdesign/commands/__init__.py": "5759249afe5ea500c82af3c74e941088d5ac2f37eb30c5dbb59106a5d4f237b1",
+    "src/ltechdesign/ui/canvas_aids.py": "ca1a31e65c98204973cafba520c8816c76f522f34e5a095b4a226e1a15fdf4a2",
+    "src/ltechdesign/ui/arrangement.py": "cd92fc97f59417bc5e6f954fad10863aeb64f45a2daed7f4dd5c69ba42d2f271",
+    "src/ltechdesign/ui/canvas.py": "e0e1060cfb9e5e7c2338e762a5d4a2ba579a7676a74f67a87f91f73642212d5d",
+    "src/ltechdesign/ui/transforms.py": "eeeb1c7da90e39567b72d960de394f91ed688bcf49d6d0f0c8476e1239fe3b46",
+    "src/ltechdesign/ui/window.py": "eda15b5e3ac9bcc96b2b8c1d969c4904da4abaaa226d3d5eef71f226ce2f1a19",
+    "src/ltechdesign/ui/inspector.py": "a4a07efe3145d2570e980d787a57358c17c61c9e9a0f2d4556e821794d2f50b2",
+    "src/ltechdesign/rendering/canvas.py": "18af8d4046e4c6300c707175ccacbfb9a70d89533bdac08ae4985745d9fa6b70",
+    "scripts/check_canvas_aids.py": "95c18c5cfeb2ae3d58bb75929d29e815b147c59b45649f45c6581577ddbee8f4",
+    "tests/test_arrangement.py": "d1fb9b196f56239b4f4fe8aae92f1e76b8f3f111a1fbf2eb6ae17df50049d1a6",
+    "tests/test_snapping.py": "4974ad9a75d5e4b20cf55db24bdedb10c73b45d40408e0e2ba5c1ecd34341062",
+    "tests/test_canvas_aids.py": "577470deed53c2821c8331b4f2cf744a1fefb7c16d3a2a71eee60e4c91766107",
+    "pyproject.toml": "107410cc965976c6daf0afdddeadc7c1fe2ec906a19a1dafa502db104858b57e",
+    "uv.lock": "42a9cb1ed2ee762ce56da6999cf9700f2db6e55907886bee703445a95e89e170"
+  }
+}
