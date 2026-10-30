@@ -1,10 +1,95 @@
 # Progress ltechDesign Studio
 
-Tanggal pembaruan: 26 Oktober 2026 (Asia/Jakarta). Baseline historis `54162c5`; HEAD saat mulai13 `db9fe72`. Working tree awal13 bersih; tidak ada commit otomatis. PRD 1.2. Indeks ini dibaca dahulu; lanjutkan hanya source/keputusan terkait segmen aktif.
+Tanggal pembaruan: 30 Oktober 2026 (Asia/Jakarta). Baseline historis `54162c5`; HEAD saat mulai15 `c7643d8` ditambah implementasi14 yang belum di-commit, dipertahankan. Tidak ada commit otomatis. PRD 1.2. Indeks ini dibaca dahulu; lanjutkan hanya source/keputusan terkait segmen aktif.
 
 ## Status singkat dan langkah berikutnya
 
-**Segmen aktif13: verified (26 Oktober 2026).** Pure-domain horizontal/vertical
+**Segmen aktif15: verified (30 Oktober2026).** Snapshot raster service/dialog
+PNG/JPG/WebP untuk artboard/selection/all visible artboards, scale/custom/DPI/
+quality/background/naming, progress/error/cancel tersedia. Checkpoint15.plans/jobs/
+dialog/encoding/handoff `verified`. Final497core+197desktop, Ruff130/mypy126,
+docs/fixtures/build/installed-wheel/frozen Qt+Pillow export spike lulus; native25.
+Kontrak [ADR0027](adr/0027-raster-export-jobs.md), [baseline15](baseline-segment15.md),
+[evidence15](evidence/segment15-verification.json), [user/API guide](raster-export.md).
+Tidak ada blocker15/dependency baru/commit otomatis; perubahan14 dipertahankan.
+Aman lanjut16 sesuai prasyaratnya;16 belum dimulai. Catatan14 berikut historis.
+
+### Handoff segmen15
+
+- ExportService local Python API: queued/running/succeeded/failed/cancelled,
+  status/cancel, immutable session/document/source revision, pinned snapshot/assets,
+  one coordinator+spawn QGui worker,16queued/128retained/30min ledger. Dedup lookup
+  sebelum revision check, request conflict/backpressure diuji. MCP tools tetap18C.
+- GUI File→Export PNG/JPG/WebP/Ctrl+E dan API memakai jalur yang sama; bytes output
+  PNG/JPG/lossless WebP sama tanpa overlay/preview editor. Dialog artboard list
+  mengikuti edit dokumen dengan stable IDs. Close/reload source cancel+drain async.
+- Shared drawing filter menjaga transform/pivot/rounded ancestor clips/isolated
+  opacity/z-order, tanpa mengganti domain node dengan group tidak valid. Selection
+  world bounds mencakup stroke/shadow; artboard local axes. Custom preserve aspect
+  plus centered padding. Pixel extent noise1e-6 hanya raster; domain tidak berubah.
+- JPEG flatten chosen RGB; PNG/WebP alpha/solid, runtime Qt encoder dan Pillow
+  fallback/lossless, actual decoded files. DPI PNG/JPG embedded; WebP DPI di report.
+  All visible artboards mengikuti page/root order; hidden skip explicit tooltip.
+  Native1.0/fonts/assets/undo/history tetap; export bukan batch konten.
+- Canonical granted output roots/target locks/baselines/temp per-file replace,
+ 64MP/output serta existing intermediate guard. Queued/precommit cancel membersihkan
+  staging; late cancel/partial outputs tidak mengklaim rollback. Write failure lalu
+  late cancel tetap failed dengan committed output utuh. Worker exit/I/O/conflict/
+  limits/leases/GC/retention diuji. Artefak pengguna tidak terkena TTL result.
+- Final `scripts/check.ps1 all` offline exit0:497core+197desktop, Ruff130/mypy126,
+  docs/fixtures/build/isolated-wheel export lulus. Native25passed; actual16.8MP
+  cancellation memiliki heartbeat GUI aktif (artifact timing di evidence15).
+  PyInstaller6.22.3 frozen spike menjalankan4jobs/8outputs Qt+Pillow terdecode.
+- Dialog native dan PNG aktual benar-benar diperiksa actualDPR1.25. Physical
+  mouse/keyboard/screen reader/monitor switching/viewer lain dan mesin Windows
+  rilis bersih pending22/24; performance23/security20 tetap pemilik. PDF16,
+  previewCLI17/MCP18C/advanced batch33C tidak dikerjakan. Base `c7643d8` +14
+  uncommitted dipertahankan; tanpa commit otomatis.
+
+**Segmen14 (historis): verified (30 Oktober2026).** Recent/duplicate UI, multi-page/artboard portable
+workflow, snapshot checkpoint/thumbnail dan basic configurable autosave/recovery
+diimplementasikan. `14.workflow`, `14.recovery`, `14.portability`, `14.handoff`
+`verified`. Full gate475core+183desktop, Ruff117/mypy113, docs/fixtures/package/
+installed-wheel lulus; final targeted113passed termasuk5real Qt process tests.
+Native dialog/recovered tabs/recent/thumbnail pada actualDPR1.25 diperiksa.
+[Baseline14](baseline-segment14.md), [evidence14](evidence/segment14-verification.json),
+ADR0026. Tidak ada blocker14. Frozen-thumbnail spawn/PyInstaller6.22.3 spike lulus.
+Python3.12.12/PySide6Qt6.10.2/Pillow12.3.0 tidak berubah. Metadata font
+dipertahankan tanpa pixel-identical claim jika font hilang. Session restore penuh/
+named snapshots/advanced manager tetap39; public jobs/MCP15–19/release22/24 tetap
+pemiliknya. Segmen15 tidak dijalankan otomatis. Catatan13 berikut historis.
+
+### Handoff segmen14
+
+- Recovery archives self-contained dengan inventory/embedded bytes, dua generasi
+  tervalidasi, owner lock dan timestampUTC. Autosave default120detik, configurable
+  10–3600 atau0off; all dirty writable tabs termasuk unnamed revision0. Tidak
+  menulis source/merubah manual checkpoint. Busy job menunda tick.
+- Startup Restore/Discard/Later, label generasi rusak dan pilihan generasi valid
+  sebelumnya. Restore new session/revision0/history-empty/dirty/pathnone; Save As
+  normal menjaga source external/ownership. Source lock/baseline/read-only policy
+  tetap. Save/Close/Reload/cleanup tidak membuang snapshot/edit lebih baru.
+- Lima real Qt process tests: kill setelah publication atau saat next-generation
+  staging, named/unnamed, restore→normal save; separate fresh offline profile
+  menutup app/pindah satu file/hapus source assets/reopen/edit/resave mempertahankan
+  bytes/semantic design. GUI Import rusak menjaga tab/history/lock; font metadata
+  utuh disertai warning tanpa klaim pixel-identical. Persisted recovery dan real
+  BlobStore/history/undo/redo/GC diuji; backup-before-migration regression lulus.
+- Source utama persistence/preferences/recovery/service, ui/projects/window,
+  rendering/thumbnail dan freeze/main. Native1.0/dependency tidak berubah. Cover
+  first nonempty page320×240 memakai shared drawing dalam spawn QGui process;
+  timeout20detik/failure menghilangkan preview opsional, tidak menghambat save.
+- Full `scripts/check.ps1 all` offline exit0:475core+183desktop, lint/type/docs/
+  fixtures/build/installed-wheel lulus. Final owner-thread capture tweak dibuktikan
+  targeted113passed. Executable build/offscreen spawn lulus. Native demo actual
+  DPR1.25 dialog/recovered tabs/recent/thumbnail benar-benar diperiksa.
+- Machine Windows rilis bersih, mouse/keyboard/screen reader/monitor fisik dan
+  power-loss durability tidak diklaim; release22/24, performance23, full session
+  restore/named snapshots/manager39 dan public jobs/MCP15–19 tetap pemiliknya.
+  Base HEAD `c7643d8`, tanpa commit otomatis. Aman lanjut15 sesuai prasyaratnya;
+  tidak mengerjakan15 otomatis.
+
+**Segmen13 (historis): verified (26 Oktober 2026).** Pure-domain horizontal/vertical
 stack, padding/gap/alignment, fixed/hug/fill, basic parent constraints, cycle/
 overflow policy dan Inspector Apply terhubung transaksi/text/native/shared export.
 Final459core+167desktop,46targeted/22native, Ruff107/mypy103, docs/fixtures/package/
@@ -54,7 +139,7 @@ Base HEAD `3f7a785`, working tree awal bersih, tanpa commit otomatis. Segmen13 t
 dikerjakan; clipboard image eksternal tetap38A. Performance1000selection/GUI100ms
 masih pending23, physical release machine pending24; bukan klaim semua NFR verified.
 
-Catatan01–12 di bawah bersifat historis; status aktif sesi ini adalah13.
+Catatan01–13 di bawah bersifat historis; status aktif sesi ini adalah14.
 
 **Segmen aktif11: verified.** Text tool/inline multiline, validated Mixed typography Inspector, local/embedded font resolver dan shared layout/outline terhubung command/native/PNG/PDF. Final418core+124desktop,27targeted/28native, lint96/mypy92, fixtures/docs/package/wheel/executable spike lulus. Native DPR aktual1.25/1.875/2.5, PNG/PDF dan screenshot Inspector diperiksa. [Baseline11](baseline-segment11.md), [evidence11](evidence/segment11-verification.json), ADR0023. Base HEAD `f1918d2d28f2139f31fe4d2f5cc1a65ff533cc95`; tanpa commit otomatis. Segmen12 tidak dikerjakan.
 
@@ -282,8 +367,8 @@ Urutan berasal dari indeks roadmap, bukan instruksi otomatis. Checkpoint08 pada 
 | 11 | Text inline, fonts/shared layout/fallback warning | verified | Baseline11+ADR0023;27targeted/28native,418core+124desktop full gate, local/embedded restore dan shared PNG/PDF; packaging/wheel spike lulus |
 | 12 | Raster/SVG/import/crop/replace/asset retention | verified | Baseline12/ADR0024;38targeted/53native,420core+160desktop full gate/wheel/executable codecs; portable embedded media, shared vector drawing/undo/GC,36MP cancellation dan baseline shapes/mixed diulang; performance1000 pending23 |
 | 13 | Stack/constraints fixed/hug/fill dasar atomik | verified | Baseline13/ADR0025;459core+167desktop,46targeted/22native, native Inspector/PNG/PDF visual dan wheel/executable spike; batas advanced28 eksplisit |
-| 14 | Recent/duplicate/autosave/recovery/checkpoint/thumbnail/font metadata | not_started | 13 |
-| 15 | PNG/JPG/WebP job/service/dialog/codec fallback | not_started | 14 |
+| 14 | Recent/duplicate/autosave/recovery/checkpoint/thumbnail/font metadata | verified | Baseline14/ADR0026; workflow/recovery/portability/handoff verified,475core+183desktop/full gate,113targeted/native visual/frozen spawn; release22/24 pending |
+| 15 | PNG/JPG/WebP job/service/dialog/codec fallback | verified | Baseline15/ADR0027;497core+197desktop/full gate, native25, shared UI/API pixel parity, actual16.8MP cancel, wheel/frozen Qt+Pillow codecs lulus |
 | 16 | PDF single/multipage ukuran berbeda P0 | not_started | 15 |
 | 17 | Preview/headless CLI/render artifacts | not_started | 16 |
 | 17A | Subprocess command → GUI owner → canvas → undo/revision spike | not_started | 17; sebelum 18 |

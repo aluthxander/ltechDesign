@@ -88,6 +88,9 @@ try {
     if ($SmokeMode -eq 'offscreen') {
         $start.Arguments = '--smoke'
         $start.EnvironmentVariables['LTECHDESIGN_MEDIA_SMOKE_REPORT'] = Join-Path $artifactRoot 'segment12-executable-codecs.json'
+        $start.EnvironmentVariables['LTECHDESIGN_PROJECT_SMOKE_REPORT'] = Join-Path $artifactRoot 'segment14-executable-thumbnail.json'
+        $start.EnvironmentVariables['LTECHDESIGN_EXPORT_SMOKE_REPORT'] = Join-Path $artifactRoot 'segment15-executable-export.json'
+        $start.EnvironmentVariables['LTECHDESIGN_EXPORT_SMOKE_SOURCE'] = Join-Path $projectRoot 'examples/proyek-contoh.ltechdesign'
     }
     $process = New-Object System.Diagnostics.Process
     $process.StartInfo = $start

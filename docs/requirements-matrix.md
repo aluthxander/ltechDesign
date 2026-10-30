@@ -33,7 +33,7 @@ Mesin rilis yang belum tersedia membuat bukti AT-30 pending, bukan verified dan 
 
 | ID | Prioritas/gate | Pemilik | Integrasi/verifikasi | Status | Bukti / kriteria selesai |
 | --- | --- | --- | --- | --- | --- |
-| FR-001 | P0 | 14 | 04, 05, 09, 22 | in_progress | 05 lifecycle/tab +09 page CRUD/duplicate/artboard list dan editable restore tersedia; recent/autosave/recovery/duplicate project UI14 serta acceptance22 tetap pemilik |
+| FR-001 | P0 | 14 | 04, 05, 09, 22 | verified | 14 recent/duplicate UI, multi-page/artboard native workflow, checkpoint/thumbnail/font metadata/basic autosave/startup recovery; full475core+183desktop dan113targeted, real process/GUI/visual/wheel/frozen spawn. Advanced39/full22 terpisah; baseline14 |
 | FR-002 | P0 | 04 | 00B, 02, 05, 14, 22 | in_progress | 04: codec ZIP/JSON + embedded bytes, inventory/schema/hash, portability dan atomic save teruji fondasi; GUI/native acceptance 05/14/22 pending |
 | FR-003 | P0 | 08 | 03, 06, 07, 09, 10B, 11, 22 | in_progress | 08 transform/history/clipboard/nudge +09 hierarchy;10B rulers/grid/world snap/smart guides dan align/distribute tersedia, 10B verified:58targeted/47native,405core+110desktop/full gate/spike, DPR1/1.5/2; overlay-free PNG/PDF/native roundtrip lulus. Frame layout13/full22 tetap pemilik |
 | FR-004 | P0 | 07 | 02, 08, 13, 16, 22 | verified | 07: 11 preset PRD/custom px/mm/cm/in, orientasi/DPI/background, data editable dan ukuran akurat; 20 tes core/27 GUI, full gate dan visual native; integrasi layout13/export16/acceptance22 tetap pemilik |
@@ -52,7 +52,7 @@ Mesin rilis yang belum tersedia membuat bukti AT-30 pending, bukan verified dan 
 | FR-017 | P0 | 22 | 07, 08, 10A, 10B, 11, 12, 13, 15, 16 | not_started | Fixture poster/banner/social/thumbnail/infografis/brosur/sertifikat/presentasi memakai fitur editor, bukan generator contoh PRD |
 | FR-018 | P0/P1 | 32B | 10A, 10B, 12, 30, 32A, 33B, 22 | in_progress | P0 color picker/solid fill/stroke/shadow/alignment-distribution10A/10B verified; P1 gradient/eyedropper/blend/presets/icon 32B, masks 30/32A, template 33B |
 | FR-019 | P0/P1 | 33A | 07, 16, 22 | not_started | P0 multipage PDF 16; P1 mm/cm/inch/DPI/bleed/safe margin/raster resolution, text/vector sejauh supported; tanpa janji CMYK/ICC/PDF-X |
-| FR-020 | P0 | 15 | 16, 17, 18C, 22 | not_started | Artboard/selection/all artboards, scale/custom size/DPI, background/quality/naming/folder/progress/error |
+| FR-020 | P0 | 15 | 16, 17, 18C, 22 | verified | 15 raster artboard/selection/all visible artboards, scale1/2/3/custom padding, DPI PNG/JPG metadata/WebP report, quality/lossless/background/naming/folder/job progress/errors/cancel;497core+197desktop/full gate/native25/UI-API parity/wheel+frozen lulus. PDF16/MCP18C/full22 terpisah; baseline15 |
 | FR-021 | P1 | 33C | 15, 16, 18C | not_started | Preset/batch export, collisions/cancel/partial per-output report; dasar all-artboards P0 tetap 15/16 |
 | FR-022 | P0 + HTTP opsional | 18A | 17A, 18B, 18C, 19A, 20, 21, 22 | not_started | Stdio, start/stop/status/log/discovery; HTTP conditional di HTTP-OPTIONAL |
 | FR-023 | P0 | 18A | 17, 18C, 19A, 22 | not_started | Metadata/tree/nodes/tokens/assets/selection dan preview bounded dengan identity/revision |
@@ -72,7 +72,7 @@ Mesin rilis yang belum tersedia membuat bukti AT-30 pending, bukan verified dan 
 | ID | Prioritas/gate | Pemilik | Integrasi/verifikasi | Status | Bukti / kriteria selesai |
 | --- | --- | --- | --- | --- | --- |
 | NFR-001 | P0 | 23 | 01A, 06A, 08, 12, 19B, 22, 24 | in_progress | Dua baseline08 warm native10detik disimpan; terbaru100pan/drag p95~16,5ms;1000pan-selection p99=48,04ms/gapmax53,30ms; commit100=49,16ms. GUI heartbeat110,69–111,07ms gagal target100ms; comprehensive/reference hardware/cold/leak checks23 tetap pending |
-| NFR-002 | P0 | 14 | 02, 03, 04, 04A, 22 | in_progress | 02–04 schema/undo/atomic replace dan backup-before-migration mechanism teruji; autosave/recovery dan crash integration 04A/14/22 pending |
+| NFR-002 | P0 | 14 | 02, 03, 04, 04A, 22 | verified | 02–04 schema/undo/atomic replace/backup-before-migration regression retained;14 configurable autosave, named/unnamed real application kill incl interrupted staging, restore/save, corrupt+I/O failure, history/recovery GC lulus. Process-crash scope; clean release22/24 pending, power-loss not claimed; baseline14 |
 | NFR-003 | P0 | 20 | 04, 12, 18A, 18B, 18C, 19A, 22 | not_started | Offline/no account/no auto upload, untrusted import guarded, no embedded scripts, project permissions |
 | NFR-004 | P0 | 01 | 00A, 00C, 02, 03, 04, 18A, 22, 24, 25 | in_progress | Modular/types/tests/integration/structured logs/CI/build/versioned schema+contracts; docs 00 bukan bukti kode |
 | NFR-005 | P0 / release | 24 | 01A, 06A, 25 | not_started | Windows x64 bundled runtime/installer/no Python dev, settings per-user, projects terpisah install; AT-30 wajib |
@@ -87,9 +87,9 @@ Mesin rilis yang belum tersedia membuat bukti AT-30 pending, bukan verified dan 
 | AT-04 | P0 / MVP | 08 | 03, 09, 22 | verified | Lingkup08: GUI group/ungroup, hierarchy/undo tepat, world pose dan actual PNG tetap; preserve-appearance menolak stacking/clip/isolation yang tak representable. Full fixture22 tetap diulang |
 | AT-05 | P0 / MVP | 04 | 05, 14, 22 | not_started | Save/reopen struktur sama |
 | AT-06 | P0 / MVP | 03 | 08, 22 | in_progress | 03/08: real GUI delete group subtree+undo/redo memulihkan hierarchy/style, nested normalization, redo branch dibuang setelah command baru; acceptance22 pending |
-| AT-07 | P0 / MVP | 15 | 06A, 22 | not_started | PNG alpha benar |
-| AT-08 | P0 / MVP | 15 | 22 | not_started | JPG flatten background, tanpa alpha |
-| AT-09 | P0 / MVP | 15 | 22 | not_started | WebP decode kembali, capability/fallback diuji |
+| AT-07 | P0 / MVP | 15 | 06A, 22 | verified | 15 actual decoded PNG alpha/size/DPI, transparent vs solid, isolated opacity/rounded clipping, shared scene/UI/API tanpa overlays; baseline15 |
+| AT-08 | P0 / MVP | 15 | 22 | verified | 15 actual JPEG RGB tanpa alpha, background pilihan/partial-alpha flatten/colors/DPI/quality; GUI/API bytes sama, installed/frozen decoder; baseline15 |
+| AT-09 | P0 / MVP | 15 | 22 | verified | 15 actual WebP decoded Qt+Pillow/lossless; runtime missing/failing encoder dan absent Pillow errors, alpha/size/UI/API/wheel/frozen diuji; baseline15 |
 | AT-10 | P0 / MVP | 16 | 06A, 22 | not_started | PDF multipage jumlah/ukuran/urutan akurat |
 | AT-11 | P0 / MVP | 18A | 19A, 22 | not_started | Client Codex membaca layer sebenarnya |
 | AT-12 | P0 / MVP | 19A | 18B, 22 | not_started | MCP create tampil canvas dan GUI undo |
@@ -97,7 +97,7 @@ Mesin rilis yang belum tersedia membuat bukti AT-30 pending, bukan verified dan 
 | AT-14 | P0 / MVP | 18B | 03, 19B, 22 | in_progress | 03: tengah batch/final validation/layout/prepare/cancel gagal tidak mengubah konten/history/revision/events; staging double dibersihkan. Real store/MCP pending |
 | AT-15 | P0 / MVP | 19B | 03, 18B, 22 | in_progress | 03: stale revision ditolak tanpa overwrite; GUI/MCP dua proses 18/19/22 pending |
 | AT-16 | P0 / MVP | 18C | 15, 16, 20, 22 | not_started | MCP export ke path diizinkan |
-| AT-17 | P0 / MVP | 14 | 04, 22 | not_started | Crash sebelum manual save, recovery tersedia |
+| AT-17 | P0 / MVP | 14 | 04, 22 | verified | 14 real Qt process kill named/unnamed, staged-next-generation crash, fresh session restore→normal save preserves last successful published snapshot; full gate/113targeted lulus; baseline14 |
 | AT-18 | P0 / MVP | 04 | 02, 05, 22 | not_started | Malformed file controlled error, tab utuh |
 | AT-19 | P0 / MVP | 20 | 18A, 18B, 18C, 22 | not_started | Akses path terlarang ditolak semua jalur |
 | AT-20 | P0 / MVP | 17 | 06A, 11, 12, 22 | not_started | Headless/canvas sebanding, toleransi ditetapkan dan artifacts diperiksa |
@@ -105,16 +105,16 @@ Mesin rilis yang belum tersedia membuat bukti AT-30 pending, bukan verified dan 
 | AT-22 | P0 / MVP | 19B | 04A, 05, 14, 22 | in_progress | 04A verified fondasi: external replace identik/berbeda memicu conflict tanpa overwrite; Save As gagal/sukses nyata; GUI Reload/recovery tetap 05/14/19B/22 |
 | AT-23 | P0 / MVP | 19B | 03, 18B, 18C, 22 | in_progress | 03: retry lama mendahului stale check, cached error, conflict, shared Future dan restart boundary teruji; lost-response transport/jobs pending |
 | AT-24 | P0 / MVP | 08 | 02, 03, 06A, 09, 22 | verified | 08 core+GUI native/offscreen: group/reparent rotated parents/ungroup mempertahankan world matrices dan PNG maxdelta1/255; undo project/hierarchy tepat, invalid compositing context ditolak atomik. Full acceptance22 diulang |
-| AT-25 | P0 / MVP | 19B | 04, 12, 14, 18B, 22 | in_progress | 12: real blob store replace/remove/delete/GC/undo/redo dan independent recovery/job snapshot lease teruji; byte tersedia setelah source move/close. Persisted recovery14/transport18B/19B/full22 tetap pending |
+| AT-25 | P0 / MVP | 19B | 04, 12, 14, 18B, 22 | in_progress | 12 real blob/history/job roots;14 persisted recovery closure survives actual delete/remove/undo/redo/GC and source change, restored bytes intact. Transport18B/19B/full22 tetap pending; baseline14 |
 | AT-26 | P0 / MVP | 19B | 04A, 05, 22 | in_progress | 04A verified fondasi: dua copy document_id sama, session_id/lock/save/reopen independen; multi-tab routing/history GUI/MCP tetap 19B/22 |
 | AT-27 | P0 / MVP | 05 | 06, 07, 08, 22, 24 | in_progress | 10B native Qt actualDPR1/1.5/2, four zooms snapping/handles/ruler/Inspector dan PNG/PDF diuji; OS Windows100/150/200% fisik/pindah monitor/clean release tetap22/24 pending |
 | AT-28 | P0 / MVP | 18A | 19A, 22 | not_started | Cursor revision lama stale_cursor, query restart |
-| AT-29 | P0 / MVP | 18C | 12, 14, 15, 16, 17, 19A, 22 | in_progress | 12 local import: cancel read/after staging/precommit dan late cancel, stale/closed/read-only/atomic invalid multi-file, UI heartbeat dan cleanup teruji; actual36MP cancel heartbeat max38.60ms. Generic jobs/MCP tetap17/18C/19A/22 |
+| AT-29 | P0 / MVP | 18C | 12, 14, 15, 16, 17, 19A, 22 | in_progress | 12 import36MP;15 raster queued/precommit/post-os.replace/partial/mixed-failure cancel, source close/drain, leases/temp cleanup, worker exit dan actual16.8MP GUI heartbeat/cancel lulus. Public tools/preview/PDF/MCP/full22 tetap16–19/22; baseline15 |
 | AT-30 | P0 / release | 24 | 25 | not_started | Windows bersih tanpa Python dev; startup/project/font/codecs/SVG/PDF/stdio MCP; mesin uji belum disiapkan |
-| AT-31 | P0 / MVP | 22 | 02, 04, 05, 13, 14, 18C, 19A | in_progress | 04 fondasi: dua page/nested/IDs/order/transforms/text/style/token bindings + dispatcher edit-save-undo; layout solver/GUI Import/MCP pending |
-| AT-32 | P0 / MVP | 22 | 04, 11, 12, 14 | in_progress | 04 embedded bytes;11 embedded fonts;12 PNG/JPEG/WebP/SVG dialog/drop→Save/Open setelah sumber dipindah, crop/replace editable dan isolated-wheel restore byte-identik/PNG exact. Full recovery14/acceptance22 tetap pending |
-| AT-33 | P0 / MVP | 22 | 02, 04, 05 | in_progress | 04: malformed manifest/hash/missing assets/version/capability ditolak tanpa admission/model/lock parsial; tab GUI belum tersedia 05 |
-| AT-34 | P0 / MVP | 22 | 02, 04, 06A, 11, 12, 13, 14 | in_progress | 04: repeated native semantic/byte round-trip, runtime excluded, opaque/workspace/thumbnail preservation; preview visual/advanced fixtures pending |
+| AT-31 | P0 / MVP | 22 | 02, 04, 05, 13, 14, 18C, 19A | in_progress | 04/13 native layout/domain roundtrip;14 actual GUI Import multi-page/artboard preserves IDs/geometry/style/fonts/assets then edits/resaves; fresh-process offline portability. MCP18C/19A/full22 tetap pending; baseline14 |
+| AT-32 | P0 / MVP | 22 | 04, 11, 12, 14 | in_progress | 11/12 embedded fonts/media;14 close Qt app, move only native file, delete asset folders, fresh profile/network-denied process Open/edit/resave preserves bytes; missing font metadata/warning retained without pixel-identical claim. Full22 pending; baseline14 |
+| AT-33 | P0 / MVP | 22 | 02, 04, 05 | in_progress | 14 actual Import menu rejects hash/missing asset/version/required capability/preview-only archive, preserving live tab/history and releasing staging lock; core04 coverage retained. Full22 pending; baseline14 |
+| AT-34 | P0 / MVP | 22 | 02, 04, 06A, 11, 12, 13, 14 | in_progress | 14 GUI Save/Import/edit/resave/Reload semantic equality; new runtime session/revision0/history-empty; fresh-process embedded hashes stable, thumbnail shared drawing pixel test and native visual. Existing06A/11/12/13 conformance retained; full22 pending |
 
 ## Kontrak PRD bagian 20 dan keputusan lintas subsistem
 
@@ -126,7 +126,7 @@ Setiap baris memiliki acceptance owner; kontrak desain yang sudah ditulis tidak 
 | C20.2-UNITS | P0 | 02 | 07, 16, 22 | in_progress | Logical px/physical DPI/screen DPR terpisah;10B8physical-px snap/(zoom*DPR), actualDPR1/1.5/2/four zooms dan literal Inspector/nudge teruji; physical export16/full22 pending |
 | C20.2-PIVOT | P0 | 03 | 02, 08, 22 | in_progress | 02/03/08: explicit pivot, world reparent, nested group normalization, GUI anchor resize/rotate/undo dibuktikan; full fixture22 pending |
 | C20.2-RESIZE | P0 | 08 | 02, 13, 22 | in_progress | 08.layout/induk08 verified melalui13: frame layout/constraints dalam transaksi resize yang sama tanpa scale anak; derived dimensions ditolak explicit. Commands/pointer/native/offscreen/undo/serialization/shared export teruji; baseline13, full acceptance22 pending |
-| C20.2-BOUNDS | P0 | 06 | 02, 07, 08, 15, 17, 22 | in_progress | Geometry/visual/hit distinct;10A thick centered stroke/square cap/miter dan multiple-shadow bounds teruji; clipped effects/selection export tanpa overlay; public export/acceptance15/17/22 pending |
+| C20.2-BOUNDS | P0 | 06 | 02, 07, 08, 15, 17, 22 | in_progress | 15 selection visual envelope/stroke/shadow/real rounded ancestor clip dan source z-order/opacity, artboard local vs selection world axes, shared canvas/UI/API parity tanpa overlays teruji. Domain/shared06A/10A regression retained; preview17/full22 pending; ADR0027 |
 | C20.2-CLIP | P0 | 06A | 06, 10A, 12, 22 | in_progress | 06A/10A rounded fill/ancestor clip, centered stroke dan radius clamp teruji; image12/full fixture22 pending |
 | C20.2-OPACITY | P0 | 06A | 06, 10A, 16, 22 | in_progress | 06A/10A isolated group composite+shadow, Inspector opacity/undo/overlap alpha, shared fallback/PDF raster reporting teruji; production PDF16/full fixture22 pending |
 | C20.2-HIERARCHY | P0 | 02 | 03, 08, 09, 22 | in_progress | 02/03/08/09: invariants, page/subtree graph remap, atomic Qt relocation/world pose/undo, layer visibility/lock ancestry dan external-command sync teruji; full acceptance22 pending |
@@ -137,14 +137,14 @@ Setiap baris memiliki acceptance owner; kontrak desain yang sudah ditulis tidak 
 | C20.3-DEDUP | P0 | 03 | 18B, 19B, 22 | in_progress | 03: client/session/request scope, canonical digest, retry sebelum revision, shared in-flight Future teruji; authenticated bridge dan reconnect 18/19 pending |
 | C20.3-LIFECYCLE | P0 | 18B | 18A, 18C, 19A, 22 | not_started | create_project exception, open admission, selection tanpa revision, save/export snapshot+request/jobs |
 | C20.3-RETENTION | P0 | 19B | 03, 18B, 18C, 22 | in_progress | 03: injected-clock tests ≥30 menit, capacity reject, close/reopen/expiry; tidak menjamin exactly-once crash. Real transport/jobs 18/19 pending |
-| C20.3-HISTORY | P0 | 03 | 04, 14, 19B, 39B, 22 | in_progress | 03: 128 MiB configurable object-graph charge, whole-entry eviction notice, GUI/AI metadata dan safe retention roots teruji; store/recovery/jobs/UI/benchmark pending |
+| C20.3-HISTORY | P0 | 03 | 04, 14, 19B, 39B, 22 | in_progress | 03/04 history/128MiB/store leases;14 persisted basic recovery closure survives actual history/delete/GC/restart; native files/history-empty fresh sessions tested. Named snapshots39B/transport19B/performance23/full22 pending |
 | C20.4-QUERY | P0 | 18A | 19A, 22 | not_started | Filter/depth/fields/page 100/max500, deterministic session/revision/query cursor |
 | C20.4-PREVIEW | P0 | 17 | 18C, 22 | not_started | Artboard/selection/region, source identity/revision/bounds/dimensions/mime, max2048 |
 | C20.4-ARTIFACT | P0 | 18C | 17, 22 | not_started | Opaque preview IDs TTL30m/leases; user export tidak dihapus TTL |
 | C20.4-TRANSFER | P0 | 18C | 18A, 19A, 22 | not_started | Negotiated image/resource/local access, no assumption cloud reads local path |
-| C20.4-JOBS | P0 | 18C | 12, 14, 15, 16, 17, 19A, 22 | in_progress | 12 import local menyediakan lifecycle queued/running/succeeded/failed/cancelled, bounded status ledger32, session/document/source revision/progress/error/result dan cancel; generic scheduler/MCP tools tetap17/18C/19A/22 |
-| C20.4-CANCEL | P0 | 18C | 04, 12, 15, 16, 17, 22 | in_progress | 04 persistence barrier dan12 real import snapshot/byte lease, staging cancel sebelum publication dan late cancel tetap succeeded diuji; generic render/export jobs/temp replace/MCP tetap15–18C/22 |
-| C20.4-LIMITS | P0 | 20 | 04, 12, 17, 18A, 18B, 18C, 22 | in_progress | 04/12 asset50MiB/header+actual40MP, SVG4MiB/depth/complexity,256MiB prepared cache dan32-file bounded queue teruji; native archive/render guards existing. Public MCP/IPC limits tetap17/18/20/22 |
+| C20.4-JOBS | P0 | 18C | 12, 14, 15, 16, 17, 19A, 22 | in_progress | 12 import local;15 raster service local lifecycle/status/cancel/revision/progress/per-output errors,16queue/128ledger/30min dedup-before-revision/capacity/expiry, one child process tested. Public MCP tools/preview/PDF/full integration16–19/22 pending |
+| C20.4-CANCEL | P0 | 18C | 04, 12, 15, 16, 17, 22 | in_progress | 04/12 barrier retained;15 actual per-file replace cancel queued/precommit/late/partial/mixed failure, truthful committed results, temp/locks/lease cleanup and close/drain lulus. PDF/preview/public tools16–18C/full22 pending; baseline15 |
+| C20.4-LIMITS | P0 | 20 | 04, 12, 15, 17, 18A, 18B, 18C, 22 | in_progress | 04/12 asset/archive/decode limits retained;15 render64MP/output preflight + shared intermediate budget, safe configurable limits/32768side/256outputs/16queue and ledger saturation tested. MCP/IPC/preview17/18/20/full22 pending |
 | C20.4-TIMEOUT | P0 | 17A | 18C, 19A, 19B, 23, 22 | not_started | 30s timeout bukan rollback, bounded output/queue/backpressure |
 | C20.5-SPIKES | P0 | 01A | 04A, 06A, 17A | in_progress | Minimal executable 01A verified lokal (baseline-segment01a.md); two-process ownership 04A verified; shared render/bridge belum diuji; subprocess→GUI mandatory evidence |
 | C20.5-BENCH | P0 | 23 | 08, 12, 19B, 24 | not_started | Hardware/OS/scaling/versions/warm-cold; early baselines 08/12/19B, p95/p99/freeze/commit-vs-IPC/render |

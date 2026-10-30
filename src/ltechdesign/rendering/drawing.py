@@ -26,6 +26,7 @@ from ltechdesign.domain.models import (
     PolygonData,
 )
 
+from .limits import pixel_extent
 from .media import draw_media
 from .shadow import composite
 from .text import Resources, draw_text
@@ -79,13 +80,23 @@ def path(node: Node) -> QPainterPath:
     return result
 
 
-def local_visual(document: Document, key: NodeId) -> QRectF:
+def local_visual(
+    document: Document,
+    key: NodeId,
+    painted: frozenset[NodeId] | None = None,
+    context: frozenset[NodeId] = frozenset(),
+) -> QRectF:
     """Conservative local visual bounds, separate from primitive geometry/hit bounds."""
     node = document.nodes[key]
-    if not node.visible or node.opacity == 0:
+    if (
+        (painted is not None and key not in painted and key not in context)
+        or not node.visible
+        or node.opacity == 0
+    ):
         return QRectF()
-    result = path(node).boundingRect() if node.type != "group" else QRectF()
-    if node.style.stroke and node.type != "group":
+    own = painted is None or key in painted
+    result = path(node).boundingRect() if own and node.type != "group" else QRectF()
+    if own and node.style.stroke and node.type != "group":
         stroker = QPainterPathStroker()
         stroker.setWidth(node.style.stroke.width)
         stroker.setCapStyle(Qt.PenCapStyle.SquareCap)
@@ -94,7 +105,7 @@ def local_visual(document: Document, key: NodeId) -> QRectF:
         result = result.united(stroker.createStroke(path(node)).boundingRect())
     for child in node.children:
         bounds = transform(local_matrix(document.nodes[child])).mapRect(
-            local_visual(document, child)
+            local_visual(document, child, painted, context)
         )
         if node.clip_content:
             bounds = bounds.intersected(path(node).boundingRect())
@@ -102,7 +113,7 @@ def local_visual(document: Document, key: NodeId) -> QRectF:
     if result.isEmpty():
         return result
     source = result
-    for shadow in node.style.shadows:
+    for shadow in node.style.shadows if own else ():
         pad = shadow.spread + 3 * shadow.blur
         result = result.united(
             source.adjusted(-pad, -pad, pad, pad).translated(shadow.offset_x, shadow.offset_y)
@@ -135,16 +146,25 @@ def draw_node(
 ) -> None:
     budget = [0] if budget is None else budget
     node = document.nodes[key]
-    if not node.visible or node.opacity == 0:
+    painted = resources.render_nodes if resources else None
+    context = resources.render_context if resources else frozenset()
+    if (
+        (painted is not None and key not in painted and key not in context)
+        or not node.visible
+        or node.opacity == 0
+    ):
         return
     painter.save()
     try:
         if not local:
             painter.setWorldTransform(transform(local_matrix(node)), True)
-        if node.opacity != 1 or node.style.shadows:
+        shadows = bool(node.style.shadows) and (painted is None or key in painted)
+        if node.opacity != 1 or shadows:
             # Composite ONCE. Never use inherited QGraphicsItem opacity on children.
             matrix = painter.deviceTransform()
-            device_bounds = matrix.mapRect(local_visual(document, key)).adjusted(-1, -1, 1, 1)
+            device_bounds = matrix.mapRect(local_visual(document, key, painted, context)).adjusted(
+                -1, -1, 1, 1
+            )
             if any(
                 not math.isfinite(v) or abs(v) > 1_000_000_000
                 for v in (
@@ -159,7 +179,7 @@ def draw_node(
             width, height = rect.width(), rect.height()
             if width <= 0 or height <= 0:
                 return
-            pixels = width * height * (6 if node.style.shadows else 1)
+            pixels = width * height * (6 if shadows else 1)
             if budget[0] + pixels > 64_000_000:
                 fail("isolation_pixels", code="limit_exceeded")
             image = QImage(width, height, QImage.Format.Format_ARGB32_Premultiplied)
@@ -176,7 +196,7 @@ def draw_node(
             finally:
                 layer.end()
                 budget[0] -= pixels
-            if node.style.shadows:
+            if shadows:
                 image = composite(image, node, matrix)
             painter.setOpacity(painter.opacity() * node.opacity)
             # Composite a device-aligned buffer, so PDF never resamples a rotated
@@ -202,31 +222,33 @@ def draw_body(
 ) -> None:
     node = resources.previews.get(key, document.nodes[key]) if resources else document.nodes[key]
     shape = path(node)
-    if node.type == "text" and resources is not None:
-        draw_text(painter, node, resources)
-    elif node.type != "group":
-        painter.setPen(Qt.PenStyle.NoPen)
-        if isinstance(node.data, FrameData) and node.data.background:
-            painter.fillPath(shape, color(node.data.background))
-        if node.style.fill:
-            painter.fillPath(shape, color(node.style.fill.color))
-        if isinstance(node.data, MediaData) and resources is not None:
-            source = resources.media.get(node.data.asset_id)
-            if source is None:
-                fail("missing_image_resource")
-            draw_media(painter, node, source)
-        if node.style.stroke:
-            pen = QPen(color(node.style.stroke.color), node.style.stroke.width)
-            pen.setJoinStyle(Qt.PenJoinStyle.MiterJoin)
-            pen.setMiterLimit(2)
-            pen.setCapStyle(Qt.PenCapStyle.SquareCap)
-            painter.setPen(pen)
-            painter.setBrush(Qt.BrushStyle.NoBrush)
-            painter.drawPath(shape)
-        if node.type == "text" or (node.type in ("image", "svg") and resources is None):
-            painter.setPen(QPen(QColor("#666666"), 1))
-            painter.drawRect(QRectF(0, 0, node.width, node.height))
-            painter.drawLine(QPointF(0, 0), QPointF(node.width, node.height))
+    own = resources is None or resources.render_nodes is None or key in resources.render_nodes
+    if own:
+        if node.type == "text" and resources is not None:
+            draw_text(painter, node, resources)
+        elif node.type != "group":
+            painter.setPen(Qt.PenStyle.NoPen)
+            if isinstance(node.data, FrameData) and node.data.background:
+                painter.fillPath(shape, color(node.data.background))
+            if node.style.fill:
+                painter.fillPath(shape, color(node.style.fill.color))
+            if isinstance(node.data, MediaData) and resources is not None:
+                source = resources.media.get(node.data.asset_id)
+                if source is None:
+                    fail("missing_image_resource")
+                draw_media(painter, node, source)
+            if node.style.stroke:
+                pen = QPen(color(node.style.stroke.color), node.style.stroke.width)
+                pen.setJoinStyle(Qt.PenJoinStyle.MiterJoin)
+                pen.setMiterLimit(2)
+                pen.setCapStyle(Qt.PenCapStyle.SquareCap)
+                painter.setPen(pen)
+                painter.setBrush(Qt.BrushStyle.NoBrush)
+                painter.drawPath(shape)
+            if node.type == "text" or (node.type in ("image", "svg") and resources is None):
+                painter.setPen(QPen(QColor("#666666"), 1))
+                painter.drawRect(QRectF(0, 0, node.width, node.height))
+                painter.drawLine(QPointF(0, 0), QPointF(node.width, node.height))
     painter.save()
     try:
         if node.clip_content:
@@ -245,6 +267,7 @@ def render_image(
     *,
     resources: Resources | None = None,
     notes: list[str] | None = None,
+    dimensions: tuple[int, int] | None = None,
 ) -> QImage:
     """Strict offscreen contract for preview/export callers; no editor decorations."""
     if resources is not None and resources.previews:
@@ -259,10 +282,20 @@ def render_image(
             code="unsupported_capability",
             warnings=warnings(document, resources),
         )
-    if not math.isfinite(scale) or scale <= 0 or bounds.isEmpty():
+    if (
+        not math.isfinite(scale)
+        or scale <= 0
+        or bounds.isEmpty()
+        or not all(
+            math.isfinite(v) for v in (bounds.x(), bounds.y(), bounds.width(), bounds.height())
+        )
+    ):
         fail("invalid_render_bounds")
-    w, h = math.ceil(bounds.width() * scale), math.ceil(bounds.height() * scale)
-    if w * h > 64_000_000:
+    w, h = dimensions or (
+        pixel_extent(bounds.width() * scale),
+        pixel_extent(bounds.height() * scale),
+    )
+    if type(w) is not int or type(h) is not int or w < 1 or h < 1 or w * h > 64_000_000:
         fail("render_pixels", code="limit_exceeded")
     image = QImage(w, h, QImage.Format.Format_ARGB32_Premultiplied)
     if image.isNull():
@@ -271,6 +304,9 @@ def render_image(
     painter = QPainter(image)
     try:
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        if dimensions is not None:
+            scale = min(w / bounds.width(), h / bounds.height())
+            painter.translate((w - bounds.width() * scale) / 2, (h - bounds.height() * scale) / 2)
         painter.scale(scale, scale)
         painter.translate(-bounds.x(), -bounds.y())
         for key in roots:

@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any, Literal
 from uuid import uuid4
 
-from PySide6.QtCore import QItemSelection, QItemSelectionModel, QObject, Qt, Signal
+from PySide6.QtCore import QItemSelection, QItemSelectionModel, QObject, Qt, QTimer, Signal
 from PySide6.QtGui import QAction, QActionGroup, QCloseEvent, QKeySequence
 from PySide6.QtWidgets import (
     QDialog,
@@ -37,13 +37,16 @@ from ltechdesign.rendering.media import MediaSource, prepare_sources
 from ltechdesign.rendering.text import display_notes as text_diagnostics
 from ltechdesign.rendering.text import measured as text_measured
 from ltechdesign.rendering.text import reflow as text_reflow
+from ltechdesign.rendering.thumbnail import generate as generate_thumbnail
 from ltechdesign.ui.artboard import ArtboardDialog
 from ltechdesign.ui.canvas import EditorCanvas
 from ltechdesign.ui.canvas_aids import CanvasAidControls
 from ltechdesign.ui.editing import EditingActions
+from ltechdesign.ui.exporting import ExportController
 from ltechdesign.ui.hierarchy import HierarchyPanel, HierarchyState
 from ltechdesign.ui.images import ImageImports
 from ltechdesign.ui.inspector import InspectorPanel
+from ltechdesign.ui.projects import ProjectWorkflow
 
 
 class Completion(QObject):
@@ -64,10 +67,12 @@ class Tab:
     status: str = "Belum disimpan"
     warning_label: QLabel | None = None
     media: dict[AssetId, MediaSource] = field(default_factory=dict)
+    autosaved_revision: int = -1
+    closing: bool = False
 
 
 class StudioWindow(QMainWindow):
-    def __init__(self) -> None:
+    def __init__(self, *, data_dir: Path | None = None) -> None:
         super().__init__()
         self.setWindowTitle("ltechDesign Studio")
         self.resize(1200, 800)
@@ -104,6 +109,7 @@ class StudioWindow(QMainWindow):
         toolbar = QToolBar("Tools")
         self.addToolBar(toolbar)
         self.menu_actions: dict[str, QAction] = {}
+        self.exports = ExportController(self)
         file_menu = self.menuBar().addMenu("&File")
         entries = [
             ("new", "&New…", "Ctrl+N", self.new_document),
@@ -112,6 +118,7 @@ class StudioWindow(QMainWindow):
             ("import_images", "Import images…", "Ctrl+Shift+I", lambda: self.images.choose()),
             ("save", "&Save", "Ctrl+S", self.save_document),
             ("save_as", "Save &As…", "Ctrl+Shift+S", lambda: self.save_document(as_new=True)),
+            ("export", "Export PNG / JPG / WebP…", "Ctrl+E", self.exports.open),
             ("reload", "&Reload…", "", self.reload_document),
             ("close", "&Close", "Ctrl+W", lambda: self.close_tab(self.tabs.currentIndex())),
         ]
@@ -124,6 +131,8 @@ class StudioWindow(QMainWindow):
             file_menu.addAction(action)
             if key in ("new", "open", "save"):
                 toolbar.addAction(action)
+        assert file_menu is not None
+        self.projects = ProjectWorkflow(self, file_menu, data_dir)
         edit_menu = self.menuBar().addMenu("&Edit")
         for key, shortcut in (("undo", "Ctrl+Z"), ("redo", "Ctrl+Shift+Z")):
             action = QAction(f"{key.title()} (canvas: {shortcut})", self)
@@ -191,8 +200,16 @@ class StudioWindow(QMainWindow):
         try:
             success(future.result())
         except Exception as error:
+            self._exit_requested = False
+            for tab in self.documents:
+                if tab.closing:
+                    tab.closing = False
+                    tab.dispatcher.set_read_only(tab.handle.read_only)
             self.show_error(error)
         self.refresh()
+        self.projects.resume_startup()
+        if self._exit_requested and not self.busy:
+            QTimer.singleShot(0, self.close)
 
     def show_error(self, error: Exception) -> None:
         code = error.code if isinstance(error, ModelError) else "io_error"
@@ -397,11 +414,14 @@ class StudioWindow(QMainWindow):
     def open_path(self, path: str, read_only: bool = False) -> None:
         def work() -> FileHandle:
             try:
-                return self.service.open(path, read_only=read_only)
+                handle = self.service.open(path, read_only=read_only)
             except ModelError as error:
                 if error.code in ("file_owned", "target_in_use") and not read_only:
-                    return self.service.open(path, read_only=True)
-                raise
+                    handle = self.service.open(path, read_only=True)
+                else:
+                    raise
+            self.projects.remember(handle.path)
+            return handle
 
         self.job(lambda: self.prepare_admission(work()), self.admit)
 
@@ -444,18 +464,31 @@ class StudioWindow(QMainWindow):
 
         def work() -> SaveResult:
             try:
-                return self.service.save(
-                    tab.handle, snapshot, lease.blobs, target=target, overwrite=overwrite
+                thumbnail = generate_thumbnail(snapshot.project, lease.blobs)
+                result = self.service.save(
+                    tab.handle,
+                    snapshot,
+                    lease.blobs,
+                    target=target,
+                    overwrite=overwrite,
+                    thumbnail=thumbnail,
                 )
+                self.projects.saved(snapshot)
+                self.projects.remember(result.path)
+                return result
             finally:
                 lease.release()
 
         def success(result: SaveResult) -> None:
             tab.dispatcher.mark_saved(result.checkpoint)
             tab.dispatcher.set_read_only(False)
-            tab.status = "Tersimpan"
+            tab.status = f"Tersimpan r{result.checkpoint.revision}"
             if after:
-                after()
+                if not tab.dispatcher.dirty:
+                    after()
+                else:
+                    self._exit_requested = False
+                    tab.status = "Snapshot tersimpan; ada edit baru. Ulangi Close/Reload."
 
         self.job(work, success)
 
@@ -484,9 +517,19 @@ class StudioWindow(QMainWindow):
             return
         self.tabs.setCurrentIndex(index)
         tab = self.documents[index]
+        if self.exports.defer_close(
+            tab.dispatcher.snapshot.session_id,
+            lambda: self.close_tab(self.documents.index(tab)) if tab in self.documents else None,
+        ):
+            return
 
         def close() -> None:
+            tab.closing = True
+            tab.dispatcher.set_read_only(True)
+            session_id = tab.dispatcher.snapshot.session_id
+
             def finished(_: Any) -> None:
+                self.exports.release_tab(tab)
                 tab.dispatcher.close()
                 self.documents.remove(tab)
                 self.tabs.removeTab(index)
@@ -494,7 +537,11 @@ class StudioWindow(QMainWindow):
                 if self._exit_requested:
                     self.close()
 
-            self.job(lambda: self.service.close(tab.handle), finished)
+            def work() -> None:
+                self.service.close(tab.handle)
+                self.projects.closed(session_id)
+
+            self.job(work, finished)
 
         self.unsaved(tab, close)
 
@@ -503,9 +550,26 @@ class StudioWindow(QMainWindow):
         if tab is None or tab.handle.path is None or self.busy:
             return
 
+        def retry_reload() -> None:
+            if tab in self.documents:
+                self.tabs.setCurrentWidget(tab.widget)
+                self.reload_document()
+
+        if self.exports.defer_close(tab.dispatcher.snapshot.session_id, retry_reload):
+            return
+
         def reload() -> None:
+            tab.closing = True
+            tab.dispatcher.set_read_only(True)
+            session_id = tab.dispatcher.snapshot.session_id
+
+            def work() -> Any:
+                prepared = self.prepare_admission(self.service.reload(tab.handle))
+                self.projects.closed(session_id)
+                return prepared
+
             self.job(
-                lambda: self.prepare_admission(self.service.reload(tab.handle)),
+                work,
                 lambda prepared: self.replace_tab(tab, prepared),
             )
 
@@ -515,6 +579,7 @@ class StudioWindow(QMainWindow):
         self, old: Tab, prepared: tuple[FileHandle, BlobStore, Any, dict[AssetId, MediaSource]]
     ) -> None:
         index = self.documents.index(old)
+        self.exports.release_tab(old)
         old.dispatcher.close()
         self.documents.pop(index)
         self.tabs.removeTab(index)
@@ -657,7 +722,7 @@ class StudioWindow(QMainWindow):
         self.menu_actions["redo"].setEnabled(
             bool(tab and tab.dispatcher.redo_history and not tab.handle.read_only and not self.busy)
         )
-        writable = bool(tab and not tab.handle.read_only)
+        writable = bool(tab and not tab.handle.read_only and not tab.closing)
         self.menu_actions["artboard"].setEnabled(writable and not self.busy)
         self.menu_actions["import_images"].setEnabled(
             writable and not self.busy and self.images.active is None
@@ -730,17 +795,23 @@ class StudioWindow(QMainWindow):
         )
 
     def closeEvent(self, event: QCloseEvent) -> None:
-        if self.images.active:
+        if self.exports.defer_exit():
+            self._exit_requested = True
+            event.ignore()
+        elif self.images.active:
             self._exit_requested = True
             self.images.cancel(self.images.active.id)
             event.ignore()
         elif self.busy:
+            self._exit_requested = True
             event.ignore()
         elif self.documents:
             event.ignore()
             self._exit_requested = True
             self.close_tab(self.tabs.currentIndex())
         else:
+            self.exports.shutdown()
+            self.projects.release()
             self.executor.shutdown(wait=False)
             self.images.executor.shutdown(wait=False)
             self.font_resolver.close()

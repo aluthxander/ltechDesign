@@ -4,6 +4,7 @@ Callers publish a returned admission only after success. Save consumes an immuta
 snapshot; the owner applies its returned checkpoint, never substitutes the live model.
 """
 
+import hashlib
 import os
 import tempfile
 import threading
@@ -14,7 +15,7 @@ from pathlib import Path
 
 from ltechdesign.commands.dispatcher import SaveCheckpoint, fingerprint
 from ltechdesign.domain.errors import ModelError, fail
-from ltechdesign.domain.models import DocumentSession, Project, Writer
+from ltechdesign.domain.models import DocumentSession, InventoryEntry, Project, Writer
 
 from .archive import (
     DEFAULT_LIMITS,
@@ -37,6 +38,7 @@ class FileHandle:
     _requested: Path | None = None
     _lock: WriterLock | None = None
     _closed: bool = False
+    _saved_revision: int = -1
 
 
 @dataclass(frozen=True, slots=True)
@@ -158,6 +160,7 @@ class PersistenceService:
         target: str | Path | None = None,
         overwrite: bool = False,
         migration_backup: bool = False,
+        thumbnail: bytes | None = None,
         cancelled: Callable[[], bool] | None = None,
     ) -> SaveResult:
         """Atomic save/Save As. Explicit overwrite intent only applies to a different target.
@@ -168,6 +171,8 @@ class PersistenceService:
         """
         with self._guard:
             self._active(handle)
+            if snapshot.revision < handle._saved_revision:
+                fail("stale_save_snapshot", code="revision_conflict")
             if (
                 snapshot.session_id != handle.admission.session_id
                 or snapshot.project.document.document_id
@@ -235,6 +240,34 @@ class PersistenceService:
                                 p: b for p, b in project.opaque_files.items() if p not in previews
                             },
                         )
+                if thumbnail is not None:
+                    preview_path = "thumbnails/project.png"
+                    project = replace(
+                        project,
+                        manifest=replace(
+                            project.manifest,
+                            optional_capabilities=tuple(
+                                sorted(
+                                    set(
+                                        (
+                                            *project.manifest.optional_capabilities,
+                                            "preview.thumbnail/1",
+                                        )
+                                    )
+                                )
+                            ),
+                            files=tuple(e for e in project.manifest.files if e.path != preview_path)
+                            + (
+                                InventoryEntry(
+                                    path=preview_path,
+                                    media_type="image/png",
+                                    byte_length=len(thumbnail),
+                                    sha256=hashlib.sha256(thumbnail).hexdigest(),
+                                ),
+                            ),
+                        ),
+                        opaque_files={**project.opaque_files, preview_path: thumbnail},
+                    )
                 # Defensive copy pins byte references even if a caller later releases its lease.
                 pinned = dict(blobs)
                 fd, name = tempfile.mkstemp(prefix=".ltechdesign-", suffix=".tmp", dir=path.parent)
@@ -261,6 +294,7 @@ class PersistenceService:
                 old_lock = handle._lock
                 handle.path, handle.baseline, handle._requested = path, saved, requested
                 handle.read_only = False
+                handle._saved_revision = snapshot.revision
                 if not same:
                     handle._lock, new_lock = new_lock, None
                     if old_lock is not None:
@@ -290,6 +324,7 @@ class PersistenceService:
                 handle.admission = candidate.admission
                 handle.loaded = candidate.loaded
                 handle.baseline = candidate.baseline
+                handle._saved_revision = -1
             finally:
                 staging.close(candidate)
             return handle

@@ -4,6 +4,25 @@ Tanggal keputusan: 21 Oktober 2026 (Asia/Jakarta). Acuan: PRD 1.2, khususnya bag
 
 ## 1. Baseline repository dan batas segmen 00
 
+Update15 (30 Oktober2026): exports/service menyediakan local raster job API dan
+ui/exporting memakai service yang sama. Snapshot/aset di-pin; coordinator I/O
+mengatur canonical target locks/baselines/temp replace dan subprocess QGui
+menjalankan shared drawing/font/media/encoder. Selection memakai runtime filter
+pada traversal yang sama, menjaga ancestor clip/opacity/transform tanpa mengubah
+model. Cancel setelah replace mempertahankan laporan output aktual. Native1.0
+dan dependency tetap. Kontrak [ADR0027](adr/0027-raster-export-jobs.md), bukti/status
+[baseline15](baseline-segment15.md). PDF16/previewCLI17/MCP18C tetap pemiliknya.
+
+Update14 (30 Oktober2026): ProjectWorkflow menghubungkan recent/duplicate UI,
+configurable autosave dan startup recovery ke persistence worker yang sama.
+Recovery generations terpisah dari source, membawa asset closure dan owner lock,
+memakai session baru/dirty/history kosong saat restore. Manual checkpoint/thumbnail
+terikat snapshot, Close/Reload melindungi edit lebih baru. Thumbnail memakai shared
+renderer dalam spawn QGui subprocess. Native1.0/font metadata/ownership tetap;
+basic disk recovery14 kini tersedia, manager/session restore/named snapshots39
+tetap backlog. Kontrak lengkap [ADR0026](adr/0026-project-recovery-generations.md),
+bukti/status di [baseline14](baseline-segment14.md).
+
 Update13 (26 Oktober2026): pure-domain dimension dependency graph mengevaluasi
 stack/parent constraints sebelum commit, memakai port metrics teks shared setelah
 alokasi width. Dispatcher menormalisasi group ancestor dan memvalidasi sebelum

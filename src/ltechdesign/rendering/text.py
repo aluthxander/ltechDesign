@@ -40,6 +40,8 @@ class Resources:
     strict: bool = True
     previews: Mapping[NodeId, Node] = field(default_factory=dict)
     media: Mapping[AssetId, MediaSource] = field(default_factory=dict)
+    render_nodes: frozenset[NodeId] | None = None
+    render_context: frozenset[NodeId] = frozenset()
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "families", MappingProxyType(dict(self.families)))
@@ -258,7 +260,9 @@ def diagnostics(document: object, resources: Resources) -> tuple[str, ...]:
     assert isinstance(document, Document)
     notes = set(resources.notes)
     for node in document.nodes.values():
-        if node.type == "text":
+        if node.type == "text" and (
+            resources.render_nodes is None or node.id in resources.render_nodes
+        ):
             try:
                 notes.update(outlined(node, resources)[1])
             except ModelError as error:

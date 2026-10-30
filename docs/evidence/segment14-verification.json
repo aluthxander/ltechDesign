@@ -1,0 +1,259 @@
+{
+  "segment": "14",
+  "status": "verified",
+  "date_asia_jakarta": "2026-10-30",
+  "base_head": "c7643d88a5b954d16a3613074e83f6e64c5a6b1b",
+  "initial_worktree": "clean",
+  "commit_created": false,
+  "native_format": "1.0",
+  "checkpoints": {
+    "14.workflow": "verified",
+    "14.recovery": "verified",
+    "14.portability": "verified",
+    "14.handoff": "verified"
+  },
+  "tested_versions": {
+    "Python": "3.12.12",
+    "PySide6": "6.10.2",
+    "Qt": "6.10.2",
+    "Pillow": "12.3.0",
+    "PyInstaller": "6.22.3",
+    "uv": "0.12.1"
+  },
+  "verification": {
+    "full_gate": {
+      "command": "UV_OFFLINE=true; powershell -NoProfile -ExecutionPolicy Bypass -File scripts/check.ps1 all",
+      "exit_code": 0,
+      "core": {
+        "tests": 475,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "desktop": {
+        "tests": 183,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "ruff_files": 117,
+      "mypy_files": 113,
+      "includes": [
+        "docs",
+        "fixtures",
+        "build",
+        "isolated-installed-wheel"
+      ]
+    },
+    "post_gate_adjustment": "Capture closing session_id on GUI thread before worker submission.",
+    "targeted": {
+      "tests": {
+        "tests": 113,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "duration_seconds": 19.54,
+      "command": "pytest tests/test_recovery.py tests/test_recovery_processes.py tests/test_projects_workflow.py tests/test_editor_shell.py tests/test_persistence.py tests/test_persistence_processes.py -q"
+    },
+    "native": {
+      "tests": {
+        "tests": 20,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "duration_seconds": 9.3,
+      "command": "QT_QPA_PLATFORM=windows; pytest tests/test_projects_workflow.py tests/test_editor_shell.py -q"
+    },
+    "final_package": {
+      "command": "UV_OFFLINE=true; scripts/check.ps1 package",
+      "exit_code": 0,
+      "isolated_wheel_thumbnail": {
+        "thumbnail_spawn": true,
+        "png_bytes": 348
+      }
+    },
+    "frozen": {
+      "command": "UV_OFFLINE=true; scripts/smoke-build.ps1 -SmokeMode offscreen",
+      "exit_code": 0,
+      "thumbnail_spawn": {
+        "thumbnail_spawn": true,
+        "png_bytes": 348
+      }
+    },
+    "native_visual": {
+      "command": "QT_QPA_PLATFORM=windows; python scripts/demo_projects.py",
+      "exit_code": 0,
+      "actual_dpr": 1.25,
+      "actually_inspected_via": "view_image: real startup dialog, recovered tabs, recent menu, project thumbnail",
+      "physical_input_exercised": false
+    },
+    "failed_attempts": [
+      "Initial uv network attempt failed in restricted host; retried offline.",
+      "Lint/typing/new-test harness failures corrected before successful gates."
+    ],
+    "final_post_adjustment_checks": {
+      "docs": {
+        "command": "UV_OFFLINE=true; scripts/check.ps1 docs",
+        "exit_code": 0,
+        "matrix_rows": 184,
+        "segments": 79,
+        "markdown_files": 50
+      },
+      "lint": {
+        "command": "python -m ruff check .; python -m ruff format --check .",
+        "exit_code": 0,
+        "files": 117
+      },
+      "types": {
+        "command": "python -m mypy",
+        "exit_code": 0,
+        "files": 113
+      }
+    }
+  },
+  "contracts": [
+    "Separate recovery area never writes source; unnamed documents included.",
+    "Two complete generations published by atomic directory rename; asset byte closure embedded.",
+    "Actual Qt process killed after successful autosave and during next staging, named/unnamed.",
+    "Independent fresh-profile portability process rejects socket.connect/getaddrinfo.",
+    "Fresh restore/reopen session_id, revision0 and no persisted undo history.",
+    "Missing-font metadata retained with warning, no pixel-identical assertion.",
+    "Existing migration backup and strict unsupported-version rejection retained."
+  ],
+  "source_hash_algorithm": "SHA256 of sorted JSON mapping relative code paths to SHA256 byte digests",
+  "source_tree_digest": "fdf493b541dc69c20f820398d3d74bd1a4ba5bcabfc2dae5bf72c5fb37148214",
+  "source_sha256": {
+    "pyproject.toml": "044a89844c2edc878d596f0c948ed296c54a9d97094196aadacd609414b01761",
+    "scripts/demo_projects.py": "452eeeeabf2a0caef91d4d6137848c698014e4ad3eb4931302699a98b17e1545",
+    "scripts/freeze_desktop.py": "6087c64ff25a2b47c2ae644ab6f486e2ef74a1f1efb0fd39ba1a66d1767bd1ef",
+    "scripts/recovery_worker.py": "0313f117ad8a85b39bae984b42e6aa78bcbce087c6664ea400a0a515fe62b259",
+    "scripts/smoke-build.ps1": "969f8df316d5891540aa4e401c31f36c8c8360421e75900598e3fab077d2ef67",
+    "src/ltechdesign/__init__.py": "553e6366b3846407d8d554fd5807204a11ecb5a0db3c47e3e7e063fa28beabe6",
+    "src/ltechdesign/__main__.py": "21fd2e59246e825cd427ec4ba8129bc9d48cf470bed9e80a3e6c1848487834dc",
+    "src/ltechdesign/assets/__init__.py": "59693de08312cd9a9191d07efd3739c4f06128678a46a9254236f842b1277c09",
+    "src/ltechdesign/assets/importing.py": "cb4128acc79a2e4dd5006a48976d9c99da023a027621b28f90f064446090fb97",
+    "src/ltechdesign/assets/store.py": "b9cf6960743a227805c10da6fa1b3823f08a8f29b5aeba1b525070b14c7af939",
+    "src/ltechdesign/assets/validation.py": "ce8b96f2f869e21a8c2209557c35f910c2d7beef51f58cbe4878869d4e4d1640",
+    "src/ltechdesign/cli.py": "b58d8041a824273f081bd5a9874c813ba1af5cdca378de064a1b379945ba9329",
+    "src/ltechdesign/commands/__init__.py": "c62df7f6e099faa4128e62da948c3c9b619347f18012106537338451ce21e935",
+    "src/ltechdesign/commands/contracts.py": "e6510b78784f093c9a5a6e48f4d853f963cb921a1c0bba10caed2d8c82986deb",
+    "src/ltechdesign/commands/dispatcher.py": "4d99e44d54d4a9183abb3d91e7735390e8d8c01769325fef32ac62ecbcab4b61",
+    "src/ltechdesign/commands/planning.py": "28639519065d224d0e0a1f64c313478908710bae58a049b95c46f2d9c855b37a",
+    "src/ltechdesign/commands/retention.py": "4f8c60ef4dce8102d17551a8d280641b52757f9d78a0517d1366de8c1c52be89",
+    "src/ltechdesign/domain/__init__.py": "e9c9a89baf804fbb8b76a899b97957e868702b35a48bc6d7680acf9a0a7c40ce",
+    "src/ltechdesign/domain/arrangement.py": "e1dc930320f83a726d9566d259a484382ede3cda288762b49f6d9ddd9b4939f3",
+    "src/ltechdesign/domain/authoring.py": "351868c0ca9f25beaa6f6c0fa0b9e349821e07fb90414229152bf00ef53c8fa8",
+    "src/ltechdesign/domain/codec.py": "49910f07ee733ddb21a1829daffbf9cd52d82386195507fc0ad5f67a520b3d32",
+    "src/ltechdesign/domain/editing.py": "d0ff69af2c92436deb2cf8290e9996e141394322d325d80efd8f7803c7f9b0e1",
+    "src/ltechdesign/domain/errors.py": "ffa7fbe781ce60c53d9b24400afced4243eabf6ca7b49201b763e0ae7d2fea97",
+    "src/ltechdesign/domain/geometry.py": "a0f0be20e799e10f63c9b7e9195dae1aa5be9120517de8359cd28f081f4256e5",
+    "src/ltechdesign/domain/inspector.py": "908085bf3242f8fa0bc9a338cf1f889e2d11652c155986db9e073386d30a06b2",
+    "src/ltechdesign/domain/layout.py": "002de5b3466f28d9f38d181827b857a9d2fc7ba12eb4e2ac310b77985fd5ac15",
+    "src/ltechdesign/domain/migrations.py": "23dc433fb81b844327a880404124e749a14a98f082cc45941ef13e9500076773",
+    "src/ltechdesign/domain/models.py": "53fd7da6fecb3b00a0c4f39ce51fa2442c15769826d077c4ef89e4295a748d14",
+    "src/ltechdesign/domain/schema.py": "54e495d39261b937906ebb589f1403f20021e9ad2182ccf2e0e4633031617376",
+    "src/ltechdesign/domain/snapping.py": "1233e3fd56df5480549d44802435b2f3b7ee5d7ead66fae56f189e3aa42be117",
+    "src/ltechdesign/domain/typing.py": "1549a9dac86b9367919abf86b3af5f1c2212de99a0cc7bc343847c6f833b53d4",
+    "src/ltechdesign/domain/typography.py": "c1eacd231ebabbff7eb9b4de3e6755effb890fdc8436d7012751233d65d7f523",
+    "src/ltechdesign/domain/validation.py": "be76825195ba9bb80364c96b933c8184ad899c84b69bbba2447b8f3f4efe978a",
+    "src/ltechdesign/logging_config.py": "9a11c798b541b712f43d4ffeb6a2ac17e4b226cbbc1613edcd2319b9d6aa2d80",
+    "src/ltechdesign/main.py": "4129787ab6ce747d0ee66f305f93be2ffa32b630781729424e44f14ce83653fd",
+    "src/ltechdesign/persistence/__init__.py": "fe8716f11396c93e6d3b856463034d8edc85211088ed05ad6d241549e9c75d4c",
+    "src/ltechdesign/persistence/archive.py": "796c46994e9c0ab74d1cd4e1e667c95f0381fd1da874918b9aeb69f182e88484",
+    "src/ltechdesign/persistence/clipboard.py": "abd9659b3c3d3c3d0c1eb8fc2f401c607704d08337956f66a26af565d175caa0",
+    "src/ltechdesign/persistence/duplicate.py": "f0965353bb64029481b89efcd0c5add75b253de32eb6f0de6b17f7ebd9c2ea3e",
+    "src/ltechdesign/persistence/paths.py": "30c1b138f1bda20ff1009ed9ce9b53675c62944eeac982f1c69a2b0b9d619783",
+    "src/ltechdesign/persistence/preferences.py": "c25e5ae41ebee72145cb7c3298c77874afb78ed89b088e2c6b30c285dcf58870",
+    "src/ltechdesign/persistence/recovery.py": "4f2b6ccffb62c2575af30dff4797fbb3a173cea92090ff1dcfbd962230a477ef",
+    "src/ltechdesign/persistence/service.py": "f496289ac9cea55d098d349befca42c923ebd7ce622e498e30dde683f38b92da",
+    "src/ltechdesign/rendering/__init__.py": "b684b70d8cd9afea76d2848e155ad84da8c551f43276f041fe892890d54ae165",
+    "src/ltechdesign/rendering/canvas.py": "7dc7bab47475f31ea46d14375ef20a31b2a1ff4f700f0b4f04bf222d3d6baffa",
+    "src/ltechdesign/rendering/drawing.py": "a0f66d764291f7194923fd0266ce98369b7d07d1879562cdbb282023ffd616a1",
+    "src/ltechdesign/rendering/fonts.py": "95ed4062211f42b35252b2c29966579358712546475e011abcd985967928c6a8",
+    "src/ltechdesign/rendering/hit_testing.py": "f6a512121da37c34945e7efb8b64ddc69d7899cd92e3f4ebcd30647708f8defd",
+    "src/ltechdesign/rendering/media.py": "7e73da878579ba124babdc918e079e95a293d85ee0fa702f841000432693b6a3",
+    "src/ltechdesign/rendering/pdf.py": "911b75d2c1e56ab8933278a2a307b0a7eddadcd3933e2d5b1aee65751e1bf744",
+    "src/ltechdesign/rendering/shadow.py": "dba34cdb7618db348a43f2f69bf4b8e242121f5772526ec9386c8a3e1b7404c1",
+    "src/ltechdesign/rendering/text.py": "dd52f35440b8d7d0c0e257f7177630e95b362694d1502a0eb433eb1e46f724a7",
+    "src/ltechdesign/rendering/thumbnail.py": "5cd90b9ec3b8f836be4f18f8158b05c4ead69b15ef9525f386e00a277f10bb47",
+    "src/ltechdesign/ui/__init__.py": "7fc0d362d75691172cea95af263dbe22a4cdfe5dad5f8bb7fe0b2ed8d2115cf4",
+    "src/ltechdesign/ui/arrangement.py": "cd92fc97f59417bc5e6f954fad10863aeb64f45a2daed7f4dd5c69ba42d2f271",
+    "src/ltechdesign/ui/artboard.py": "b167234c9fdb92f2f5730d4af773de9fcf30a94d257bed6a619e614cc5a47e96",
+    "src/ltechdesign/ui/canvas.py": "6f7a243b965eb436f657940b853626c140ae7cc8b55fdd87f3edfcd8bfe4bd7d",
+    "src/ltechdesign/ui/canvas_aids.py": "ca1a31e65c98204973cafba520c8816c76f522f34e5a095b4a226e1a15fdf4a2",
+    "src/ltechdesign/ui/editing.py": "6662b4ac1bee7f3e22e3acf3e1ee141a4ebd897cece35cb827ddeeb27127126e",
+    "src/ltechdesign/ui/hierarchy.py": "c70a7f1c83008c80f78c54433a606897a0198338edf78c442923787ed2101579",
+    "src/ltechdesign/ui/images.py": "a4c69bb8747dc447a09ea99e8d76e745ec64db19d168ea746d69bfb1d7c1f1a0",
+    "src/ltechdesign/ui/inspector.py": "ddea21587dffc154b73203a63d87e1490f7e1e845482988a284ff69a806f2058",
+    "src/ltechdesign/ui/layout.py": "22b1944f6660be21ace5f2a460d0470f5a9603e2a4e208a772b6c0bc88ce635d",
+    "src/ltechdesign/ui/projects.py": "bc2177e0f72fee7535e7b615da566c963dd4ca11633d1ec99c8f72d9bf80b485",
+    "src/ltechdesign/ui/text_editing.py": "783a6e9696ae7c563ac225581669178c4b9c93cff6def53cb360d26bad119972",
+    "src/ltechdesign/ui/transforms.py": "0384db6c7405817f6b8ff0d32c29252e64dda0f52b367ee7857b39bcb6674fa7",
+    "src/ltechdesign/ui/typography.py": "6db9bf08795fda68c0d95ce156a0ed2f3e1df052b8d0e05affc29554febcf3bf",
+    "src/ltechdesign/ui/window.py": "6abe24db0a6223327c3ce7c5c1c4e19e2d17a67709ebf9b60bad832a470c8a19",
+    "tests/conftest.py": "b96d8ae4aeba4733d2bfa275ef18153f2b27158499aaa313fdcb932640952c20",
+    "tests/test_arrangement.py": "d1fb9b196f56239b4f4fe8aae92f1e76b8f3f111a1fbf2eb6ae17df50049d1a6",
+    "tests/test_asset_validation.py": "958b7931aaa3dc8a1a1b134df490d073a9b1224f870c1f0cde8d929970822782",
+    "tests/test_authoring.py": "aac5fd3f28d0cc82b06c23e62f3ef980140c9465c6481e1d459749f60e161040",
+    "tests/test_canvas_aids.py": "577470deed53c2821c8331b4f2cf744a1fefb7c16d3a2a71eee60e4c91766107",
+    "tests/test_commands.py": "084a6de08bf3135df1ee16bd8b25a6ed220faf6aa09864535e746406d10749be",
+    "tests/test_core.py": "99d9443141ca37a0303159448786e8c3373a113b80e80aea24eaae1c8fd3a0bd",
+    "tests/test_desktop.py": "bfa4f5bb97114857458085041b54944ec5dd65ff1d0523c5655cbda84580e648",
+    "tests/test_domain.py": "b3e5aba06665784ba7670c6a3acae23976c5497bb20841e513392a854c1a881f",
+    "tests/test_drawing_tools.py": "3749ea2c45865c0b632c2f74de8e8a05b13d80ad74bc01b6812571162e368e47",
+    "tests/test_editing_commands.py": "531cbbf8271d25021a1ed70e50fd582ad80f6b7b9f55e6fceb1fb919093a5bc0",
+    "tests/test_editor_shell.py": "1cfd115923582e8e169a325752570d47f3e0f7d380056b3f9e78f940e9beb5fe",
+    "tests/test_editor_transforms.py": "4aeaf3852a7275da979ff2795b010e18f9ae299ca45bb5a4eb10dbca981603b3",
+    "tests/test_hierarchy_commands.py": "464264a3150a8b81a1e16ab441174ba1b640ede653a5dd9e0d1858d7254b990e",
+    "tests/test_hierarchy_panel.py": "e07d39fce3b13749f3175b98693850458522b9e189a15b39413c377197ed6c2b",
+    "tests/test_images.py": "298339fe7640ae63b3c81443f052a31c8a027020f59d0ddfcb18b89db64fa7d5",
+    "tests/test_inspector_commands.py": "ff9da74e715247097f834edccabe2e55f54472703b7e97b825131e35840ddffc",
+    "tests/test_inspector_panel.py": "26d55ac3e3c68923f2fae6a71341c0960964c72605df737827d50b6e70ed7c85",
+    "tests/test_layout_commands.py": "48bcd99a1b75d639949fc4aed0459051d27c9cddb8bb9f5bd75f5a0abee487bb",
+    "tests/test_layout_panel.py": "4ac43a1d6a1db956d45a4e8c9bb9b44f94e277c31bf58dbcc06ed9f2943d414e",
+    "tests/test_media_commands.py": "a977c693f5089525fbddb25d5be81c250502c3bfb512974a1b0cf11f50b11832",
+    "tests/test_persistence.py": "48246625583990435929569036ab2d989f42500c79c8cde26e5d5dbc405bc962",
+    "tests/test_persistence_processes.py": "f109cd4c5ef0d05400dfb28961a48310940841fcbe0682c4241a55459a1021ef",
+    "tests/test_project_format.py": "a7f35b0af349f9da454758651236556a74f47a875b92fbe05f8aaaf4851e822d",
+    "tests/test_projects_workflow.py": "eed83ff5dc3f8fa2627163ecbb097e35ae44e6173dbeaedf54cec0d11cc5e481",
+    "tests/test_recovery.py": "ded6a262890b58cc825ccfa9fa90dc5a522b77a6592043007392f610a47f5f81",
+    "tests/test_recovery_processes.py": "c3dfefd6ebe890c76baa37f6063d7bdb1fef072156db65fa3da4d834a5e2d964",
+    "tests/test_render_conformance.py": "631b2183a0a8f073d4503ad46f5de0476c86d0771de921eceb125ac1a142dee9",
+    "tests/test_rendering.py": "ce371e37debf6afea6d4ff7103bb544ec419b86cfda2574afd4bb8fbe784793e",
+    "tests/test_snapping.py": "4974ad9a75d5e4b20cf55db24bdedb10c73b45d40408e0e2ba5c1ecd34341062",
+    "tests/test_style_rendering.py": "1748882f9a506da696330743da68feaff59ae90b016fe3422988893bf64f8324",
+    "tests/test_text_conformance.py": "2c5b7bfd579172cfcbc7583281d8e28e1f9f7882485f6c9fa50f3d5f7673848e",
+    "tests/test_text_editor.py": "a28a766ae8e4650588f3c5e2194384ffbad8912e7ab5126fea84dcb7b9f30a9c",
+    "tests/test_text_layout.py": "3c0f26770057ea7803326a28429c4559fd4d7359d9a8719c6c8985e660724b81",
+    "tests/test_typography_commands.py": "eae147171ae7bcbad3b4283b47bb439784e1e58c5787239b4e028ce5c4581cf6",
+    "uv.lock": "42a9cb1ed2ee762ce56da6999cf9700f2db6e55907886bee703445a95e89e170"
+  },
+  "artifact_sha256": {
+    "artifacts/segment14-check-all.log": "4c4c94a9ded88c4849192214c146d6303b18656a3aa5b39688e6369f9886ac20",
+    "artifacts/segment14-targeted.log": "81bb3da85fbf0b3bedd6e52f3d25ad47a452d6ed06c655fae87e0de083b56266",
+    "artifacts/segment14-native.log": "8192df7ef1bc22f6b62fed7d75ae97e252d76493f74844f8640e0d9e15083ff2",
+    "artifacts/segment14-package-final.log": "eb284314537f1fd836b58a95a4d6d166f01925125ff23d45765631e91aa3a9d2",
+    "artifacts/segment14-executable.log": "38eeda1a395d98727f0832e8632f7de26907d2ae3736355b639a257bad67b137",
+    "artifacts/segment14-executable-thumbnail.json": "f029602699f51d3980c4f25751a65a68b29d05122a959cb3570763ddbd8a2dd4",
+    "artifacts/segment14-wheel-thumbnail.json": "f029602699f51d3980c4f25751a65a68b29d05122a959cb3570763ddbd8a2dd4",
+    "artifacts/projects14/startup-recovery.png": "ac1018c9c3ce6b1d7d91a2e77f37591b4ca40b7acd6899967c6e764f5ffc0b7e",
+    "artifacts/projects14/restored-tabs.png": "98c9a1a326075be23afdfb1da73a8ebb7c09d17513c77ffd46c40efdb17508cb",
+    "artifacts/projects14/recent-menu.png": "0bfa0e608f2c16002bd37e0a06f42d765c00d093948d1dc34e0719ccb721f9fd",
+    "artifacts/projects14/project-thumbnail.png": "eee1c27bdbb8cc70939ccca1a28cda4519ecb5941ef33d55d536412a1d2afeab",
+    "artifacts/segment14-docs-final.log": "71388b5b20b08f95f9fb216af3398e5db595f034d717c65d317f3b1546d61e72"
+  },
+  "blockers": [],
+  "pending": [
+    "Physical mouse/keyboard/screen reader/monitor switching and clean release machine:22/24.",
+    "Power-loss durability not claimed; proof covers process termination.",
+    "Busy I/O can defer autosave tick; aggregate quota/orphan cleanup/advanced recovery/session restore/named snapshots:39.",
+    "Public export jobs/MCP:15-19, not implemented automatically."
+  ],
+  "next_segment": {
+    "id": "15",
+    "status": "not_started",
+    "safe_to_proceed": true
+  }
+}

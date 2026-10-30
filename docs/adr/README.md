@@ -42,3 +42,7 @@ Versi dependency dan packager yang diuji dicatat pada ADR 0011 serta baseline 01
 - [0024 — Portable media dan staged import](0024-portable-media-import.md): accepted,12; bounded worker staging/cancel, vector drawing/DPI, source crop mapping dan retained embedded bytes.
 
 - [0025 — Deterministic stack dan parent constraints](0025-deterministic-stack-layout.md): accepted,13; dependency graph, atomic layout/text sizing, fixed/hug/fill/overflow, supported MVP combinations dan parent resize.
+
+- [0026 — Project workflows and basic recovery](0026-project-recovery-generations.md): accepted,14; snapshot checkpoints, separate generations/owner claims, fresh restore sessions, retention and subprocess thumbnails.
+
+- [0027 — Snapshot raster export jobs](0027-raster-export-jobs.md): accepted,15; shared selection/ancestor filter, bounded snapshot jobs, actual codecs/fallback, canonical output commit and truthful cancellation.
